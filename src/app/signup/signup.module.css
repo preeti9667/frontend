@@ -1,0 +1,10 @@
+.page{
+    display: flex;
+    background: rgba(77, 73, 73, 0.031);
+}
+.form{
+    display: flex;
+        flex-direction: column;
+        padding-top: 20px;
+        gap: 30px;
+}
