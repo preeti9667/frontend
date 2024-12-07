@@ -30,7 +30,7 @@ const initialValues: FormValue = {
   password: "",
 };
 
-const SignUp = () => {
+const LogIn = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [messages, setMessages] = useState("");
 
@@ -63,7 +63,8 @@ const SignUp = () => {
   };
 
   return (
-    <Box className={style.page}>
+    <Box className={style.page}
+    flexDirection={{  xs: 'column', sm: 'row' }}>
       <Box>
         <Image
           src="https://img.freepik.com/premium-vector/three-people-working-laptops-company-employees-talking-about-boss-tasks-sitting-with-laptop-simple-minimalist-flat-vector-illustration_538213-119540.jpg?ga=GA1.1.2107727690.1726806487"
@@ -72,7 +73,8 @@ const SignUp = () => {
           width={600}
         />
       </Box>
-      <Box sx={{ margin: "auto", width: "430px" }}>
+      <Box sx={{ margin: "auto",}}
+      width={{xs:'300px', sm:'430'}}>
         <Typography variant="h4">Sign in to your account</Typography>
         <Formik
           validationSchema={validationSchema}
@@ -142,4 +144,4 @@ const SignUp = () => {
   );
 };
 
-export default SignUp;
+export default LogIn;

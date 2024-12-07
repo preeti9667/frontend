@@ -9,7 +9,7 @@ export default function AdminLayout({
     return (
       <html lang="en">
         <body>
-          <Box sx={{display:'grid', gridTemplateColumns:'1fr 4fr'}}>
+          <Box sx={{display:'grid', gridTemplateColumns:'1fr 4fr',}}>
             <Sidebar/>
             <Box>
       <Navbar/>
