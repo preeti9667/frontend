@@ -1,4 +1,5 @@
-import { Box } from "@mui/material";
+import { Box,   useMediaQuery } from "@mui/material";
+import Grid from '@mui/material/Grid2';
 import Sidebar from "./Sidebar";
 import Navbar from "./Navbar";
 export default function AdminLayout({
@@ -6,15 +7,26 @@ export default function AdminLayout({
   }: Readonly<{
     children: React.ReactNode;
   }>) {
+    // const isLargeScreen = useMediaQuery('(min-width:768px)');
     return (
       <html lang="en">
         <body>
-          <Box sx={{display:'grid', gridTemplateColumns:'1fr 4fr',}}>
-            <Sidebar/>
-            <Box>
+          <Box sx={{ flexGrow: 1 }}>
+        <Grid container>
+        <Grid 
+        size={ 2.5}
+        >
+        
+           <Sidebar/>
+        </Grid>
+        <Grid  size={9.5}
+        // size={isLargeScreen? 9.5: 11}
+        >
       <Navbar/>
           {children}
-            </Box>
+         
+        </Grid>
+        </Grid>
           </Box>
         </body>
       </html>

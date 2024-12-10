@@ -1,11 +1,12 @@
 'use client'
-import { Avatar, Box, List, ListItem, ListItemButton, ListItemText } from '@mui/material'
+import { Avatar, Box, Button, Drawer, List, ListItem, ListItemButton, ListItemText, useMediaQuery, useTheme } from '@mui/material'
 import React, { useState } from 'react'
 import PeopleAltIcon from '@mui/icons-material/PeopleAlt';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import Image from 'next/image';
 import style from '../admin/admin.module.css'
 import GroupsIcon from '@mui/icons-material/Groups';
+import DehazeIcon from '@mui/icons-material/Dehaze';
 const Sidebar = () => {
 
   const [selectedIndex, setSelectedIndex] = useState(1);
@@ -17,10 +18,28 @@ const Sidebar = () => {
   ) => {
     setSelectedIndex(index);
   };
-  return (
-   <Box sx={{ height:'100vh',background:'#f4f7f7' }}>
+
+
+  const [open, setOpen] = useState(false);
+
+  const toggleDrawer = (newOpen: boolean) => () => {
+    setOpen(newOpen);
     
-<Box sx={{background:'#f4f7f7'}}>
+    
+  };
+
+  const DrawerList = (
+    <Box>hello</Box>
+  )
+  const theme = useTheme();
+//  const isLargeScreen = useMediaQuery('(min-width:768px)');
+ const isSmallScreen = useMediaQuery(theme.breakpoints.down('sm'));
+
+  return (
+   <>
+  {isSmallScreen &&(
+  <Box sx={{position:'fixed', left:'0'}}>  
+<Box sx={{background:'#f4f7f7',}}>
 
  <Image src='/logo.jpg' width={80} height={80} alt=''className={style.logo} />
    </Box>
@@ -57,7 +76,17 @@ const Sidebar = () => {
     
     </List>
    </Box>
-   </Box>
+   </Box>)}
+  
+
+<Box sx={{border:"2px solid black"}} >
+   <Button onClick={toggleDrawer(true)} sx={{border:"2px solid black"}}><DehazeIcon/></Button>
+      <Drawer open={open} onClose={toggleDrawer(false)}>
+        {DrawerList}
+      </Drawer>
+</Box>
+
+   </>
   )
 }
 

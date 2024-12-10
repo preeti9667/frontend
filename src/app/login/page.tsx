@@ -6,14 +6,14 @@ import {
   InputAdornment,
   TextField,
   Typography,
+  useMediaQuery,
 } from "@mui/material";
 import React, { useState } from "react";
-import style from "./signup.module.css";
 import * as Yup from "yup";
 import { ErrorMessage, Field, Form, Formik } from "formik";
-import axios from "axios";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
+import { LOGIN_API, ADMIN_ROUTE } from "@/constant";
 
 interface FormValue {
   email: string;
@@ -21,8 +21,8 @@ interface FormValue {
 }
 
 const validationSchema = Yup.object({
-  email: Yup.string().required(),
-  password: Yup.string().required(),
+  email: Yup.string().required("Email is required"),
+  password: Yup.string().required("Password is required"),
 });
 
 const initialValues: FormValue = {
@@ -38,10 +38,8 @@ const LogIn = () => {
 
   const router = useRouter();
   const handleSubmit = async (value: FormValue) => {
-    // console.log(value)
-
     try {
-      const data = await fetch(`http://localhost:4000/auth/login`, {
+      const response = await fetch(LOGIN_API, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -49,89 +47,116 @@ const LogIn = () => {
         body: JSON.stringify(value),
       });
 
-      if (data.ok) {
-        value;
-        router.push("/admin");
+      if (response.ok) {
+        router.push(`${ADMIN_ROUTE.url}`);
       } else {
         setMessages("Invalid email and password");
       }
-
-      // console.log(data)
     } catch (error) {
-      console.log(error);
+      console.error("Login error:", error);
     }
   };
 
   return (
-    <Box className={style.page}
-    flexDirection={{  xs: 'column', sm: 'row' }}>
-      <Box>
+    <Box
+      className="page"
+      display="flex"
+      flexDirection={{ xs: "column", md: "row" }}
+    >
+      {/* Image Section */}
+      <Box
+        sx={{
+          display: { xs: "none", lg: "block" }, // Hidden on small screens, visible on large screens
+          flex: 1,
+          p: 2,
+        }}
+      >
         <Image
           src="https://img.freepik.com/premium-vector/three-people-working-laptops-company-employees-talking-about-boss-tasks-sitting-with-laptop-simple-minimalist-flat-vector-illustration_538213-119540.jpg?ga=GA1.1.2107727690.1726806487"
-          alt="hello"
+          alt="Login Illustration"
           height={660}
           width={600}
         />
       </Box>
-      <Box sx={{ margin: "auto",}}
-      width={{xs:'300px', sm:'430'}}>
-        <Typography variant="h4">Sign in to your account</Typography>
+
+      {/* Form Section */}
+      <Box
+        sx={{
+          margin: "auto",
+          width: { xs: "90%", sm: "430px", lg: "80%" },
+          p: { xs: 1, lg: 3 },
+          pr: { xs: 2, lg:7 }, // Adds padding to the right
+          flex: 1,
+        }}
+      >
+        <Typography
+          fontSize={{ xs: "20px", sm: "30px" }}
+          textAlign="center"
+          mb={2}
+        >
+          Log In to Your Account
+        </Typography>
         <Formik
           validationSchema={validationSchema}
           initialValues={initialValues}
           onSubmit={handleSubmit}
         >
           {({ handleBlur, handleChange, touched, errors }) => (
-            <Form className={style.form}>
+            <Form>
               <Field
                 as={TextField}
                 name="email"
                 label="Email or Phone"
                 type="email"
+                fullWidth
                 onBlur={handleBlur}
                 onChange={handleChange}
-                error={touched.email && errors.email}
+                error={touched.email && Boolean(errors.email)}
                 helperText={<ErrorMessage name="email" />}
+                margin="normal"
               />
 
               <Field
                 as={TextField}
                 variant="outlined"
                 name="password"
+                label="Password"
+                type={showPassword ? "text" : "password"}
+                fullWidth
                 onBlur={handleBlur}
                 onChange={handleChange}
-                label="password"
-                type={showPassword ? "text" : "password"}
-                error={touched.password && errors.password}
+                error={touched.password && Boolean(errors.password)}
                 helperText={<ErrorMessage name="password" />}
+                margin="normal"
                 InputProps={{
                   endAdornment: (
                     <InputAdornment position="end">
                       <IconButton
-                        sx={{ fontSize: "small", color: "blue" }}
                         aria-label="toggle password visibility"
                         onClick={handleClickShowPassword}
-                        edge="end"
                       >
-                        {showPassword ? "hide" : "show"}
+                        {showPassword ? "Hide" : "Show"}
                       </IconButton>
                     </InputAdornment>
                   ),
                 }}
               />
-             <Typography color="error" variant="body2">{messages}</Typography>
+
+              <Typography color="error" variant="body2" mt={1} mb={1}>
+                {messages}
+              </Typography>
+
               <Button
                 type="submit"
                 variant="contained"
-                // disableRipple
+                color="primary"
+                fullWidth
                 sx={{
-                  "&.MuiButton-root": {
-                    textTransform: "none",
-                    background: "cadetblue",
-                    fontSize: "large",
-                    color: "black",
-                    padding: "8px 16px",
-                  },
+                  textTransform: "none",
+                  // background: "cadetblue",
+                  fontSize: "large",
+                  // color: "black",
+                  padding: "10px 16px",
                 }}
               >
                 Submit

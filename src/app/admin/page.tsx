@@ -8,13 +8,11 @@ const Admin = () => {
  
   
   return (
-<Box>
-
-
-
-  
- 
-</Box>
+    <AdminLayout>
+      <Box>
+        hello admin
+      </Box>
+    </AdminLayout>
   )
 }
 
