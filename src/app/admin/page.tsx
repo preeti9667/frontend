@@ -1,19 +1,15 @@
 'use client'
-import { Box } from '@mui/material';
-import React from 'react'
-import AdminLayout from './AdminLayout';
+import * as React from 'react';
 
 
-const Admin = () => {
+
+
+
+export default function Admin() {
  
-  
-  return (
-    <AdminLayout>
-      <Box>
-        hello admin
-      </Box>
-    </AdminLayout>
-  )
-}
 
-export default Admin;
+  return (
+    <>
+    </>
+  );
+}

@@ -1,0 +1,9 @@
+.page{
+    display: flex;
+    background: rgba(77, 73, 73, 0.031);
+}
+
+.form{
+    width: fit-content;
+    margin: auto;
+}

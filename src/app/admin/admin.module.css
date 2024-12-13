@@ -1,5 +1,7 @@
 
-.logo{
-   
-    padding: 7px 82px;
+.listItem{
+ display: flex;   
+ gap: 20px;
+
+ padding: none;
 }

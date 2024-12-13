@@ -14,7 +14,9 @@ import { ErrorMessage, Field, Form, Formik } from "formik";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { LOGIN_API, ADMIN_ROUTE } from "@/constant";
-
+import style from "./login.module.css"
+import VisibilityIcon from '@mui/icons-material/Visibility';
+import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
 interface FormValue {
   email: string;
   password: string;
@@ -87,8 +89,8 @@ const LogIn = () => {
           p: { xs: 1, lg: 3 },
           pr: { xs: 2, lg:7 }, // Adds padding to the right
           flex: 1,
-        }}
-      >
+      
+        }}>
         <Typography
           fontSize={{ xs: "20px", sm: "30px" }}
           textAlign="center"
@@ -102,7 +104,7 @@ const LogIn = () => {
           onSubmit={handleSubmit}
         >
           {({ handleBlur, handleChange, touched, errors }) => (
-            <Form>
+            <Form className={style.form}>
               <Field
                 as={TextField}
                 name="email"
@@ -135,7 +137,7 @@ const LogIn = () => {
                         aria-label="toggle password visibility"
                         onClick={handleClickShowPassword}
                       >
-                        {showPassword ? "Hide" : "Show"}
+                        {showPassword ? <VisibilityIcon/> : <VisibilityOffIcon/>}  
                       </IconButton>
                     </InputAdornment>
                   ),
@@ -149,13 +151,11 @@ const LogIn = () => {
               <Button
                 type="submit"
                 variant="contained"
-                color="primary"
+                style={{ backgroundColor: 'var(--primary-color)' }}
                 fullWidth
                 sx={{
                   textTransform: "none",
-                  // background: "cadetblue",
                   fontSize: "large",
-                  // color: "black",
                   padding: "10px 16px",
                 }}
               >

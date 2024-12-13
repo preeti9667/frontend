@@ -4,7 +4,7 @@ import { Box } from '@mui/material';
 const Meeting = () => {
   return (
     <AdminLayout>
-        <Box className="admin">
+        <Box className="admin" sx={{height:'600px'}}>
             hello meeting
         </Box>
     </AdminLayout>
