@@ -1,4 +1,5 @@
-"use client";
+"use client"
+
 import React, { useState } from "react";
 import style from "./admin.module.css";
 import {
@@ -56,7 +57,7 @@ export default function AdminLayout({
           </ListItem>
         </ListItemButton>{" "}
         <Divider />
-        <ListItemButton href="/admin/Profile">
+        <ListItemButton href="/admin/profile">
           <ListItem className={style.listItem}>
             <AccountCircleOutlinedIcon />
             <ListItemText primary="Profile" />
@@ -141,7 +142,7 @@ export default function AdminLayout({
             {children}
           </Box>
         </Box>
-      </body>
-    </html>
+       </body>
+   </html>
   );
 }
