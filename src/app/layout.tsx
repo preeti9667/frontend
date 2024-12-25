@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 // import localFont from "next/font/local";
 import "./globals.css";
-
+// import { hydrateRoot } from 'react-dom/client';
 // const geistSans = localFont({
 //   src: "./fonts/GeistVF.woff",
 //   variable: "--font-geist-sans",
@@ -31,3 +31,4 @@ export default function RootLayout({
     </html>
   );
 }
+

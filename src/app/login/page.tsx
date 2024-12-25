@@ -9,7 +9,7 @@ import {
   Typography,
   useMediaQuery,
 } from "@mui/material";
-import React, { useState } from "react";
+import React, {  useState } from "react";
 import * as Yup from "yup";
 import { ErrorMessage, Field, Form, Formik } from "formik";
 import Image from "next/image";
@@ -42,7 +42,8 @@ const LogIn = () => {
   const router = useRouter();
   const handleSubmit = async (value: FormValue) => {
     try {
-      const response = await fetch(LOGIN_API, {
+      const response = await fetch(LOGIN_API,  {
+      
         method: "POST",
         headers: {
           "Content-Type": "application/json",

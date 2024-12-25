@@ -81,8 +81,8 @@ export default function AdminLayout({
   );
 
   return (
-    <html lang="en">
-      <body>
+    // <html lang="en">
+      // <body>
         <Box sx={{ display: "flex" }}>
           <CssBaseline />
           <AppBar
@@ -142,7 +142,7 @@ export default function AdminLayout({
             {children}
           </Box>
         </Box>
-       </body>
-   </html>
+      //  </body>
+  //  </html>
   );
 }
