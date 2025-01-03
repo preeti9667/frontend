@@ -42,7 +42,7 @@ export default function AdminLayout({
       role="presentation"
       onClick={toggleDrawer(false)}
       onKeyDown={toggleDrawer(false)}
-      marginTop={10}
+      marginTop={7}
     >
       <List sx={{ display: "flex", flexDirection: "column" }}>
         <Divider />

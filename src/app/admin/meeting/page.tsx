@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState } from 'react';
 import AdminLayout from '../AdminLayout';
-import { Alert, Box, Divider, Input, Pagination, Paper, Snackbar, Stack, Table, TableBody, TableCell, TableContainer, TableHead, TablePagination, TableRow, TextField, Typography } from '@mui/material';
+import { Alert, Box, Card, CardContent, Divider, Input, InputBase, Pagination, Paper, Snackbar, Table, TableBody, TableCell, TableContainer, TableHead, TablePagination, TableRow, TextField, Typography } from '@mui/material';
 import axios from 'axios';
 import {GET_MEETING_API} from '@/constant/api.constant'
 import CircularProgress from '@mui/material/CircularProgress';
@@ -10,7 +10,7 @@ import style from "../admin.module.css"
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
-
+import moment from 'moment';
 interface DataItem {
   _id: string;
   title: string;
@@ -28,11 +28,14 @@ const Meeting = () => {
   const [page, setPage] = useState(1);
   const [totalCount, setTotalCount] = useState(0);
   const [limit] = useState(4)
-  const [snackbarOpen, setSnackbarOpen] = useState(false);
-  const [snackbarMessage, setSnackbarMessage] = useState('');
-  const [snackbarSeverity, setSnackbarSeverity] = useState<'success' | 'error'>(
-    'success'
-  );
+  const [isLoading, setIsLoading] = useState(false)
+  // const [snackbarOpen, setSnackbarOpen] = useState(false);
+  // const [snackbarMessage, setSnackbarMessage] = useState('');
+  // const [snackbarSeverity, setSnackbarSeverity] = useState<'success' | 'error'>(
+  //   'success'
+  // );
+
+
 
   
 
@@ -45,41 +48,49 @@ const Meeting = () => {
           limit,
         },
       });
-
-      const { data } = response.data;
+      // const { data } = response.data;
+      const  data  = response.data.data;
+        // console.log(data)
       setMeetings(data.list);
       setTotalCount(data.count);
+
+     if(!response){
+        setIsLoading(true)
+      }
+
     } catch (error) {
       console.error('Error fetching meetings:', error);
     }
   };
 
-  const deleteMeeting = async (meetingId:string) => {
-    try {
-      await axios.delete(`http://localhost:4000/meeting/${meetingId}`);
+  // const deleteMeeting = async (meetingId:string) => {
+  //   try {
+  //     await axios.delete(`http://localhost:4000/meeting/${meetingId}`);
 
-      setMeetings((prev) => prev.filter((meeting) => meeting._id !== meetingId));
+  //     setMeetings((prev) => prev.filter((meeting) => meeting._id !== meetingId));
 
-      setSnackbarMessage('Meeting deleted successfully.');
-      setSnackbarSeverity('success');
-      setSnackbarOpen(true);
+  //     setSnackbarMessage('Meeting deleted successfully.');
+  //     setSnackbarSeverity('success');
+  //     setSnackbarOpen(true);
 
-    } catch (error) {
-      console.error('Error deleting meeting:', error);
-      setSnackbarMessage('Failed to delete the meeting.');
-      setSnackbarSeverity('error');
-      setSnackbarOpen(true);
-    }
-  };
-  const handleCloseSnackbar = () => {
-    setSnackbarOpen(false);
-  };
+  //   } catch (error) {
+  //     console.error('Error deleting meeting:', error);
+  //     setSnackbarMessage('Failed to delete the meeting.');
+  //     setSnackbarSeverity('error');
+  //     setSnackbarOpen(true);
+  //   }
+  // };
+  // const handleCloseSnackbar = () => {
+  //   setSnackbarOpen(false);
+  // };
 
-  const aboutMeeting = async (meetingId: string)=>{
-    await axios.get(`http://localhost:4000/meeting/${meetingId}`);
-    setMeetings((prev) => prev.filter((meeting) => meeting._id == meetingId));
-  }
-  
+  // const aboutMeeting = async (meetingId: string)=>{
+  //   await axios.get(`http://localhost:4000/meeting/${meetingId}`);
+  //   // setMeetings((prev) => prev.filter((meeting) => meeting._id == meetingId));
+  //   const heelo = meetings.filter((meeting) => meeting._id == meetingId)
+  //   console.log(heelo)
+  // }
+
 
   useEffect(() => {
     fetchMeetings();
@@ -92,16 +103,22 @@ const Meeting = () => {
      
   return (
     <AdminLayout>
-      <Box sx={{ border: '2px solid black', padding: '16px' }}>
-      {/* {isLoading && (
-        <Box sx={{}}><CircularProgress sx={{position:'absolute'}}/></Box>
-      )} */}
+
+      {isLoading && ( 
+        <Box><CircularProgress sx={{position:'absolute'}}/></Box>
+      )}
+
+      <Box mt={5} ml={6} mr={5} 
+      sx={{
+ display: { xl:"block", md:'block', xs:'none', sm:'block', lg:'block'}}}>
+
+
       <Box  style={{ backgroundColor: "var(--text1-color)" , color:"white",}}
      >
-        <Box  className={style.meetingTop} >
+        <Box  className={style.meetingTop}  >
         <Typography variant='h5'>MEETINGS</Typography>
         <Paper sx={{borderRadius:"5px",}}>
-        <Input placeholder="search" 
+        <InputBase placeholder="search" 
         sx={{padding:"3px 10px", borderRadius:"10px", width:{lg:'350px',sx:'300px'}}} 
         value={search}
         onChange={(e)=> setSearch(e.target.value)}
@@ -110,18 +127,20 @@ const Meeting = () => {
         
         </Box>
       </Box>
+
+
        <TableContainer component={Paper} >
       
         <Table sx={{ minWidth: 650 }} aria-label="simple table">
         <TableHead>
         <TableRow>
+        <TableCell sx={{fontSize:"23px"}}>S.N.</TableCell>
         <TableCell sx={{fontSize:"23px"}}>Title</TableCell>
         {/* <TableCell sx={{fontSize:"23px"}}>Description</TableCell> */}
         <TableCell sx={{fontSize:"23px"}}>Date</TableCell>
-        <TableCell sx={{fontSize:"23px"}}>Edit</TableCell>
-        <TableCell sx={{fontSize:"23px"}}>Delete</TableCell>
+        <TableCell sx={{fontSize:"23px"}}>Time</TableCell>
         <TableCell sx={{fontSize:"23px"}}>Status</TableCell>
-        <TableCell sx={{fontSize:"23px"}}>More</TableCell>
+        
 
         </TableRow>
         </TableHead>
@@ -130,19 +149,16 @@ const Meeting = () => {
           meetings.map((item, index)=>(
             <TableRow key={index} 
             sx={{ '&:last-child td, &:last-child th': { border: 0 }}}>
+              <TableCell>{index + 1}</TableCell>
+
               <TableCell >{item.title.charAt(0).toUpperCase() + item.title.slice(1).toLowerCase()}</TableCell>
               {/* <TableCell>{item.description.charAt(0).toUpperCase() + item.description.slice(1).toLowerCase()}</TableCell> */}
-              <TableCell>{item.date}</TableCell>
-              <TableCell>
-                <EditIcon color='success'  
-                sx={{cursor:"pointer"}}/></TableCell>
-              <TableCell>
-                <DeleteIcon color='error' sx={{cursor:"pointer"}}
-                           onClick={() => deleteMeeting(item._id)} /></TableCell>
+              <TableCell>{
+              moment(item.date).format('ll')}
+              </TableCell>
+              <TableCell>{item.startTime}-{item.endTime}</TableCell>
               <TableCell>{item.status}</TableCell>
 
-              <TableCell><MoreHorizIcon  
-               onClick={() => aboutMeeting(item._id)}/></TableCell>
           </TableRow>
          
         ))
@@ -165,20 +181,60 @@ const Meeting = () => {
       )}
   
        </TableContainer>
+       </Box>
       
             {/* Snackbar for Feedback */}
-            <Snackbar
+            {/* <Snackbar
         open={snackbarOpen}
         autoHideDuration={3000}
         onClose={handleCloseSnackbar}
         anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
       >
-        <Alert onClose={handleCloseSnackbar} severity={snackbarSeverity}>
+        <Alert onClose={handleCloseSnackbar} 
+        severity={snackbarSeverity}
+        >
           {snackbarMessage}
         </Alert>
-      </Snackbar>
+      </Snackbar> */}
+      <Box  sx={{
+display: { xl:"none", md:'none', xs:'block', sm:'none', lg:'none'}
+        
+      }}>
+      <Paper sx={{borderRadius:"5px", border:"1px solid black", }}>
+        <InputBase placeholder="search" 
+        sx={{padding:"3px 10px", borderRadius:"10px",}} 
+        value={search}
+        onChange={(e)=> setSearch(e.target.value)}
+        />
+      </Paper> 
+      <Box sx={{display:"flex", flexDirection:"column", gap:"50px"}} mt={5}>
+        {
+          meetings.map((item, index)=>(
+            <Box key={index} >  
+              <Card sx={{border:"1px solid black", borderRadius:'15px',
+               
+              }}>
 
+          {/* <Typography variant='h4'>{index +1}</Typography> */}
+        <CardContent sx={{display:"flex", justifyContent:'space-between', alignItems:"center",}}>
+          <Typography>{moment(item.date).format('ll')}</Typography>
+          <Typography>{item.startTime}-{item.endTime}</Typography>
+          </CardContent>
+
+                <CardContent sx={{marginTop:"-20px"}}>
+          <Typography variant='h5'>
+            {item.title.charAt(0).toUpperCase() + item.title.slice(1).toLowerCase()}</Typography>
+          <Typography variant='h6'> {item.description}</Typography>
+          <Typography sx={{color: "var(--text1-color)"}}>
+            {item.status}</Typography></CardContent>
+        </Card>
+        </Box>
+          ))
+        }
       </Box>
+      </Box>
+
+      
     </AdminLayout>
   );
 };
