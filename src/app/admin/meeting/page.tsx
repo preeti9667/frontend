@@ -107,8 +107,7 @@ const router = useRouter()
 const handleItemClick =(id: string)=>{
   router.push(`http://localhost:3000/admin/meeting/${id}`)
 }
-
-     
+   
   return (
     <AdminLayout>
         
