@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState } from 'react';
 import AdminLayout from '../AdminLayout';
-import { Alert, Box, Card, CardContent, Divider, Input, InputBase, Link, Pagination, Paper, Snackbar, Table, TableBody, TableCell, TableContainer, TableHead, TablePagination, TableRow, TextField, Typography, useMediaQuery } from '@mui/material';
+import { Alert, Box, Card, CardContent, Divider, Input, InputBase, Pagination, Paper, Snackbar, Table, TableBody, TableCell, TableContainer, TableHead, TablePagination, TableRow, TextField, Typography, useMediaQuery } from '@mui/material';
 import axios from 'axios';
 import {GET_MEETING_API} from '@/constant/api.constant'
 import CircularProgress from '@mui/material/CircularProgress';
@@ -11,7 +11,7 @@ import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
 import moment from 'moment';
-// import Link from 'next/link';
+import {useRouter} from 'next/navigation'
 interface DataItem {
   _id: string;
   title: string;
@@ -29,9 +29,9 @@ const Meeting = () => {
   const [page, setPage] = useState(1);
   const [totalCount, setTotalCount] = useState(0);
   const [limit] = useState(4)
-
   const [isLoading, setIsLoading] = useState(false)
-  
+
+const router = useRouter()  
 
   // const [snackbarOpen, setSnackbarOpen] = useState(false);
   // const [snackbarMessage, setSnackbarMessage] = useState('');
@@ -104,7 +104,9 @@ const Meeting = () => {
 
   const totalPages = Math.ceil(totalCount / limit);
   
-
+const handleItemClick =(id: string)=>{
+  router.push(`http://localhost:3000/admin/meeting/${id}`)
+}
 
      
   return (
@@ -150,16 +152,15 @@ const Meeting = () => {
 
         </TableRow>
         </TableHead>
-        <TableBody>
+        <TableBody >
         {
           meetings.map((item, index)=>(
-         <Link href={`http://localhost:4000/meeting/${item._id}`} key={index}> 
-         
-          <TableRow 
-            sx={{ '&:last-child td, &:last-child th': { border: 0 }}}>
+
+          <TableRow  key={item._id}
+          onClick={() => handleItemClick(item._id)}
+            sx={{ '&:last-child td, &:last-child th': { border: 0}, cursor:"pointer"}} >
 
               <TableCell>{index + 1}</TableCell>
-
               <TableCell >{item.title.charAt(0).toUpperCase() + item.title.slice(1).toLowerCase()}</TableCell>
               {/* <TableCell>{item.description.charAt(0).toUpperCase() + item.description.slice(1).toLowerCase()}</TableCell> */}
               <TableCell>{
@@ -169,7 +170,7 @@ const Meeting = () => {
               <TableCell>{item.status}</TableCell>
 
           </TableRow>
-         </Link>
+     
         ))
       }
       
