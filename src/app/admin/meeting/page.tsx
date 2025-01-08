@@ -7,9 +7,6 @@ import axios from 'axios';
 import {GET_MEETING_API} from '@/constant/api.constant'
 import CircularProgress from '@mui/material/CircularProgress';
 import style from "../admin.module.css"
-import EditIcon from '@mui/icons-material/Edit';
-import DeleteIcon from '@mui/icons-material/Delete';
-import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
 import moment from 'moment';
 import {useRouter} from 'next/navigation'
 interface DataItem {
@@ -28,16 +25,12 @@ const Meeting = () => {
   const [search, setSearch] = useState(''); 
   const [page, setPage] = useState(1);
   const [totalCount, setTotalCount] = useState(0);
-  const [limit] = useState(4)
+  const [limit] = useState(7)
   const [isLoading, setIsLoading] = useState(false)
 
 const router = useRouter()  
 
-  // const [snackbarOpen, setSnackbarOpen] = useState(false);
-  // const [snackbarMessage, setSnackbarMessage] = useState('');
-  // const [snackbarSeverity, setSnackbarSeverity] = useState<'success' | 'error'>(
-  //   'success'
-  // );
+ 
 
 
 
@@ -69,35 +62,7 @@ const router = useRouter()
     }
   };
 
-  // const deleteMeeting = async (meetingId:string) => {
-  //   try {
-  //     await axios.delete(`http://localhost:4000/meeting/${meetingId}`);
-
-  //     setMeetings((prev) => prev.filter((meeting) => meeting._id !== meetingId));
-
-  //     setSnackbarMessage('Meeting deleted successfully.');
-  //     setSnackbarSeverity('success');
-  //     setSnackbarOpen(true);
-
-  //   } catch (error) {
-  //     console.error('Error deleting meeting:', error);
-  //     setSnackbarMessage('Failed to delete the meeting.');
-  //     setSnackbarSeverity('error');
-  //     setSnackbarOpen(true);
-  //   }
-  // };
-  // const handleCloseSnackbar = () => {
-  //   setSnackbarOpen(false);
-  // };
-
-  // const aboutMeeting = async (meetingId: string)=>{
-  //   await axios.get(`http://localhost:4000/meeting/${meetingId}`);
-  //   // setMeetings((prev) => prev.filter((meeting) => meeting._id == meetingId));
-  //   const heelo = meetings.filter((meeting) => meeting._id == meetingId)
-  //   console.log(heelo)
-  // } // const [limit, setLimit] = useState(0)
-
-
+  
   useEffect(() => {
     fetchMeetings();
   }, [search, page, isMobile]);
@@ -115,12 +80,12 @@ const handleItemClick =(id: string)=>{
         <Box><CircularProgress sx={{position:'absolute'}}/></Box>
       )}
 
-      <Box mt={5} ml={6} mr={5} 
+      <Box mt={3} ml={6} mr={5} 
       sx={{
  display: { xl:"block", md:'block', xs:'none', sm:'block', lg:'block'}}}>
 
 
-      <Box  style={{ backgroundColor: "var(--text1-color)" , color:"white",}}
+      <Box  style={{ backgroundColor: "var( --text-color)" , color:"white",}}
      >
         <Box  className={style.meetingTop}  >
         <Typography variant='h5'>MEETINGS</Typography>
@@ -192,19 +157,7 @@ const handleItemClick =(id: string)=>{
        </TableContainer>
        </Box>
       
-            {/* Snackbar for Feedback */}
-            {/* <Snackbar
-        open={snackbarOpen}
-        autoHideDuration={3000}
-        onClose={handleCloseSnackbar}
-        anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
-      >
-        <Alert onClose={handleCloseSnackbar} 
-        severity={snackbarSeverity}
-        >
-          {snackbarMessage}
-        </Alert>
-      </Snackbar> */}
+           
       <Box  sx={{
 display: { xl:"none", md:'none', xs:'block', sm:'none', lg:'none'}
         

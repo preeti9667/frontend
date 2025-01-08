@@ -83,12 +83,13 @@ export default function AdminLayout({
   return (
     // <html lang="en">
       // <body>
-        <Box sx={{ display: "flex" }}>
+        <Box sx={{ display: "flex", background:"rgba(19, 18, 19, 0.02)", 
+        height:"100vh", width:'100vw'}}>
           <CssBaseline />
           <AppBar
             position="fixed"
             sx={{ zIndex: (theme) => theme.zIndex.drawer + 1 }}
-            style={{ backgroundColor: "var(--text-color)" }}
+            style={{ backgroundColor: "var(--secondary-color)" }}
           >
             <Toolbar sx={{ display: "flex", justifyContent: "space-between" }}>
               <IconButton
@@ -138,7 +139,7 @@ export default function AdminLayout({
             {drawerContent}
           </Drawer>
 
-          <Box component="main" sx={{ flexGrow: 1, p: 3, mt: 8 }}>
+          <Box component="main" sx={{ flexGrow: 1, p: 3, mt: 8 ,}}>
             {children}
           </Box>
         </Box>

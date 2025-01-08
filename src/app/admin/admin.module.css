@@ -12,3 +12,33 @@ align-items: center;
 padding: 16px ;
 
 }
+.action{
+    display: flex;
+    align-items: center;
+    gap: 10px;
+   
+}
+.back{
+
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding-bottom: 10px;
+}
+.time{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+padding: 20px 0;
+}
+.avatar{
+width: 100px;
+margin-bottom: 20px;
+height: 100px;
+margin: auto;
+}
+.actionBtn{
+    width: 200px;
+    font-size: 20px;
+    text-transform: none;
+}

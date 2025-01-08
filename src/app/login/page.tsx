@@ -66,6 +66,8 @@ const LogIn = () => {
       className="page"
       display="flex"
       flexDirection={{ xs: "column", md: "row" }}
+      alignItems={"center"}
+      
     >
       {/* Image Section */}
       <Box
@@ -73,25 +75,28 @@ const LogIn = () => {
           display: { xs: "none", lg: "block" }, // Hidden on small screens, visible on large screens
           flex: 1,
           p: 2,
+          height:"96vh",
+          background:"#FEFEFE"
         }}
       >
         <Image
           src="https://img.freepik.com/premium-vector/three-people-working-laptops-company-employees-talking-about-boss-tasks-sitting-with-laptop-simple-minimalist-flat-vector-illustration_538213-119540.jpg?ga=GA1.1.2107727690.1726806487"
           alt="Login Illustration"
-          height={660}
-          width={600}
+          height={800}
+          width={700}
         />
       </Box>
 
       {/* Form Section */}
       <Box
         sx={{
-          margin: "auto",
+          // margin: {xs:"auto", sm:"auto", lg:"auto"},
           width: { xs: "90%", sm: "430px", lg: "80%" },
           p: { xs: 1, lg: 3 },
           pr: { xs: 2, lg:7 }, // Adds padding to the right
           flex: 1,
-      
+         paddingTop:{xs:"50%", sm:"40%", lg:'block', xl:"block"},
+        
         }}>
         <Typography
           fontSize={{ xs: "20px", sm: "30px" }}
