@@ -2,13 +2,16 @@
 
 import React, { useEffect, useState } from 'react';
 import AdminLayout from '../AdminLayout';
-import { Alert, Box, Card, CardContent, Divider, Input, InputBase, Pagination, Paper, Snackbar, Table, TableBody, TableCell, TableContainer, TableHead, TablePagination, TableRow, TextField, Typography, useMediaQuery } from '@mui/material';
+import { Alert, Box, Button, Card, CardContent, Divider, Input, InputBase, Pagination, Paper, Snackbar, Table, TableBody, TableCell, TableContainer, TableHead, TablePagination, TableRow, TextField, Typography, useMediaQuery } from '@mui/material';
 import axios from 'axios';
 import {GET_MEETING_API} from '@/constant/api.constant'
 import CircularProgress from '@mui/material/CircularProgress';
 import style from "../admin.module.css"
 import moment from 'moment';
 import {useRouter} from 'next/navigation'
+import { ADD_MEETING_ROUTE, ADMIN_MEETING_ROUTE } from '@/constant';
+import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
+import RefreshIcon from '@mui/icons-material/Refresh';
 interface DataItem {
   _id: string;
   title: string;
@@ -70,7 +73,11 @@ const router = useRouter()
   const totalPages = Math.ceil(totalCount / limit);
   
 const handleItemClick =(id: string)=>{
-  router.push(`http://localhost:3000/admin/meeting/${id}`)
+  router.push(`${ADMIN_MEETING_ROUTE.url}/${id}`)
+}
+
+const meetingCreate =()=>{
+  router.push(`${ADD_MEETING_ROUTE.url}`)
 }
    
   return (
@@ -80,15 +87,19 @@ const handleItemClick =(id: string)=>{
         <Box><CircularProgress sx={{position:'absolute'}}/></Box>
       )}
 
+      
       <Box mt={3} ml={6} mr={5} 
       sx={{
  display: { xl:"block", md:'block', xs:'none', sm:'block', lg:'block'}}}>
 
+      <Box  style={{ backgroundColor: "var( --text-color)" , color:"white",}}>
+        <Box  className={style.meetingTop}>
+      
+        <Box sx={{display:'flex', gap:'10px'}}>
+          <Button onClick={meetingCreate}  sx={{backgroundColor:"white", color:"black"}}><AddCircleOutlineIcon/></Button>
+          <Button sx={{backgroundColor:"white",color:"black"}}><RefreshIcon/></Button>
 
-      <Box  style={{ backgroundColor: "var( --text-color)" , color:"white",}}
-     >
-        <Box  className={style.meetingTop}  >
-        <Typography variant='h5'>MEETINGS</Typography>
+        </Box>
         <Paper sx={{borderRadius:"5px",}}>
         <InputBase placeholder="search" 
         sx={{padding:"3px 10px", borderRadius:"10px", width:{lg:'350px',sx:'300px'}}} 

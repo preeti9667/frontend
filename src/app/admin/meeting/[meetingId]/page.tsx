@@ -1,5 +1,5 @@
 "use client";
-import { Alert, Avatar, Box, Button, Paper, Snackbar, Typography } from "@mui/material";
+import { Alert, Avatar, Box, Button, Dialog, DialogActions, DialogTitle, Paper, Snackbar, Typography } from "@mui/material";
 import AdminLayout from "../../AdminLayout";
 import axios from "axios";
 import { useEffect, useState } from "react";
@@ -9,7 +9,7 @@ import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import moment from "moment";
 import SpaIcon from "@mui/icons-material/Spa";
 import { useRouter } from "next/navigation";
-import { ADMIN_MEETING_ROUTE } from "@/constant";
+import {  ADMIN_MEETING_ROUTE, GET_MEETING_API } from "@/constant";
 
 interface DataItem {
   _id: string;
@@ -26,13 +26,10 @@ export default function page({
 }: {
   params: Promise<{ meetingId: string }>;
 }) {
+
+
   const [meeting, setMeeting] = useState<DataItem | null>(null);
-  //  const [snackbarOpen, setSnackbarOpen] = useState(false);
-  // const [snackbarMessage, setSnackbarMessage] = useState('');
-  // const [snackbarSeverity, setSnackbarSeverity] = useState<'success' | 'error'>(
-  //   'success'
-  // );
-  
+  const [open,setOpen] =  useState(false)
 
   const router = useRouter();
 
@@ -43,7 +40,7 @@ export default function page({
 
     try {
       const response = await axios.get(
-        `http://localhost:4000/meeting/${meetingId}`
+      `${GET_MEETING_API}/${meetingId}`
       );
       setMeeting(response.data.meeting);
       // console.log(response.data.meeting)
@@ -55,23 +52,21 @@ export default function page({
   const deleteMeeting = async () => {
     const meetingId = (await params).meetingId;
     try {
-      await axios.delete(`http://localhost:4000/meeting/${meetingId}`);
-      // setSnackbarMessage('Meeting deleted successfully.');
-      // setSnackbarSeverity('success');
-      // setSnackbarOpen(true);
-    router.push('/admin/meeting')
+      await axios.delete(`${GET_MEETING_API}/${meetingId}`);
+    router.push(`${ADMIN_MEETING_ROUTE.url}`)
 
     } catch (error) {
       console.error('Error deleting meeting:', error);
-      // setSnackbarMessage('Failed to delete the meeting.');
-      // setSnackbarSeverity('error');
       setSnackbarOpen(true);
     }
   };
-  const handleCloseSnackbar = () => {
-    setSnackbarOpen(false);
-  };
 
+  const handleDelete =()=>{
+    setOpen(true)
+  }
+  const handleClose =()=>{
+    setOpen(false)
+  }
 
   useEffect(() => {
     fetchMeetings();
@@ -91,7 +86,7 @@ export default function page({
           <SpaIcon color="success" sx={{ width: "100px", height: "100px" }} />
         </Avatar>
         <Box>
-          <Link href={"/admin/meeting"} className={style.back}>
+          <Link href={`${ADMIN_MEETING_ROUTE.url}`} className={style.back}>
             <ArrowBackIcon fontSize="small" />
             Back
           </Link>
@@ -130,25 +125,22 @@ export default function page({
             className={style.actionBtn}
             variant="contained"
             color="error"
-            onClick={deleteMeeting}
+            onClick={handleDelete}
           >
             Delete
           </Button>
         </Box>
-         {/* Snackbar for Feedback */}
+        <Dialog open={open} onClose={handleClose}>
+          <DialogTitle>
+            Are you sure you want to delete this meeting?
+          </DialogTitle>
+          <DialogActions sx={{margin:"10px"}}>
+            <Button onClick={deleteMeeting} variant="outlined">Yes</Button>
+            <Button onClick={handleClose} variant="outlined">No</Button>
 
-            {/* <Snackbar
-        open={snackbarOpen}
-        autoHideDuration={3000}
-        onClose={handleCloseSnackbar}
-        anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
-      >
-        <Alert onClose={handleCloseSnackbar} 
-        severity={snackbarSeverity}
-        >
-          {snackbarMessage}
-        </Alert>
-      </Snackbar> */}
+          </DialogActions>
+        </Dialog>
+        
       </Paper>
     </AdminLayout>
   );
