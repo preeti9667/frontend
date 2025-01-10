@@ -1,6 +1,5 @@
 "use client";
 import { Alert, Avatar, Box, Button, Dialog, DialogActions, DialogTitle, Paper, Snackbar, Typography } from "@mui/material";
-import AdminLayout from "../../AdminLayout";
 import axios from "axios";
 import { useEffect, useState } from "react";
 import Link from "next/link";

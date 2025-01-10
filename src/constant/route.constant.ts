@@ -7,7 +7,7 @@ export const ADMIN_ROUTE = {
 
 
 export const ADMIN_MEETING_ROUTE = {
-    path: 'meeting',
+    path: 'meetings',
     get url() {
         return `${ADMIN_ROUTE.url}/${this.path}`
     }
