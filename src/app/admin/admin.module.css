@@ -42,3 +42,13 @@ margin: auto;
     font-size: 20px;
     text-transform: none;
 }
+.actionBtnForm{
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+.actionBtnForm1{
+    width: 150px;
+    font-size: 20px;
+    text-transform: none;
+}

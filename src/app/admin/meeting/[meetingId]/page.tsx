@@ -74,7 +74,6 @@ export default function page({
 
 
   return (
-    <AdminLayout>
       <Paper
         elevation={0}
         sx={{
@@ -140,9 +139,7 @@ export default function page({
 
           </DialogActions>
         </Dialog>
-        
       </Paper>
-    </AdminLayout>
   );
 }
 function setSnackbarMessage(arg0: string) {
