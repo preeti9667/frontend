@@ -9,6 +9,7 @@ import moment from "moment";
 import SpaIcon from "@mui/icons-material/Spa";
 import { useRouter } from "next/navigation";
 import {  ADMIN_MEETING_ROUTE, GET_MEETING_API } from "@/constant";
+import AdminLayout from "../../../AdminLayout";
 
 interface DataItem {
   _id: string;
@@ -73,7 +74,8 @@ export default function page({
 
 
   return (
-      <Paper
+      <AdminLayout>
+        <Paper
         elevation={0}
         sx={{
           margin: "auto",
@@ -139,6 +141,7 @@ export default function page({
           </DialogActions>
         </Dialog>
       </Paper>
+      </AdminLayout>
   );
 }
 function setSnackbarMessage(arg0: string) {

@@ -1,6 +1,5 @@
 "use client";
 import React from "react";
-import AdminLayout from "../../AdminLayout";
 import { Box, Button, FormControl, Link, Select, TextField, Typography } from "@mui/material";
 import Image from "next/image";
 import { ErrorMessage, Field, Form, Formik } from "formik";
@@ -56,7 +55,6 @@ export default function MeetingForm() {
 
 
   return (
-    <AdminLayout>
       <Box sx={{ background: "white"}}>
       <Box>
           <Link href={`${ADMIN_MEETING_ROUTE.url}`} className={style.back}>
@@ -176,6 +174,5 @@ export default function MeetingForm() {
           </Box>
         </Box></Box>
       </Box>
-    </AdminLayout>
   );
 }
