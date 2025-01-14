@@ -9,6 +9,7 @@ import { useRouter } from "next/navigation";
 import { ADD_MEETING_API, ADMIN_MEETING_ROUTE } from "@/constant";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import axios from "axios";
+import AdminLayout from "@/app/admin/AdminLayout";
 interface DataItem {
   title: string;
   description: string;
@@ -55,6 +56,7 @@ export default function MeetingForm() {
 
 
   return (
+    <AdminLayout>
       <Box sx={{ background: "white"}}>
       <Box>
           <Link href={`${ADMIN_MEETING_ROUTE.url}`} className={style.back}>
@@ -65,15 +67,7 @@ export default function MeetingForm() {
           <Box sx={{ display: "flex",}}>
 
          
-        <Box>
-          <Image
-            src="/back.avif"
-            priority={false}
-            alt="picture"
-            height={700}
-            width={600}
-          />
-        </Box>
+        
 
         <Box sx={{ width: "100%", margin: "auto 76px"}}>
           <Box sx={{   width:{xs:"90%", xl:"100%"}}}>
@@ -109,7 +103,7 @@ export default function MeetingForm() {
                     helperText={<ErrorMessage name="description" />}
                     margin="normal"
                   />
-                  <Box sx={{ m: 1, display:'flex', gap:3 }}>
+             
 
                    <Field
                     as={TextField}
@@ -137,8 +131,7 @@ export default function MeetingForm() {
                     margin="normal"
                     
                     />
-                    </Box>
-                  <Box sx={{ m: 1, display:'flex', gap:3, alignItems:'center'}}>
+              
 
                   <Field
                     as={TextField}
@@ -152,15 +145,8 @@ export default function MeetingForm() {
                     helperText={<ErrorMessage name="date" />}
                     margin="normal"
                     />
-                  <Field as='Select' name="status" label='Status'
-                   style={{width:"500px", height:"40px"}} defaultValue={'CREATED'}>
-             <option value=" CREATED"> CREATED</option>
-             <option value="ON_GOING">ON_GOING</option>
-             <option value="COMPLETED">COMPLETED</option>
-             <option value="CANCELLED">CANCELLED</option>
-            
-           </Field>
-                    </Box>
+                 
+               
                   <Box className={style.actionBtnForm}>
                   <Button onClick={handleReset} variant="contained" className={style.actionBtnForm1} 
                   color="error">Clear</Button>
@@ -173,6 +159,6 @@ export default function MeetingForm() {
             </Formik>
           </Box>
         </Box></Box>
-      </Box>
+      </Box></AdminLayout>
   );
 }

@@ -24,6 +24,7 @@ import PeopleAltIcon from "@mui/icons-material/PeopleAlt";
 import AccountCircleOutlinedIcon from "@mui/icons-material/AccountCircleOutlined";
 import GroupsIcon from "@mui/icons-material/Groups";
 import { usePathname } from "next/navigation";
+import { ADMIN_MEETING_ROUTE, ADMIN_USER_ROUTE } from "@/constant/route.constant";
 export default function AdminLayout({
   children,
 }: Readonly<{
@@ -47,9 +48,9 @@ export default function AdminLayout({
       <List sx={{ display: "flex", flexDirection: "column" }}>
         <Divider />
         <ListItemButton
-          href="/admin/user"
+          href={`${ADMIN_USER_ROUTE.url}`}
           disableRipple
-          sx={{ color: pathname === "/admin/user" ? "var(--text-color)" : "",  }}
+         sx={{ color: pathname === `${ADMIN_USER_ROUTE.url}` ? "var(--text-color)" : ""}}
         >
           <ListItem className={style.listItem}>
             <PeopleAltIcon />
@@ -65,16 +66,16 @@ export default function AdminLayout({
         </ListItemButton>
         <Divider />
         <ListItemButton
-          href="/admin/meeting"   disableRipple
+          href={`${ADMIN_MEETING_ROUTE.url}`}  disableRipple
           sx={{
-            color: pathname === "/admin/meeting" ? "var(--text-color)" : "",
+            color: pathname === `${ADMIN_MEETING_ROUTE.url}` ? "var(--text-color)" : "",
           }}
         >
           <ListItem className={style.listItem}>
             <GroupsIcon />
             <ListItemText primary="Meeting" />
           </ListItem>
-        </ListItemButton>{" "}
+        </ListItemButton>
         <Divider />
       </List>
     </Box>

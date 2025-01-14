@@ -13,6 +13,7 @@ import {
   InputBase,
   Pagination,
   Paper,
+  Skeleton,
   Snackbar,
   Table,
   TableBody,
@@ -43,20 +44,27 @@ interface DataItem {
   status: string;
   date: number;
 }
+interface MediaProps {
+  loading?: boolean;
+}
 
-const Meeting = () => {
+
+const Meeting = (props: MediaProps) => {
   const [meetings, setMeetings] = useState<DataItem[]>([]);
   const [search, setSearch] = useState("");
   const [page, setPage] = useState(1);
   const [totalCount, setTotalCount] = useState(0);
   const [limit] = useState(7);
-  const [isLoading, setIsLoading] = useState(false);
-
+   const [isLoading, setIsLoading] = useState(false);
+ 
   const router = useRouter();
 
   const isMobile = useMediaQuery("(max-width:600px)");
 
   const fetchMeetings = async () => {
+   
+      setIsLoading(true); // Show Skeleton if API is slow
+   
     try {
       const response = await axios.get(GET_MEETING_API, {
         params: {
@@ -65,52 +73,51 @@ const Meeting = () => {
           limit: isMobile ? 0 : limit,
         },
       });
-      // const { data } = response.data;
-      const data = response.data.data;
-      // console.log(data)
 
-      setMeetings(data.list);
-      setTotalCount(data.count);
-
-      if (!response) {
-        setIsLoading(true);
-      }
+     
+        // const { data } = response.data;
+        const data = response.data.data;
+        // console.log(data)
+  
+        setMeetings(data.list);
+        setTotalCount(data.count);
+        setIsLoading(false)
     } catch (error) {
       console.error("Error fetching meetings:", error);
+      setIsLoading(true)
     }
   };
 
   useEffect(() => {
     fetchMeetings();
+    
   }, [search, page, isMobile]);
 
   const totalPages = Math.ceil(totalCount / limit);
 
   const handleItemClick = (id: string) => {
-    router.push(`${ADMIN_MEETING_ROUTE.url}/${id}`);
+    router.push(`${ADMIN_MEETING_ROUTE.url}/${id}/details`);
   };
 
   const meetingCreate = () => {
     router.push(`${ADD_MEETING_ROUTE.url}`);
   };
 
+  const handleRefresh = () => {
+   fetchMeetings()
+  };
+
   return (
     <AdminLayout>
-      {isLoading && (
-        <Box>
-          <CircularProgress sx={{ position: "absolute" }} />
-        </Box>
-      )}
-
+     
+   
       <Box
-        mt={3}
-        ml={6}
-        mr={5}
+        
         sx={{
           display: {
             xl: "block",
             md: "block",
-            xs: "none",
+            xs: "none", 
             sm: "block",
             lg: "block",
           },
@@ -125,7 +132,7 @@ const Meeting = () => {
               >
                 <AddCircleOutlineIcon />
               </Button>
-              <Button sx={{ backgroundColor: "white", color: "black" }}>
+              <Button sx={{ backgroundColor: "white", color: "black" }} onClick={handleRefresh}>
                 <RefreshIcon />
               </Button>
             </Box>
@@ -156,9 +163,32 @@ const Meeting = () => {
                 <TableCell sx={{ fontSize: "23px" }}>Status</TableCell>
               </TableRow>
             </TableHead>
+            
+      
             <TableBody>
-              {meetings.map((item, index) => (
-                <TableRow
+            {isLoading
+                ? Array.from({ length: limit }).map((_, index) => (
+                    <TableRow key={index}>
+                      <TableCell>
+                        <Skeleton variant="text" width="100%" height={40} />
+                      </TableCell>
+                      <TableCell>
+                        <Skeleton variant="text" width="100%" height={40} />
+                      </TableCell>
+                      <TableCell>
+                        <Skeleton variant="text" width="100%" height={40} />
+                      </TableCell>
+                      <TableCell>
+                        <Skeleton variant="text" width="100%" height={40} />
+                      </TableCell>
+                      <TableCell>
+                        <Skeleton variant="text" width="100%" height={40} />
+                      </TableCell>
+                    </TableRow>
+                  ))
+                  :meetings.map((item, index) => (
+                <TableRow 
+                
                   key={item._id}
                   onClick={() => handleItemClick(item._id)}
                   sx={{
@@ -167,10 +197,13 @@ const Meeting = () => {
                   }}
                 >
                   <TableCell>{index + 1}</TableCell>
-                  <TableCell>
+                 
+                    <TableCell>
                     {item.title.charAt(0).toUpperCase() +
                       item.title.slice(1).toLowerCase()}
                   </TableCell>
+
+                
                   {/* <TableCell>{item.description.charAt(0).toUpperCase() + item.description.slice(1).toLowerCase()}</TableCell> */}
                   <TableCell>{moment(item.date).format("ll")}</TableCell>
                   <TableCell>
