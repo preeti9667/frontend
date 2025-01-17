@@ -42,7 +42,9 @@ interface DataItem {
   startTime: string;
   endTime: string;
   status: string;
-  date: number;
+  startDate: number;
+  endDate: number;
+  type: string;
 }
 interface MediaProps {
   loading?: boolean;
@@ -54,7 +56,7 @@ const Meeting = (props: MediaProps) => {
   const [search, setSearch] = useState("");
   const [page, setPage] = useState(1);
   const [totalCount, setTotalCount] = useState(0);
-  const [limit] = useState(7);
+  const [limit] = useState(8);
    const [isLoading, setIsLoading] = useState(false);
  
   const router = useRouter();
@@ -157,9 +159,10 @@ const Meeting = (props: MediaProps) => {
               <TableRow>
                 <TableCell sx={{ fontSize: "23px" }}>S.N.</TableCell>
                 <TableCell sx={{ fontSize: "23px" }}>Title</TableCell>
-                {/* <TableCell sx={{fontSize:"23px"}}>Description</TableCell> */}
-                <TableCell sx={{ fontSize: "23px" }}>Date</TableCell>
+                <TableCell sx={{ fontSize:'20px' }}>Start-Date</TableCell>
+                <TableCell sx={{ fontSize:"20px" }}>End-Date</TableCell>
                 <TableCell sx={{ fontSize: "23px" }}>Time</TableCell>
+                <TableCell sx={{ fontSize: "23px" }}>Type</TableCell>
                 <TableCell sx={{ fontSize: "23px" }}>Status</TableCell>
               </TableRow>
             </TableHead>
@@ -196,7 +199,7 @@ const Meeting = (props: MediaProps) => {
                     cursor: "pointer",
                   }}
                 >
-                  <TableCell>{index + 1}</TableCell>
+                  <TableCell>{page * limit - limit + index + 1}</TableCell>
                  
                     <TableCell>
                     {item.title.charAt(0).toUpperCase() +
@@ -205,10 +208,13 @@ const Meeting = (props: MediaProps) => {
 
                 
                   {/* <TableCell>{item.description.charAt(0).toUpperCase() + item.description.slice(1).toLowerCase()}</TableCell> */}
-                  <TableCell>{moment(item.date).format("ll")}</TableCell>
+                  <TableCell>{moment(item.startDate).format("ll")}</TableCell>
+                  <TableCell>{moment(item.endDate).format("ll")}</TableCell>
+
                   <TableCell>
                     {item.startTime}-{item.endTime}
                   </TableCell>
+                  <TableCell>{item.type}</TableCell>
                   <TableCell>{item.status}</TableCell>
                 </TableRow>
               ))}
@@ -268,7 +274,9 @@ const Meeting = (props: MediaProps) => {
                     alignItems: "center",
                   }}
                 >
-                  <Typography>{moment(item.date).format("ll")}</Typography>
+                  <Typography>{moment(item.startDate).format("ll")}</Typography>
+                  <Typography>{moment(item.endDate).format("ll")}</Typography>
+
                   <Typography>
                     {item.startTime}-{item.endTime}
                   </Typography>

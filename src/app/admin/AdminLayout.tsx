@@ -73,7 +73,7 @@ export default function AdminLayout({
         >
           <ListItem className={style.listItem}>
             <GroupsIcon />
-            <ListItemText primary="Meeting" />
+            <ListItemText primary="Meetings" />
           </ListItem>
         </ListItemButton>
         <Divider />
@@ -84,8 +84,8 @@ export default function AdminLayout({
   return (
     // <html lang="en">
       // <body>
-        <Box sx={{ display: "flex", background:"rgba(19, 18, 19, 0.02)", 
-        height:"100vh", width:'100vw'}}>
+        <Box sx={{ display: "flex",   
+         width:'100vw'}}>
           <CssBaseline />
           <AppBar
             position="fixed"
@@ -140,7 +140,7 @@ export default function AdminLayout({
             {drawerContent}
           </Drawer>
 
-          <Box component="main" sx={{ flexGrow: 1, p: 3, mt: 8 ,}}>
+          <Box component="main" sx={{ flexGrow: 1, p: 3, mt: 8 ,background:"rgba(19, 18, 19, 0.02)", height:"100vh"}}>
             {children}
           </Box>
         </Box>

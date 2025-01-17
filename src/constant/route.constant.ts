@@ -21,7 +21,7 @@ export const ADMIN_USER_ROUTE = {
 }
 
 export const ADD_MEETING_ROUTE = {
-    path: 'components/meeting-form',
+    path: 'add',
     get url() {
         return `${ADMIN_MEETING_ROUTE.url}/${this.path}`
     }
