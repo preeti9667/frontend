@@ -33,7 +33,10 @@ function Edit({
               const { meetingId } = await params;
               const response = await axios.get(`${GET_MEETING_API}/${meetingId}`);
               const fetchedMeeting = response.data.meeting;
-              setMeeting(fetchedMeeting);
+              setMeeting({ ...fetchedMeeting,
+                startDate: new Date(fetchedMeeting.startDate),
+                endDate: new Date(fetchedMeeting.endDate)
+            });
               console.log(fetchedMeeting)
             } catch (err) {
               // setError('Failed to load meeting data');
