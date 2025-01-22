@@ -2,26 +2,26 @@
 import React from "react";
 import { Box, Button, FormControl, FormControlLabel, FormLabel, Link,  Radio,  RadioGroup,  TextField, Typography, } from "@mui/material";
 import Image from "next/image";
-
 import { ErrorMessage, Field, Form, Formik } from "formik";
 import * as Yup from "yup";
 import style from "@/app/admin/admin.module.css";
 import { ADD_MEETING_API, ADMIN_MEETING_ROUTE } from "@/constant";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
-import axios from "axios";
 import AdminLayout from "@/app/admin/AdminLayout";
 
-interface DataItem {
-  title: string;
-  description: string;
-  startTime: string;
-  endTime: string;
-  startDate: string; 
-  endDate: string;
-  type: string;
-}
 interface meetingProps {
-  onSubmit: (values: DataItem) => void;
+  initialValues?: {
+    title: string;
+    description: string;
+    startTime: string;
+    endTime: string;
+    startDate: string;
+    endDate: string;
+    type: string;
+  };
+  mode: 'add' | 'edit';
+
+  onSubmit: (values: any) => void;
 
 }
 
@@ -54,17 +54,18 @@ const validationSchema = Yup.object({
 
 });
 
-const initialValues: DataItem = {
-  title: "",
-  description: "",
-  startTime: "",
-  endTime: "",
-  startDate: "",
- endDate:"",
- type:"",
-};
+const  MeetingForm :React.FC<meetingProps> =({ initialValues,onSubmit,mode})=> {
 
-const  MeetingForm :React.FC<meetingProps> =({onSubmit})=> {
+  const defaultValues = {
+    title: '',
+    description: '',
+    startTime: '',
+    endTime: '',
+    startDate: '',
+    endDate: '',
+    type: '',
+    ...initialValues,
+  };
 
   return (
     <AdminLayout>
@@ -85,23 +86,22 @@ const  MeetingForm :React.FC<meetingProps> =({onSubmit})=> {
         >
             
           <Box sx={{   width:{xs:"90%", xl:"100%"}}}>
-            <Typography variant="h5" textAlign={"center"} color="success">Create Meeting</Typography>
+            <Typography variant="h5" textAlign={"center"} color="success">
+            {mode === 'add' ? 'Add Meeting' : 'Edit Meeting'}
+            </Typography>
             <Formik
-              initialValues={initialValues}
+              initialValues={defaultValues}
               validationSchema={validationSchema}
-              onSubmit={(values)=>{
-                onSubmit(values);
-                // console.log(values)
-              }}
+              onSubmit={onSubmit}
             >
-              {({ handleBlur, handleChange, errors, touched, handleReset,dirty,isValid }) => (
+              {({ values, handleBlur, handleChange, errors, touched, handleReset,dirty,isValid }) => (
                 <Form>
                    <Box mt={1}>
-                   <label htmlFor="Title">Title:</label>
+                   <label htmlFor="title">Title:</label>
                   <Field
                     as={TextField}
                     name="title"
-                  
+                  value={values.title}
                     type="title"
                     fullWidth
                     onBlur={handleBlur}
@@ -115,6 +115,7 @@ const  MeetingForm :React.FC<meetingProps> =({onSubmit})=> {
                   <Field
                     as={TextField}
                     name="description"
+                  value={values.description}
                     
                     type="description"
                     fullWidth
@@ -132,6 +133,8 @@ const  MeetingForm :React.FC<meetingProps> =({onSubmit})=> {
                     as={TextField}
                     name="startTime"
                     type="time"
+                  value={values.startTime}
+
                     fullWidth
                     onBlur={handleBlur}
                     onChange={handleChange}
@@ -145,7 +148,8 @@ const  MeetingForm :React.FC<meetingProps> =({onSubmit})=> {
                    <Field
                     as={TextField}
                     name="endTime"
-                    // label="EndTime"
+                  value={values.endTime}
+                    
                     type="time"
                     fullWidth
                     onBlur={handleBlur}
@@ -162,11 +166,12 @@ const  MeetingForm :React.FC<meetingProps> =({onSubmit})=> {
                     as={TextField}
                     name="startDate"
                     type="date"
+                  value={values.startDate}
                     fullWidth
                     onBlur={handleBlur}
                     onChange={handleChange}
                     error={touched.startDate && Boolean(errors.startDate)}
-                    helperText={<ErrorMessage name="date" />}
+                    helperText={<ErrorMessage name="startDate" />}
                     margin="auto"
                     /></Box>
 
@@ -176,6 +181,7 @@ const  MeetingForm :React.FC<meetingProps> =({onSubmit})=> {
                     as={TextField}
                     name="endDate"
                     type="date"
+                  value={values.endDate}
                     fullWidth
                     onBlur={handleBlur}
                     onChange={handleChange}
@@ -189,6 +195,7 @@ const  MeetingForm :React.FC<meetingProps> =({onSubmit})=> {
         row
         onBlur={handleBlur}
        onChange={handleChange}
+        value={values.type}
         name="type" >
          <FormControlLabel value="DAILY" control={<Radio />} label="DAILY" />
         <FormControlLabel value="WEEKLY" control={<Radio />} label="WEEKLY" />
@@ -204,8 +211,9 @@ const  MeetingForm :React.FC<meetingProps> =({onSubmit})=> {
                   color="error">Clear</Button>
 
                   <Button type="submit" variant="contained" color="success" className={style.actionBtnForm1} 
-                     disabled={!(isValid && dirty)}
-                     >Submit</Button>
+                     disabled={!(isValid && dirty)}>
+                        {mode === 'add' ? 'Submit' : 'Update'}
+                     </Button>
                   </Box>
                 </Form>
               )}

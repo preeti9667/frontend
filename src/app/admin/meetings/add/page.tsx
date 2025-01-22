@@ -5,9 +5,6 @@ import axios from 'axios';
 import { ADD_MEETING_API, ADMIN_MEETING_ROUTE } from '@/constant';
 import {useRouter} from 'next/navigation';
 
-
-
-
 interface DataItem {
   title: string;
   description: string;
@@ -22,7 +19,7 @@ export default function AddMeeting() {
   const router = useRouter()
 
   const handleSubmit = async (value:DataItem)=>{
-    console.log(value)
+    // console.log(value)
     try {
       const response =  axios.post(`${ADD_MEETING_API}`,value)
       console.log(response)
@@ -37,7 +34,9 @@ export default function AddMeeting() {
   
   return (
     <>
-    <MeetingForm onSubmit={handleSubmit}/>
+    <MeetingForm onSubmit={handleSubmit} 
+      mode='add'
+    />
     </>
   )
 }

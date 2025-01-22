@@ -29,7 +29,10 @@ interface DataItem {
   startTime: string;
   endTime: string;
   status: string;
-  date: number;
+  startDate: string;
+  endDate: string;
+  type:string;
+
 }
 
 export default function page({
@@ -76,6 +79,12 @@ export default function page({
     fetchMeetings();
   }, []);
 
+  const handleUpDate =(_id: string | undefined) =>{
+    // console.log(id)
+   router.push(`${ADMIN_MEETING_ROUTE.url}/${_id}/edit`);
+
+  }
+
   return (
     <AdminLayout>
       <Paper
@@ -113,7 +122,7 @@ export default function page({
             {meeting?.startTime}-{meeting?.endTime}
           </Typography>
 
-          <Typography>{moment(meeting?.date).format("ll")}</Typography>
+          <Typography>{moment(meeting?.startDate).format("ll")}</Typography>
         </Box>
         <Box>
           <Typography>{meeting?.description}</Typography>
@@ -126,14 +135,21 @@ export default function page({
         </Box>
         <Box className={style.action}>
           <Button
-            className={style.actionBtn}
+            // className={style.actionBtn}
+            sx={{textTransform:'none', width:"200px", fontSize:"20px"}}
             variant="contained"
             color="success"
+            onClick={
+              () =>
+              handleUpDate
+              (meeting?._id)
+            }
           >
             Update
           </Button>
           <Button
-            className={style.actionBtn}
+            sx={{textTransform:'none', width:"200px", fontSize:"20px"}}
+            
             variant="contained"
             color="error"
             onClick={handleDelete}

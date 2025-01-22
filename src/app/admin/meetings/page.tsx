@@ -46,12 +46,12 @@ interface DataItem {
   endDate: number;
   type: string;
 }
-interface MediaProps {
-  loading?: boolean;
-}
+// interface MediaProps {
+//   loading?: boolean;
+// }
 
 
-const Meeting = (props: MediaProps) => {
+const Meeting = () => {
   const [meetings, setMeetings] = useState<DataItem[]>([]);
   const [search, setSearch] = useState("");
   const [page, setPage] = useState(1);
@@ -172,6 +172,12 @@ const Meeting = (props: MediaProps) => {
             {isLoading
                 ? Array.from({ length: limit }).map((_, index) => (
                     <TableRow key={index}>
+                      <TableCell>
+                        <Skeleton variant="text" width="100%" height={40} />
+                      </TableCell>
+                      <TableCell>
+                        <Skeleton variant="text" width="100%" height={40} />
+                      </TableCell>
                       <TableCell>
                         <Skeleton variant="text" width="100%" height={40} />
                       </TableCell>
