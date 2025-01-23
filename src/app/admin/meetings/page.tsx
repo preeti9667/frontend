@@ -219,9 +219,6 @@ const Meeting = () => {
                       <TableCell onClick={() => handleItemClick(item._id)}>{item.type}</TableCell>
                       <TableCell onClick={handleStatus} sx={{color:"green"}}>{item.status}</TableCell>
                     </TableRow>
-                 
-
-                  
                   ))}
             </TableBody>
           </Table>
