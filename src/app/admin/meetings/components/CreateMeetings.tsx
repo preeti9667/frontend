@@ -8,6 +8,7 @@ import style from "@/app/admin/admin.module.css";
 import { ADD_MEETING_API, ADMIN_MEETING_ROUTE } from "@/constant";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import AdminLayout from "@/app/admin/AdminLayout";
+import moment from "moment";
 
 interface meetingProps {
   initialValues?: {
@@ -41,13 +42,16 @@ const validationSchema = Yup.object({
     startDate: Yup.date()
     .test("is-valid-date", "Invalid date", (value) => {
       const today = new Date();
-      return value && value >= today; // Custom validation
+      return value && value > today; // Custom validation
     })
     .required("Date is required"),
+
     endDate: Yup.date()
     .test("is-after-start-date", "Invalid date", function(value){
-      const {date} = this.parent
-      return value && date? value >= date: true ; 
+      const {startDate} = this.parent
+
+      return value && startDate ? value === startDate || value >= startDate: true;
+
     })
     .required("Date is required"),
   type: Yup.string().required("type is required"),
@@ -69,23 +73,21 @@ const  MeetingForm :React.FC<meetingProps> =({ initialValues,onSubmit,mode})=> {
 
   return (
     <AdminLayout>
-      <Box sx={{ background: "white"}}>
+      <Box sx={{ background:{xs:"none",md:"white",lg:"white",xl:"white"}}}>
       <Box >
           <Link href={`${ADMIN_MEETING_ROUTE.url}`} className={style.back}>
             <ArrowBackIcon fontSize="small" />
             Back
           </Link>
           </Box>
-          <Box sx={{ display: "grid",gridTemplateColumns:"1fr 1fr", border:'1px solid black'}}>
+          <Box sx={{ display: "grid",gridTemplateColumns:{xs:"1fr",xl:"1fr 1fr",md:"1fr 1fr",lg:"1fr 1fr"}, 
+          // border:'1px solid black'
+          }}>
             <Box>
-
-            
-
         <Box 
-        sx={{padding:"1px 20px"}}
         >
             
-          <Box sx={{   width:{xs:"90%", xl:"100%"}}}>
+          <Box sx={{ width:{ xl:"100%"},padding:{xs:"0",md:"20px",lg:"20px",xl:"20px"}}}>
             <Typography variant="h5" textAlign={"center"} color="success">
             {mode === 'add' ? 'Add Meeting' : 'Edit Meeting'}
             </Typography>
@@ -133,8 +135,7 @@ const  MeetingForm :React.FC<meetingProps> =({ initialValues,onSubmit,mode})=> {
                     as={TextField}
                     name="startTime"
                     type="time"
-                  value={values.startTime}
-
+                  value={moment(values.startTime,"hh:mm A").format("HH:mm")}
                     fullWidth
                     onBlur={handleBlur}
                     onChange={handleChange}
@@ -148,8 +149,7 @@ const  MeetingForm :React.FC<meetingProps> =({ initialValues,onSubmit,mode})=> {
                    <Field
                     as={TextField}
                     name="endTime"
-                  value={values.endTime}
-                    
+                  value={moment(values.endTime, "hh:mm A").format("HH:mm")}
                     type="time"
                     fullWidth
                     onBlur={handleBlur}
@@ -166,7 +166,7 @@ const  MeetingForm :React.FC<meetingProps> =({ initialValues,onSubmit,mode})=> {
                     as={TextField}
                     name="startDate"
                     type="date"
-                  value={values.startDate}
+                  value={moment(values.startDate).format('YYYY-MM-DD')}
                     fullWidth
                     onBlur={handleBlur}
                     onChange={handleChange}
@@ -181,7 +181,8 @@ const  MeetingForm :React.FC<meetingProps> =({ initialValues,onSubmit,mode})=> {
                     as={TextField}
                     name="endDate"
                     type="date"
-                  value={values.endDate}
+                  // value={values.endDate}
+                  value={moment(values.endDate).format('YYYY-MM-DD')}
                     fullWidth
                     onBlur={handleBlur}
                     onChange={handleChange}

@@ -87,11 +87,10 @@ export default function page({
 
   return (
     <AdminLayout>
-      <Paper
-        elevation={0}
+      <Box
         sx={{
-          // margin: "auto",
-          padding: "30px 40px",
+          background:{xs:"none",md:"white",lg:"white",xl:"white"},
+          padding:{xs:"0",md:"20px",lg:"20px",xl:"20px"}
           }} >
 
         <Box>
@@ -101,16 +100,13 @@ export default function page({
           </Link>
         </Box>
 
-        <Box sx={{border:"1px solid black",
+        <Box sx={{
           display:"grid",
-          gridTemplateColumns:"1fr 1fr ",
-        
+          gridTemplateColumns:{xs:"1fr",xl:"1fr 1fr",md:"1fr 1fr",lg:"1fr 1fr"},
 
         }}>
           <Box>
-        <Avatar className={style.avatar}>
-          <SpaIcon color="success" sx={{ width: "100px", height: "100px" }} />
-        </Avatar>
+       
         <Box>
           <Typography textAlign={"center"} color="success">
             {meeting?.title.toLocaleUpperCase()}
@@ -135,25 +131,18 @@ export default function page({
         </Box>
         <Box className={style.action}>
           <Button
-            // className={style.actionBtn}
-            sx={{textTransform:'none', width:"200px", fontSize:"20px"}}
+            sx={{textTransform:'none',fontSize:"20px",width:'150px'}}
             variant="contained"
             color="success"
-            onClick={
-              () =>
-              handleUpDate
-              (meeting?._id)
-            }
-          >
+            onClick={  () =>handleUpDate(meeting?._id)
+            }>
             Update
           </Button>
           <Button
-            sx={{textTransform:'none', width:"200px", fontSize:"20px"}}
-            
+            sx={{textTransform:'none',fontSize:"20px",width:'150px'}}
             variant="contained"
             color="error"
-            onClick={handleDelete}
-          >
+            onClick={handleDelete}>
             Delete
           </Button>
         </Box></Box>
@@ -176,7 +165,7 @@ export default function page({
             </Button>
           </DialogActions>
         </Dialog>
-      </Paper>
+      </Box>
     </AdminLayout>
   );
 }

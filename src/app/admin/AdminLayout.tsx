@@ -82,9 +82,7 @@ export default function AdminLayout({
   );
 
   return (
-    // <html lang="en">
-      // <body>
-        <Box sx={{ display: "flex",   
+        <Box sx={{ display: "flex",
          width:'100vw'}}>
           <CssBaseline />
           <AppBar
@@ -140,11 +138,11 @@ export default function AdminLayout({
             {drawerContent}
           </Drawer>
 
-          <Box component="main" sx={{ flexGrow: 1, p: 3, mt: 8 ,background:"rgba(19, 18, 19, 0.02)", height:"100vh"}}>
+          <Box component="main" sx={{ flexGrow: 1, p: 3, mt: 8 
+          , }}>
             {children}
           </Box>
         </Box>
-      //  </body>
-  //  </html>
+    
   );
 }

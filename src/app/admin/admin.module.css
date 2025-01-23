@@ -38,11 +38,7 @@ margin-bottom: 20px;
 height: 100px;
 margin: auto;
 }
-/* .actionBtn{
-    width: 200px;
-    font-size: 20px;
-    text-transform: none;
-} */
+
 .actionBtnForm{
     display: flex;
     align-items: center;
