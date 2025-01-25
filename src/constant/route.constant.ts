@@ -4,7 +4,18 @@ export const ADMIN_ROUTE = {
         return `/${this.path}`
     }
 }
-
+export const LOGIN_ROUTE = {
+    path: 'login',
+    get url() {
+        return `/${this.path}`
+    }
+}
+export const SIGNUP_ROUTE = {
+    path: 'signup',
+    get url() {
+        return `/${this.path}`
+    }
+}
 
 export const ADMIN_MEETING_ROUTE = {
     path: 'meetings',

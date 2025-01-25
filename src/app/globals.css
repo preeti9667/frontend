@@ -13,4 +13,29 @@ body{
     --text1-color: #00b3ad6a;
 
   }
-  
+  .fullImage::after {
+    background-image: url('https://static.licdn.com/aero-v1/sc/h/4ezbw852t2wrgf27zl1o1qtu7');
+    content: '';
+    width: 100vw;
+    height: 100vh;
+    position: absolute;
+    z-index: -2;
+    top: 0;
+
+}
+
+.fullImage {
+    position: relative;
+    /* display: inline-block; */
+
+}
+.Button{
+    border: 1px solid rgb(209, 202, 202);
+    text-decoration: none;
+    border-radius: 10px;
+    padding: 8px 15px;
+    color: black;
+}
+.Button:hover{
+background: rgba(0, 0, 0, 0.066);
+}

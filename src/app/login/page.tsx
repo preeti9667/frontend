@@ -18,6 +18,7 @@ import { LOGIN_API, ADMIN_ROUTE } from "@/constant";
 import style from "./login.module.css"
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
+import axios from "axios";
 interface FormValue {
   email: string;
   password: string;
@@ -41,17 +42,19 @@ const LogIn = () => {
 
   const router = useRouter();
   const handleSubmit = async (value: FormValue) => {
-    try {
-      const response = await fetch(LOGIN_API,  {
-      
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(value),
-      });
+    // try {
+      // const response = await fetch(LOGIN_API,  {
+      //   method: "POST",
+      //   headers: {
+      //     "Content-Type": "application/json",
+      //   },
+      //   body: JSON.stringify(value),
+      // });
 
-      if (response.ok) {
+       try {
+            const response = await axios.post(`${LOGIN_API}`,value)
+                console.log(response)
+      if (response.status === 200) {
         router.push(`${ADMIN_ROUTE.url}`);
       } else {
         setMessages("Invalid email and password");
@@ -63,46 +66,50 @@ const LogIn = () => {
 
   return (
     <Box
-      className="page"
-      display="flex"
-      flexDirection={{ xs: "column", md: "row" }}
+ 
+    sx={{webkitAlignItems: "none"}}
+      display={"grid"}
+      gridTemplateColumns={{ xs: "1fr", md: "1fr", lg: "1fr 1fr", xl: "1fr 1fr", sm: "1fr" }}
       alignItems={"center"}
-      
+     margin={"auto"}
+     width={"100%"}
+     height={"100vh"}
     >
       {/* Image Section */}
       <Box
         sx={{
-          display: { xs: "none", lg: "block" }, // Hidden on small screens, visible on large screens
-          flex: 1,
-          p: 2,
-          height:"96vh",
-          background:"#FEFEFE"
-        }}
-      >
+          display: { xs: "none", lg: "block", xl: "block", md: "none", sm: "none" }, // Hidden on small screens, visible on large screens
+         backgroundColor:"white",
+          textAlign:"center",
+          height:"100vh" }}>
+
         <Image
           src="https://img.freepik.com/premium-vector/three-people-working-laptops-company-employees-talking-about-boss-tasks-sitting-with-laptop-simple-minimalist-flat-vector-illustration_538213-119540.jpg?ga=GA1.1.2107727690.1726806487"
           alt="Login Illustration"
-          height={800}
-          width={700}
-        />
-      </Box>
+          height={600}
+          width={600}
+            />
+          </Box>
 
       {/* Form Section */}
       <Box
         sx={{
-          // margin: {xs:"auto", sm:"auto", lg:"auto"},
-          width: { xs: "90%", sm: "430px", lg: "80%" },
+          width: { xs: "90%", sm: "80%", lg: "80%" },
           p: { xs: 1, lg: 3 },
-          pr: { xs: 2, lg:7 }, // Adds padding to the right
+          pr: { xs: 2, lg:7 }, 
           flex: 1,
-         paddingTop:{xs:"50%", sm:"40%", lg:'block', xl:"block"},
-        
-        }}>
+          margin:"auto"
+    
+      }}>
+          <Box sx={{
+            textAlign:"center",
+          margin:"auto",
+          }}>
         <Typography
           fontSize={{ xs: "20px", sm: "30px" }}
           textAlign="center"
-          mb={2}
-        >
+          mb={2}>
+
           Log In to Your Account
         </Typography>
         <Formik
@@ -111,7 +118,7 @@ const LogIn = () => {
           onSubmit={handleSubmit}
         >
           {({ handleBlur, handleChange, touched, errors }) => (
-            <Form className={style.form}>
+            <Form >
               <Field
                 as={TextField}
                 name="email"
@@ -170,7 +177,7 @@ const LogIn = () => {
               </Button>
             </Form>
           )}
-        </Formik>
+        </Formik></Box>
       </Box>
     </Box>
   );

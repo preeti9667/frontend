@@ -58,13 +58,13 @@ export default function AdminLayout({
           </ListItem>
         </ListItemButton>{" "}
         <Divider />
-        <ListItemButton href="/admin/profile">
+        {/* <ListItemButton href="/admin/profile">
           <ListItem className={style.listItem}>
             <AccountCircleOutlinedIcon />
             <ListItemText primary="Profile" />
           </ListItem>
         </ListItemButton>
-        <Divider />
+        <Divider /> */}
         <ListItemButton
           href={`${ADMIN_MEETING_ROUTE.url}`}  disableRipple
           sx={{

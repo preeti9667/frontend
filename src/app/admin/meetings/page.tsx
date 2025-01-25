@@ -238,7 +238,7 @@ const Meeting = () => {
                 onChange={(e, value) => setPage(value)}
                 color="primary"
               />
-              Total={totalCount}
+              Total-Meetings = {totalCount}
             </Box>
           )}
         </TableContainer>

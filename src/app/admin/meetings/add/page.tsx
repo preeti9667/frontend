@@ -22,7 +22,7 @@ export default function AddMeeting() {
     // console.log(value)
     try {
       const response =  axios.post(`${ADD_MEETING_API}`,value)
-      console.log(response)
+      // console.log(response)
       if((await response).status === 200){
         router.push(`${ADMIN_MEETING_ROUTE.url}`);
       }
