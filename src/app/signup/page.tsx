@@ -7,7 +7,7 @@ import VisibilityIcon from '@mui/icons-material/Visibility';
 import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
 import axios from "axios";
 import { useRouter } from "next/navigation";
-import {  ADMIN_MEETING_ROUTE, SIGNUP_API } from "@/constant";
+import {  ADMIN_MEETING_ROUTE, ADMIN_ROUTE, SIGNUP_API } from "@/constant";
 interface formValues {
   firstName: string;
   lastName: string;
@@ -32,9 +32,9 @@ export default function Signup() {
     // console.log(values)
      try {
           const response = await axios.post(`${SIGNUP_API}`,values)
-          console.log(response)
+          // console.log(response)
           if (response.status === 200) {
-            router.push(`${ADMIN_MEETING_ROUTE.url}`);
+            router.push(`${ADMIN_ROUTE.url}`);
           }
         } catch (error) {
           console.error("Signup error", error);

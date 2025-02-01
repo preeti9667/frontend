@@ -104,9 +104,9 @@ const Meeting = () => {
   const handleRefresh = () => {
     fetchMeetings();
   };
-  const handleStatus = ()=>{
-    console.log("clicked")
-  }
+  const handleStatus = () => {
+    console.log("clicked");
+  };
 
   return (
     <AdminLayout>
@@ -196,13 +196,14 @@ const Meeting = () => {
                 : meetings.map((item, index) => (
                     <TableRow
                       key={item._id}
-                      
                       sx={{
                         "&:last-child td, &:last-child th": { border: 0 },
                         cursor: "pointer",
                       }}
                     >
-                      <TableCell onClick={() => handleItemClick(item._id)}>{page * limit - limit + index + 1}</TableCell>
+                      <TableCell onClick={() => handleItemClick(item._id)}>
+                        {page * limit - limit + index + 1}
+                      </TableCell>
 
                       <TableCell onClick={() => handleItemClick(item._id)}>
                         {item.title.charAt(0).toUpperCase() +
@@ -211,13 +212,19 @@ const Meeting = () => {
                       <TableCell onClick={() => handleItemClick(item._id)}>
                         {moment(item.startDate).format("ll")}
                       </TableCell>
-                      <TableCell onClick={() => handleItemClick(item._id)}>{moment(item.endDate).format("ll")}</TableCell>
+                      <TableCell onClick={() => handleItemClick(item._id)}>
+                        {moment(item.endDate).format("ll")}
+                      </TableCell>
 
                       <TableCell onClick={() => handleItemClick(item._id)}>
                         {item.startTime}-{item.endTime}
                       </TableCell>
-                      <TableCell onClick={() => handleItemClick(item._id)}>{item.type}</TableCell>
-                      <TableCell onClick={handleStatus} sx={{color:"green"}}>{item.status}</TableCell>
+                      <TableCell onClick={() => handleItemClick(item._id)}>
+                        {item.type}
+                      </TableCell>
+                      <TableCell onClick={handleStatus} sx={{ color: "green" }}>
+                        {item.status}
+                      </TableCell>
                     </TableRow>
                   ))}
             </TableBody>
@@ -288,7 +295,8 @@ const Meeting = () => {
         </Box>
         <Box
           sx={{ display: "flex", flexDirection: "column", gap: "20px" }}
-          mt={3} >
+          mt={3}
+        >
           {isLoading
             ? Array.from({ length: limit }).map((_, index) => (
                 <Box key={index}>
@@ -296,29 +304,54 @@ const Meeting = () => {
                 </Box>
               ))
             : meetings.map((item, index) => (
-                <Box key={index} >
+                <Box key={index}>
                   <Card
                     sx={{
                       borderRadius: "20px 15px",
                       background: "var(--text1-color)",
                     }}
                   >
-                    <CardContent onClick={() => handleItemClick(item._id)}
-                      sx={{display:"flex",gap:"15px",flexDirection:"column", }}>
+                    <CardContent
+                      onClick={() => handleItemClick(item._id)}
+                      sx={{
+                        display: "flex",
+                        gap: "15px",
+                        flexDirection: "column",
+                      }}
+                    >
                       <Typography variant="h5" textAlign={"center"}>
                         {item.title.charAt(0).toUpperCase() +
                           item.title.slice(1).toLowerCase()}
                       </Typography>
-                      <Typography> Start-Date:  {moment(item.startDate).format("ll")}</Typography>
-                      <Typography> End-Date: {moment(item.endDate).format("ll")} </Typography>
+                      <Typography>
+                        {" "}
+                        Start-Date: {moment(item.startDate).format("ll")}
+                      </Typography>
+                      <Typography>
+                        {" "}
+                        End-Date: {moment(item.endDate).format("ll")}{" "}
+                      </Typography>
 
-                      <Typography> Time: {item.startTime}-{item.endTime}</Typography> 
-                      <Typography variant="h6"> Description: {item.description}</Typography>
+                      <Typography>
+                        {" "}
+                        Time: {item.startTime}-{item.endTime}
+                      </Typography>
+                      <Typography variant="h6">
+                        {" "}
+                        Description: {item.description}
+                      </Typography>
                     </CardContent>
-                      <Button onClick={handleStatus} color="success"  
-                       sx={{fontSize:"20px",marginLeft:'10px', marginBottom:"15px"}}>
-                        {item.status}
-                      </Button>
+                    <Button
+                      onClick={handleStatus}
+                      color="success"
+                      sx={{
+                        fontSize: "20px",
+                        marginLeft: "10px",
+                        marginBottom: "15px",
+                      }}
+                    >
+                      {item.status}
+                    </Button>
                   </Card>
                 </Box>
               ))}

@@ -21,10 +21,10 @@ import {
 import MenuIcon from "@mui/icons-material/Menu";
 import Image from "next/image";
 import PeopleAltIcon from "@mui/icons-material/PeopleAlt";
-import AccountCircleOutlinedIcon from "@mui/icons-material/AccountCircleOutlined";
+import PersonIcon from '@mui/icons-material/Person';
 import GroupsIcon from "@mui/icons-material/Groups";
 import { usePathname } from "next/navigation";
-import { ADMIN_MEETING_ROUTE, ADMIN_USER_ROUTE } from "@/constant/route.constant";
+import { ADMIN_MEETING_ROUTE, ADMIN_ROUTE, ADMIN_USER_ROUTE } from "@/constant/route.constant";
 export default function AdminLayout({
   children,
 }: Readonly<{
@@ -46,6 +46,17 @@ export default function AdminLayout({
       marginTop={7}
     >
       <List sx={{ display: "flex", flexDirection: "column" }}>
+        <Divider/>
+        <ListItemButton
+          href={`${ADMIN_ROUTE.url}`}
+          disableRipple
+         sx={{ color: pathname === `${ADMIN_ROUTE.url}` ? "var(--text-color)" : ""}}
+        >
+          <ListItem className={style.listItem}>
+            <PersonIcon />
+            <ListItemText primary="Admin" />
+          </ListItem>
+        </ListItemButton>
         <Divider />
         <ListItemButton
           href={`${ADMIN_USER_ROUTE.url}`}
@@ -56,15 +67,9 @@ export default function AdminLayout({
             <PeopleAltIcon />
             <ListItemText primary="users" />
           </ListItem>
-        </ListItemButton>{" "}
-        <Divider />
-        {/* <ListItemButton href="/admin/profile">
-          <ListItem className={style.listItem}>
-            <AccountCircleOutlinedIcon />
-            <ListItemText primary="Profile" />
-          </ListItem>
         </ListItemButton>
-        <Divider /> */}
+        <Divider />
+       
         <ListItemButton
           href={`${ADMIN_MEETING_ROUTE.url}`}  disableRipple
           sx={{
@@ -138,8 +143,7 @@ export default function AdminLayout({
             {drawerContent}
           </Drawer>
 
-          <Box component="main" sx={{ flexGrow: 1, p: 3, mt: 8 
-          , }}>
+          <Box component="main" sx={{ flexGrow: 1, p: 3,mt:8}}>
             {children}
           </Box>
         </Box>

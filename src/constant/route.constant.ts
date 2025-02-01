@@ -30,6 +30,12 @@ export const ADMIN_USER_ROUTE = {
         return `${ADMIN_ROUTE.url}/${this.path}`
     }
 }
+export const ADD_USER_ROUTE = {
+    path: 'add',
+    get url() {
+        return `${ADMIN_USER_ROUTE.url}/${this.path}`
+    }
+}
 
 export const ADD_MEETING_ROUTE = {
     path: 'add',
