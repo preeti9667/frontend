@@ -8,6 +8,7 @@ import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
 import axios from "axios";
 import { useRouter } from "next/navigation";
 import {  ADMIN_MEETING_ROUTE, ADMIN_ROUTE, SIGNUP_API } from "@/constant";
+import { setCookie } from "nookies";
 interface formValues {
   firstName: string;
   lastName: string;
@@ -33,6 +34,12 @@ export default function Signup() {
      try {
           const response = await axios.post(`${SIGNUP_API}`,values)
           // console.log(response)
+          const {token} = response.data.result
+              setCookie(null, ('Token'), String(token), {
+                expires: 30
+              })
+        
+
           if (response.status === 200) {
             router.push(`${ADMIN_ROUTE.url}`);
           }

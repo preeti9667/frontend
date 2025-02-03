@@ -1,8 +1,21 @@
-
+'use client'
+import { useEffect } from 'react';
 import { Avatar, Box } from '@mui/material';
 import * as React from 'react';
 import AdminLayout from './AdminLayout';
+import axios from 'axios';
+import { ADMIN_GET_API } from '@/constant';
 export default function Admin() {
+  // const fetchAdmin = async ()=>{
+  //   const res = await axios.get(`${ADMIN_GET_API}`)
+  //   console.log(res)
+  // }
+  
+useEffect(()=>{
+    // fetchAdmin()
+},[])
+
+
   return (
     <>
    <AdminLayout>

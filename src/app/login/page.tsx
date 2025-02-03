@@ -15,7 +15,7 @@ import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { LOGIN_API,ADMIN_MEETING_ROUTE, ADMIN_ROUTE } from "@/constant";
 import Login from "./components/Login";
-
+import { setCookie } from "nookies";
 import axios from "axios";
 interface FormValue {
   email: string;
@@ -33,7 +33,11 @@ const LogIn = () => {
     // console.log(value)
        try {
             const response = await axios.post(`${LOGIN_API}`,value)
-                console.log(response)
+                // console.log(response)
+              const {token} = response.data.result
+              setCookie(null, ('Token'), String(token), {
+                              expires: 30 })
+
       if (response.status === 200) {
         router.push(`${ADMIN_ROUTE.url}`);
       } 

@@ -6,6 +6,7 @@ import Login from '../../../login/components/Login'
 import axios from 'axios';
 import { ADMIN_LOGIN_API, SIGNUP_ROUTE } from '@/constant';
 import { useRouter } from 'next/navigation';
+import { setCookie } from 'cookies-next'
 
 interface FormValue {
   email: string;
@@ -18,7 +19,10 @@ const handleSubmit = async (value: FormValue) => {
     // console.log(value)
        try {
             const response = await axios.post(`${ADMIN_LOGIN_API}`,value)
-                console.log(response)
+                // console.log(response)
+             const {token} = response.data.result
+               setCookie("tokenAdmin", token, { maxAge: 60 * 60 * 24,});
+
       if (response.status === 200) {
         router.push(`${ SIGNUP_ROUTE.url}`);
       }
