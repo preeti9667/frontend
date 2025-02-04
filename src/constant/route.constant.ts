@@ -1,7 +1,7 @@
 
 
 export const HOME_ROUTE = {
-    path: '/',
+    path: 'home',
     get url() {
         return `/${this.path}`
     }
@@ -13,14 +13,20 @@ export const ADMIN_ROUTE = {
         return `/${this.path}`
     }
 }
-export const LOGIN_ROUTE = {
-    path: '/login',
+export const ADMIN_DASHBOARD_ROUTE = {
+    path: 'dashboard',
     get url() {
-        return `/${this.path}`
+    return `${ADMIN_ROUTE.url}/${this.path}`
+    }
+}
+export const LOGIN_ROUTE = {
+    path: 'login',
+    get url() {
+        return `${ADMIN_ROUTE.url}/${this.path}`
     }
 }
 export const SIGNUP_ROUTE = {
-    path: '/signup',
+    path: 'signup',
     get url() {
         return `/${this.path}`
     }

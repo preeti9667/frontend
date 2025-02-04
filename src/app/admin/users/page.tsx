@@ -12,6 +12,7 @@ import { Box, Button, Card, CardContent, Divider, InputBase, Pagination,
    import { ADD_USER_ROUTE, ADMIN_USER_ROUTE } from "@/constant";
    import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
    import RefreshIcon from "@mui/icons-material/Refresh";
+import { getCookie } from 'cookies-next';
    interface DataItem {
      _id: string;
      firstName: string,
@@ -44,11 +45,14 @@ import { Box, Button, Card, CardContent, Divider, InputBase, Pagination,
              page,
              limit: isMobile ? 0 : limit,
            },
+            headers: {
+                     Authorization: `Bearer ${getCookie("Token")}`,
+                   },
          });
    
          // const { data } = response.data;
          const data = response.data.data;
-        //  console.log(data)
+         console.log(data)
    
          setUsers(data.list);
          setTotalCount(data.count);

@@ -1,21 +1,13 @@
 "use client"
 
-import {
-  Box,
-  Button,
-  IconButton,
-  InputAdornment,
-  TextField,
-  Typography,
-  useMediaQuery,
-} from "@mui/material";
+import { Box,} from "@mui/material";
 import React, {  useState } from "react";
 import * as Yup from "yup";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-import { LOGIN_API,ADMIN_MEETING_ROUTE, ADMIN_ROUTE } from "@/constant";
+import { ADMIN_DASHBOARD_ROUTE, ADMIN_LOGIN_API,  } from "@/constant";
 import Login from "./components/Login";
-import { setCookie } from "nookies";
+import { setCookie } from 'cookies-next'
 import axios from "axios";
 interface FormValue {
   email: string;
@@ -32,14 +24,15 @@ const LogIn = () => {
   const handleSubmit = async (value: FormValue) => {
     // console.log(value)
        try {
-            const response = await axios.post(`${LOGIN_API}`,value)
+            const response = await axios.post(`${ADMIN_LOGIN_API}`,value)
                 // console.log(response)
               const {token} = response.data.result
-              setCookie(null, ('Token'), String(token), {
-                              expires: 30 })
+              setCookie("Token", token,{
+                              maxAge: 60 * 60 
+                             });
 
       if (response.status === 200) {
-        router.push(`${ADMIN_ROUTE.url}`);
+        router.push(`${ADMIN_DASHBOARD_ROUTE.url}`);
       } 
     } catch (error) {
       console.error("Login error:", error);

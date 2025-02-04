@@ -26,7 +26,7 @@ import {
   Typography,
   useMediaQuery,
 } from "@mui/material";
-import axios from "axios";
+import axios, { AxiosError } from "axios";
 import { GET_MEETING_API } from "@/constant/api.constant";
 import CircularProgress from "@mui/material/CircularProgress";
 import style from "../admin.module.css";
@@ -35,6 +35,7 @@ import { useRouter } from "next/navigation";
 import { ADD_MEETING_ROUTE, ADMIN_MEETING_ROUTE } from "@/constant";
 import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
 import RefreshIcon from "@mui/icons-material/Refresh";
+import { getCookie } from "cookies-next";
 interface DataItem {
   _id: string;
   title: string;
@@ -72,6 +73,9 @@ const Meeting = () => {
           page,
           limit: isMobile ? 0 : limit,
         },
+        headers: {
+          Authorization: `Bearer ${getCookie("Token")}`,
+        },
       });
 
       // const { data } = response.data;
@@ -81,8 +85,8 @@ const Meeting = () => {
       setMeetings(data.list);
       setTotalCount(data.count);
       setIsLoading(false);
-    } catch (error) {
-      console.error("Error fetching meetings:", error);
+    } catch (error:any) {
+      console.error("Error fetching meetings:", error.response.data.message);
       setIsLoading(true);
     }
   };
