@@ -23,8 +23,11 @@ import Image from "next/image";
 import PeopleAltIcon from "@mui/icons-material/PeopleAlt";
 import PersonIcon from '@mui/icons-material/Person';
 import GroupsIcon from "@mui/icons-material/Groups";
-import { usePathname } from "next/navigation";
-import { ADMIN_MEETING_ROUTE,ADMIN_DASHBOARD_ROUTE, ADMIN_USER_ROUTE } from "@/constant/route.constant";
+import { usePathname,useRouter } from "next/navigation";
+import { ADMIN_MEETING_ROUTE,ADMIN_DASHBOARD_ROUTE, ADMIN_USER_ROUTE, LOGIN_ROUTE } from "@/constant/route.constant";
+import MyDialog from "./components/Dialog";
+import { deleteCookie } from "cookies-next"; //remove from "cookies-next";
+
 export default function AdminLayout({
   children,
 }: Readonly<{
@@ -32,11 +35,22 @@ export default function AdminLayout({
 }>) {
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
 
-  const pathname = usePathname();
+     const [logoutOpen, setLogoutOpen] = useState(false);
 
+  const pathname = usePathname();
+  const router = useRouter();
   const toggleDrawer = (open: boolean) => () => {
     setIsDrawerOpen(open);
   };
+
+  const handleDelete = ()=>{
+    // console.log("delete")
+    deleteCookie("Token")
+    router.push(`${LOGIN_ROUTE.url}`)
+      
+  }
+
+  
 
   const drawerContent = (
     <Box
@@ -82,8 +96,21 @@ export default function AdminLayout({
           </ListItem>
         </ListItemButton>
         <Divider />
+
+        <ListItemButton onClick={() => setLogoutOpen(true)}
+          disableRipple>
+          <ListItem className={style.listItem}>
+          <PersonIcon />
+            <ListItemText primary="Logout" />
+          </ListItem>
+        </ListItemButton>
+        <Divider/>
       </List>
+
+      <MyDialog handleDelete={handleDelete} open={logoutOpen}  onClose={()=>setLogoutOpen(false)}/>
+
     </Box>
+    
   );
 
   return (
@@ -146,6 +173,7 @@ export default function AdminLayout({
           <Box component="main" sx={{ flexGrow: 1, p: 3,mt:8}}>
             {children}
           </Box>
+         
         </Box>
     
   );

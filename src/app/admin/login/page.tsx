@@ -9,6 +9,8 @@ import { ADMIN_DASHBOARD_ROUTE, ADMIN_LOGIN_API,  } from "@/constant";
 import Login from "./components/Login";
 import { setCookie } from 'cookies-next'
 import axios from "axios";
+import { post } from "@/util/http.util";
+import { toast } from "react-toastify";
 interface FormValue {
   email: string;
   password: string;
@@ -16,19 +18,20 @@ interface FormValue {
 
 
 const LogIn = () => {
-
-  const [messages, setMessages] = useState("");
-
   const router = useRouter();
 
   const handleSubmit = async (value: FormValue) => {
     // console.log(value)
        try {
-            const response = await axios.post(`${ADMIN_LOGIN_API}`,value)
-                // console.log(response)
+            const response = await post(`${ADMIN_LOGIN_API}`,value)
+                console.log(response);
+
+              if(response.error){ 
+                console.log('toast called');
+              }
               const {token} = response.data.result
               setCookie("Token", token,{
-                              maxAge: 60 * 60 
+                              maxAge: 60 * 60 * 30
                              });
 
       if (response.status === 200) {
@@ -36,7 +39,7 @@ const LogIn = () => {
       } 
     } catch (error) {
       console.error("Login error:", error);
-      setMessages("Invalid email and password");
+    
     }
   };
 
@@ -76,7 +79,7 @@ const LogIn = () => {
           flex: 1,
           margin:"auto"}}>
          
-         <Login onSubmit={handleSubmit}  title="Log In to Your Account" message={messages}/>
+         <Login onSubmit={handleSubmit}  title="Log In to Your Account" />
       </Box>
     </Box>
   );

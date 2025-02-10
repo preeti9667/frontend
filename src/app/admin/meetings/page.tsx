@@ -36,6 +36,7 @@ import { ADD_MEETING_ROUTE, ADMIN_MEETING_ROUTE } from "@/constant";
 import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
 import RefreshIcon from "@mui/icons-material/Refresh";
 import { getCookie } from "cookies-next";
+import { get } from "@/util/http.util";
 interface DataItem {
   _id: string;
   title: string;
@@ -67,15 +68,13 @@ const Meeting = () => {
     setIsLoading(true); // Show Skeleton if API is slow
 
     try {
-      const response = await axios.get(GET_MEETING_API, {
+      const response = await get(GET_MEETING_API, {
         params: {
           search,
           page,
           limit: isMobile ? 0 : limit,
         },
-        headers: {
-          Authorization: `Bearer ${getCookie("Token")}`,
-        },
+        
       });
 
       // const { data } = response.data;
@@ -86,7 +85,7 @@ const Meeting = () => {
       setTotalCount(data.count);
       setIsLoading(false);
     } catch (error:any) {
-      console.error("Error fetching meetings:", error.response.data.message);
+      console.error("Error fetching meetings:", error.response.data);
       setIsLoading(true);
     }
   };

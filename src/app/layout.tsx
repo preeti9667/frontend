@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 // import localFont from "next/font/local";
 import "./globals.css";
+import { ToastContainer } from "react-toastify";
 // import { hydrateRoot } from 'react-dom/client';
 // const geistSans = localFont({
 //   src: "./fonts/GeistVF.woff",
@@ -26,9 +27,20 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body>
+        <ToastContainer
+          position="top-right"
+          autoClose={3000}
+          hideProgressBar={false}
+          newestOnTop={false}
+          closeOnClick
+          rtl={false}
+          pauseOnFocusLoss
+          draggable
+          pauseOnHover
+          theme="light"
+        />
         {children}
       </body>
     </html>
   );
 }
-

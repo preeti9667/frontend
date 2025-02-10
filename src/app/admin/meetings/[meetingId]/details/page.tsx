@@ -21,6 +21,7 @@ import SpaIcon from "@mui/icons-material/Spa";
 import { useRouter } from "next/navigation";
 import { ADMIN_MEETING_ROUTE, GET_MEETING_API } from "@/constant";
 import AdminLayout from "../../../AdminLayout";
+import MyDialog from "@/app/admin/components/Dialog";
 
 interface DataItem {
   _id: string;
@@ -152,19 +153,8 @@ export default function page({
            hello
         </Box></Box>
 
-
-        {/* Delete Dialog */}
-        <Dialog open={open} onClose={handleClose}>
-          <DialogTitle>Are you sure you</DialogTitle>
-          <DialogActions>
-            <Button onClick={deleteMeeting} variant="contained" color="success">
-              Yes
-            </Button>
-            <Button onClick={handleClose} variant="contained" color="error">
-              No
-            </Button>
-          </DialogActions>
-        </Dialog>
+            <MyDialog handleDelete={deleteMeeting} onClose={handleClose} open={open}/>
+       
       </Box>
     </AdminLayout>
   );

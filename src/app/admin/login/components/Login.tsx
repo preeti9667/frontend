@@ -13,7 +13,7 @@ interface FormValue {
 interface FormValueProps {
     onSubmit: (values: any) => void;
     title?:string;
-    message:string
+  
 }
 const validationSchema = Yup.object({
   email: Yup.string().required("Email is required"),
@@ -22,7 +22,7 @@ const validationSchema = Yup.object({
 
 
 
-const  Login:React.FC <FormValueProps>= ({onSubmit,title,message}) =>{
+const  Login:React.FC <FormValueProps>= ({onSubmit,title}) =>{
 
 
  const [showPassword, setShowPassword] = useState(false);
@@ -91,7 +91,6 @@ const initialValues: FormValue = {
                   ),
                 }}
               />
-              <Typography color="error" p={1}>{message}</Typography>
               <Button
                 type="submit"
                 variant="contained"

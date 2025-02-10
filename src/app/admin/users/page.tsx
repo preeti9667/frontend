@@ -1,8 +1,8 @@
 'use client'
 import React, { useEffect, useState } from 'react'
 import AdminLayout from '../AdminLayout'
-import { Box, Button, Card, CardContent, Divider, InputBase, Pagination,
-   Paper, Skeleton, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography, 
+import { Box, Button, Card, CardContent, Divider, FormControlLabel, InputBase, Pagination,
+   Paper, Skeleton, Switch, Table, TableBody, TableCell, TableContainer, TableHead, TablePagination, TableRow, TableSortLabel, Typography, 
    useMediaQuery} from '@mui/material'
    import axios from "axios";
    import { GET_USERS_API } from "@/constant/api.constant";
@@ -15,22 +15,39 @@ import { Box, Button, Card, CardContent, Divider, InputBase, Pagination,
 import { getCookie } from 'cookies-next';
    interface DataItem {
      _id: string;
-     firstName: string,
-    lastName: string,
+     createdAt: string;
+     userId: string;
     fullName: string,
     email: string,
-    password: string,
+    isActive: boolean,
      
    }
    export default function Users() {
    
      const [users, setUsers] = useState<DataItem[]>([]);
      const [search, setSearch] = useState("");
-     const [page, setPage] = useState(1);
+     const [page, setPage] = useState(0);
      const [totalCount, setTotalCount] = useState(0);
-     const [limit] = useState(8);
+     const [limit, setLimit] = useState(10);
      const [isLoading, setIsLoading] = useState(false);
+     const [fullNameSort, setSortFullName] = useState<"asc" | "desc" | undefined>(undefined);
+     const [userIdSort, setSortUserId] = useState<"asc" | "desc" | undefined>(undefined);
+  
+    
+    
    
+   
+
+     const handleChangePage = (event: unknown, newPage: number) => {
+       setPage(newPage);
+     };
+   
+     const handleChangeRowsPerPage = (event: React.ChangeEvent<HTMLInputElement>) => {
+       setLimit(+event.target.value);
+       setPage(0);
+     };
+   
+    
      const router = useRouter();
    
      const isMobile = useMediaQuery("(max-width:600px)");
@@ -42,7 +59,9 @@ import { getCookie } from 'cookies-next';
          const response = await axios.get(GET_USERS_API, {
            params: {
              search,
-             page,
+             fullNameSort,
+             userIdSort,
+             page: page + 1,
              limit: isMobile ? 0 : limit,
            },
             headers: {
@@ -65,13 +84,10 @@ import { getCookie } from 'cookies-next';
    
      useEffect(() => {
        fetchUsers();
-     }, [search, page, isMobile]);
+     }, [search, page, isMobile, fullNameSort, userIdSort, limit]);
    
-     const totalPages = Math.ceil(totalCount / limit);
-   
-     const handleItemClick = (id: string) => {
-       router.push(`${ADMIN_USER_ROUTE.url}/${id}/details`);
-     };
+    //  const totalPages = Math.ceil(totalCount / limit);
+  
    
      const userCreate = () => {
        router.push(`${ADD_USER_ROUTE.url}`);
@@ -81,6 +97,15 @@ import { getCookie } from 'cookies-next';
        fetchUsers();
      };
      
+     const handleSort = (field: "fullName" | "userId" ) => {
+      if (field === "fullName") {
+        setSortFullName(fullNameSort === "asc" ? "desc" : "asc");
+        setSortUserId(undefined); // Reset other sorting
+      } else {
+        setSortUserId(userIdSort === "asc" ? "desc" : "asc");
+        setSortFullName(undefined); // Reset other sorting
+      } 
+    };
 
   return (
     <AdminLayout>
@@ -130,12 +155,30 @@ import { getCookie } from 'cookies-next';
           <Table sx={{ minWidth: 650 }} aria-label="simple table">
             <TableHead>
               <TableRow>
-                <TableCell sx={{ fontSize: "23px" }}>S.N.</TableCell>
-                <TableCell sx={{ fontSize: "23px" }}>FirstName</TableCell>
-                <TableCell sx={{ fontSize: "20px" }}>LastName</TableCell>
-                <TableCell sx={{ fontSize: "20px" }}>FullName</TableCell>
+              
+                <TableCell sx={{ fontSize: "23px" }}>  
+               Created At
+                </TableCell>
+                <TableCell sx={{ fontSize: "23px" }}>
+                <TableSortLabel
+                active={!!userIdSort}
+                direction={userIdSort || "asc"}
+                onClick={() => handleSort("userId")}
+              >
+                User ID
+              </TableSortLabel>
+                </TableCell>
+                <TableCell sx={{ fontSize: "23px" }}>
+                <TableSortLabel
+                active={!!fullNameSort}
+                direction={fullNameSort || "asc"}
+                onClick={() => handleSort("fullName")}
+              >
+               Name
+              </TableSortLabel>
+                </TableCell>
                 <TableCell sx={{ fontSize: "20px" }}>Email</TableCell>
-                
+                <TableCell sx={{ fontSize: "23px" }}>Action</TableCell>
               </TableRow>
             </TableHead>
 
@@ -157,27 +200,31 @@ import { getCookie } from 'cookies-next';
                       </TableCell>  
                       <TableCell>
                         <Skeleton variant="text" width="100%" height={40} />
+                      </TableCell> 
+                      <TableCell>
+                        <Skeleton variant="text" width="100%" height={40} />
                       </TableCell>  
                     </TableRow>
                   ))
                 : users.map((item, index) => (
                     <TableRow
-                    onClick={() => handleItemClick(item._id)}
+                    // onClick={() => handleItemClick(item._id)}
                       key={item._id}
                       sx={{
                         "&:last-child td, &:last-child th": { border: 0 },
                         cursor: "pointer",
                       }}
                     >
-                      <TableCell >
-                        {page * limit - limit + index + 1}
-                      </TableCell>
+                      
+                        {/* {page * limit - limit + index + 1} */}
+                    
 
                       <TableCell>
-                        {item.firstName}
+                        { moment(item.createdAt).format('LLL')}
                       </TableCell>
                       <TableCell>
-                        {item.lastName}
+                        {item.userId}
+                       
                       </TableCell>
                       <TableCell>
                         {item.fullName}
@@ -185,30 +232,25 @@ import { getCookie } from 'cookies-next';
                       <TableCell>
                         {item.email}
                       </TableCell>
-                      
+                      <TableCell>     
+              <Switch checked={item.isActive} 
+              color="success" name="isActive" />
+                      </TableCell>
                     </TableRow>
                   ))}
             </TableBody>
           </Table>
           <Divider />
 
-          {totalPages > 1 && (
-            <Box
-              display="flex"
-              justifyContent="center"
-              alignItems="center"
-              mt={1.5}
-              mb={1.5}
-            >
-              <Pagination
-                count={totalPages}
-                page={page}
-                onChange={(e, value) => setPage(value)}
-                color="primary"
-              />
-              Total-Meetings = {totalCount}
-            </Box>
-          )}
+          <TablePagination
+            rowsPerPageOptions={[10, 20, 25, 50]}
+            component="div"
+            count={totalCount}
+            rowsPerPage={limit}
+            page={page}
+            onPageChange={handleChangePage}  
+            onRowsPerPageChange={handleChangeRowsPerPage}
+          />
         </TableContainer>
       </Box>
 
@@ -272,7 +314,7 @@ import { getCookie } from 'cookies-next';
                     }}
                   >
                     <CardContent
-                      onClick={() => handleItemClick(item._id)}
+                      // onClick={() => handleItemClick(item._id)}
                       sx={{
                         display: "flex",
                         gap: "15px",
@@ -281,14 +323,21 @@ import { getCookie } from 'cookies-next';
                       }}
                     >
                       <Typography variant="h5">
-                       First-Name: {item.firstName}
+                      Crated At: { moment(item.createdAt).format('LLL')}
                       </Typography>
                       <Typography variant="h5">
-                     Last-Name: {item.lastName}
+                     User Id: {item.userId}
                       </Typography>
                       <Typography variant="h5">
-                     Full-Name: {item.fullName}
+                     Name: {item.fullName}
                       </Typography> 
+
+                      <FormControlLabel
+            control={
+              <Switch checked={item.isActive} color="success" name="isActive" />
+            }
+            label="Active"
+          />
                     </CardContent>
                   </Card>
                 </Box>
