@@ -10,7 +10,7 @@ body{
     --secondary-color:#238122f2;
     --danger-color: red;
     --text-color: #B33F00;
-    --text1-color: #00b3ad6a;
+    --text1-color: #0071b350;
 
   }
   .fullImage::after {
@@ -39,3 +39,4 @@ body{
 .Button:hover{
 background: rgba(0, 0, 0, 0.066);
 }
+

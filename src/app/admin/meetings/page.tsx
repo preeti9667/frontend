@@ -22,6 +22,7 @@ import {
   TableHead,
   TablePagination,
   TableRow,
+  TableSortLabel,
   TextField,
   Typography,
   useMediaQuery,
@@ -41,6 +42,8 @@ interface DataItem {
   _id: string;
   title: string;
   description: string;
+  meetingId: string;
+  createdAt: string;
   startTime: string;
   endTime: string;
   status: string;
@@ -48,17 +51,18 @@ interface DataItem {
   endDate: number;
   type: string;
 }
-// interface MediaProps {
-//   loading?: boolean;
-// }
+
 
 const Meeting = () => {
   const [meetings, setMeetings] = useState<DataItem[]>([]);
   const [search, setSearch] = useState("");
-  const [page, setPage] = useState(1);
+  const [page, setPage] = useState(0);
   const [totalCount, setTotalCount] = useState(0);
-  const [limit] = useState(8);
+  const [limit, setLimit] = useState(10);
   const [isLoading, setIsLoading] = useState(false);
+
+  const [startDateSort, setStartDateSort] = useState< "asc" | "desc" | undefined >(undefined);
+  const [meetingIdSort, setMeetingIdSort] = useState<"asc" | "desc" | undefined>(undefined);
 
   const router = useRouter();
 
@@ -68,15 +72,18 @@ const Meeting = () => {
     setIsLoading(true); // Show Skeleton if API is slow
 
     try {
-      const response = await get(GET_MEETING_API, {
+      const response = await axios.get(GET_MEETING_API, {
         params: {
           search,
-          page,
+          startDateSort,
+          meetingIdSort,
+          page: page + 1,
           limit: isMobile ? 0 : limit,
         },
-        
+        headers: {
+          Authorization: `Bearer ${getCookie("Token")}`,
+        },
       });
-
       // const { data } = response.data;
       const data = response.data.data;
       // console.log(data)
@@ -84,17 +91,15 @@ const Meeting = () => {
       setMeetings(data.list);
       setTotalCount(data.count);
       setIsLoading(false);
-    } catch (error:any) {
-      console.error("Error fetching meetings:", error.response.data);
+    } catch (error) {
+      console.error("Error fetching users:", error);
       setIsLoading(true);
     }
   };
 
   useEffect(() => {
     fetchMeetings();
-  }, [search, page, isMobile]);
-
-  const totalPages = Math.ceil(totalCount / limit);
+  }, [search, page, isMobile, limit, startDateSort, meetingIdSort]);
 
   const handleItemClick = (id: string) => {
     router.push(`${ADMIN_MEETING_ROUTE.url}/${id}/details`);
@@ -107,9 +112,51 @@ const Meeting = () => {
   const handleRefresh = () => {
     fetchMeetings();
   };
-  const handleStatus = () => {
-    console.log("clicked");
+  
+  const handleChangePage = (event: unknown, newPage: number) => {
+    setPage(newPage);
   };
+
+  const handleChangeRowsPerPage = (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    setLimit(+event.target.value);
+    setPage(0);
+  };
+
+  const handleSort = (field:  'startDate' | 'meetingId') => {
+    if (field === "startDate") {
+      setStartDateSort(startDateSort === "asc" ? "desc" : "asc");
+      setMeetingIdSort(undefined); // Reset other sorting
+
+    } else  {
+      setMeetingIdSort(meetingIdSort === "asc" ? "desc" : "asc");
+      setStartDateSort(undefined); // Reset other sorting
+    }
+  };
+
+////////////////
+  const getStageColor = (interval: string) => {
+    switch (interval) {
+        case "ONCE":
+            return 'var(--primary-color)';
+        case "WEEKLY":
+            return "var( --text-color)";
+        case "MONTHLY":
+            return "var(--danger-color)";
+        case "DAILY":
+            return "var(--text1-color)";
+       
+    }
+};
+const getStatusColor = (interval: string) => {
+    switch (interval) {
+        case "CREATED":
+            return 'var(--secondary-color)';
+        case "COMPLETED":
+            return "var(--primary-color)";
+    }
+}
 
   return (
     <AdminLayout>
@@ -159,13 +206,29 @@ const Meeting = () => {
           <Table sx={{ minWidth: 650 }} aria-label="simple table">
             <TableHead>
               <TableRow>
-                <TableCell sx={{ fontSize: "23px" }}>S.N.</TableCell>
-                <TableCell sx={{ fontSize: "23px" }}>Title</TableCell>
-                <TableCell sx={{ fontSize: "20px" }}>Start-Date</TableCell>
-                <TableCell sx={{ fontSize: "20px" }}>End-Date</TableCell>
-                <TableCell sx={{ fontSize: "23px" }}>Time</TableCell>
-                <TableCell sx={{ fontSize: "23px" }}>Type</TableCell>
-                <TableCell sx={{ fontSize: "23px" }}>Status</TableCell>
+                <TableCell sx={{ fontSize: "20px" }}>
+                  <TableSortLabel
+                    active={!!meetingIdSort}
+                    direction={meetingIdSort || "asc"}
+                    onClick={() => handleSort("meetingId")}
+                  >
+                    Meeting Id
+                  </TableSortLabel>
+                </TableCell>
+                <TableCell sx={{ fontSize: "20px" }}>Created At</TableCell>
+                <TableCell sx={{ fontSize: "20px" }}>Title</TableCell>
+                <TableCell sx={{ fontSize: "20px" }}>
+                  <TableSortLabel
+                    active={!!startDateSort}
+                    direction={startDateSort || "asc"}
+                    onClick={() => handleSort("startDate")}
+                  >
+                    Date
+                  </TableSortLabel>
+                </TableCell>
+                <TableCell sx={{ fontSize: "20px" }}>Time</TableCell>
+                <TableCell sx={{ fontSize: "20px" }}>Type</TableCell>
+                <TableCell sx={{ fontSize: "20px" }}>Status</TableCell>
               </TableRow>
             </TableHead>
 
@@ -198,34 +261,36 @@ const Meeting = () => {
                   ))
                 : meetings.map((item, index) => (
                     <TableRow
+                    onClick={() => handleItemClick(item._id)}
                       key={item._id}
                       sx={{
                         "&:last-child td, &:last-child th": { border: 0 },
                         cursor: "pointer",
                       }}
                     >
-                      <TableCell onClick={() => handleItemClick(item._id)}>
-                        {page * limit - limit + index + 1}
+                      <TableCell >
+                        {item.meetingId}
+                      </TableCell>
+                      <TableCell>
+                        {moment(item.createdAt).format("LLL")}
                       </TableCell>
 
-                      <TableCell onClick={() => handleItemClick(item._id)}>
+                      <TableCell >
                         {item.title.charAt(0).toUpperCase() +
                           item.title.slice(1).toLowerCase()}
                       </TableCell>
-                      <TableCell onClick={() => handleItemClick(item._id)}>
-                        {moment(item.startDate).format("ll")}
-                      </TableCell>
-                      <TableCell onClick={() => handleItemClick(item._id)}>
+                      <TableCell>
+                        {moment(item.startDate).format("ll")} -{" "}
                         {moment(item.endDate).format("ll")}
                       </TableCell>
-
-                      <TableCell onClick={() => handleItemClick(item._id)}>
-                        {item.startTime}-{item.endTime}
+                     
+                      <TableCell>
+                        {item.startTime} - {item.endTime}
                       </TableCell>
-                      <TableCell onClick={() => handleItemClick(item._id)}>
+                      <TableCell sx={{ color:getStageColor(item.type)}}>
                         {item.type}
                       </TableCell>
-                      <TableCell onClick={handleStatus} sx={{ color: "green" }}>
+                      <TableCell sx={{ color:getStatusColor(item.status), boxShadow:'1px 1px 2px  '}}>
                         {item.status}
                       </TableCell>
                     </TableRow>
@@ -234,23 +299,15 @@ const Meeting = () => {
           </Table>
           <Divider />
 
-          {totalPages > 1 && (
-            <Box
-              display="flex"
-              justifyContent="center"
-              alignItems="center"
-              mt={1.5}
-              mb={1.5}
-            >
-              <Pagination
-                count={totalPages}
-                page={page}
-                onChange={(e, value) => setPage(value)}
-                color="primary"
-              />
-              Total-Meetings = {totalCount}
-            </Box>
-          )}
+          <TablePagination
+            rowsPerPageOptions={[10, 20]}
+            component="div"
+            count={totalCount}
+            rowsPerPage={limit}
+            page={page}
+            onPageChange={handleChangePage}
+            onRowsPerPageChange={handleChangeRowsPerPage}
+          />
         </TableContainer>
       </Box>
 
@@ -326,31 +383,29 @@ const Meeting = () => {
                         {item.title.charAt(0).toUpperCase() +
                           item.title.slice(1).toLowerCase()}
                       </Typography>
+                      <Typography>Meeting Id: {item.meetingId}</Typography>
+                      <Typography>Created At: {moment(item.createdAt).format("LLL")}</Typography>
                       <Typography>
-                        {" "}
                         Start-Date: {moment(item.startDate).format("ll")}
                       </Typography>
                       <Typography>
-                        {" "}
-                        End-Date: {moment(item.endDate).format("ll")}{" "}
+                        End-Date: {moment(item.endDate).format("ll")}
                       </Typography>
 
                       <Typography>
-                        {" "}
                         Time: {item.startTime}-{item.endTime}
                       </Typography>
-                      <Typography variant="h6">
-                        {" "}
-                        Description: {item.description}
-                      </Typography>
+                      <Typography sx={{color:getStageColor(item.type)}}>
+                        Type: {item.type}
+                 </Typography>
                     </CardContent>
                     <Button
-                      onClick={handleStatus}
-                      color="success"
                       sx={{
                         fontSize: "20px",
                         marginLeft: "10px",
                         marginBottom: "15px",
+                        boxShadow:'0px 1px 1px 1px ',
+                        color:getStatusColor(item.status)
                       }}
                     >
                       {item.status}

@@ -71,7 +71,7 @@ import { getCookie } from 'cookies-next';
    
          // const { data } = response.data;
          const data = response.data.data;
-         console.log(data)
+        //  console.log(data)
    
          setUsers(data.list);
          setTotalCount(data.count);
@@ -106,6 +106,11 @@ import { getCookie } from 'cookies-next';
         setSortFullName(undefined); // Reset other sorting
       } 
     };
+
+    const handleUser = async(id:string)=>{
+      await axios.put(`${GET_USERS_API}/${id}/status`)
+      fetchUsers()
+    }
 
   return (
     <AdminLayout>
@@ -206,35 +211,33 @@ import { getCookie } from 'cookies-next';
                       </TableCell>  
                     </TableRow>
                   ))
-                : users.map((item, index) => (
+                : users.map((user, index) => (
                     <TableRow
-                    // onClick={() => handleItemClick(item._id)}
-                      key={item._id}
+                    // onClick={() => handleItemClick(user._id)}
+                      key={user._id}
                       sx={{
                         "&:last-child td, &:last-child th": { border: 0 },
                         cursor: "pointer",
-                      }}
-                    >
-                      
-                        {/* {page * limit - limit + index + 1} */}
-                    
-
+                      }} >
+              
                       <TableCell>
-                        { moment(item.createdAt).format('LLL')}
+                        { moment(user.createdAt).format('LLL')}
                       </TableCell>
                       <TableCell>
-                        {item.userId}
+                        {user.userId}
                        
                       </TableCell>
                       <TableCell>
-                        {item.fullName}
+                        {user.fullName}
                       </TableCell>
                       <TableCell>
-                        {item.email}
+                        {user.email}
                       </TableCell>
-                      <TableCell>     
-              <Switch checked={item.isActive} 
+                      <TableCell sx={{padding:"0"}}>     
+              <Switch checked={user.isActive} 
+               onClick={()=>handleUser(user._id)} 
               color="success" name="isActive" />
+            
                       </TableCell>
                     </TableRow>
                   ))}
@@ -242,15 +245,21 @@ import { getCookie } from 'cookies-next';
           </Table>
           <Divider />
 
+          
+
           <TablePagination
             rowsPerPageOptions={[10, 20, 25, 50]}
             component="div"
             count={totalCount}
             rowsPerPage={limit}
             page={page}
-            onPageChange={handleChangePage}  
+            onPageChange={handleChangePage}
+           
             onRowsPerPageChange={handleChangeRowsPerPage}
           />
+
+
+
         </TableContainer>
       </Box>
 
@@ -305,7 +314,7 @@ import { getCookie } from 'cookies-next';
                   <Skeleton variant="text" width="100%" height={250} />
                 </Box>
               ))
-            : users.map((item, index) => (
+            : users.map((user, index) => (
                 <Box key={index}>
                   <Card
                     sx={{
@@ -314,7 +323,7 @@ import { getCookie } from 'cookies-next';
                     }}
                   >
                     <CardContent
-                      // onClick={() => handleItemClick(item._id)}
+                      // onClick={() => handleItemClick(user._id)}
                       sx={{
                         display: "flex",
                         gap: "15px",
@@ -322,21 +331,26 @@ import { getCookie } from 'cookies-next';
                         padding: '20px'
                       }}
                     >
-                      <Typography variant="h5">
-                      Crated At: { moment(item.createdAt).format('LLL')}
-                      </Typography>
-                      <Typography variant="h5">
-                     User Id: {item.userId}
-                      </Typography>
-                      <Typography variant="h5">
-                     Name: {item.fullName}
+                      <Typography variant="h6">
+                     Name: {user.fullName}
                       </Typography> 
+                      <Typography variant="h6">
+                      Crated At: { moment(user.createdAt).format('LLL')}
+                      </Typography>
+                      <Typography variant="h6">
+                     User Id: {user.userId}
+                      </Typography>
+                      <Typography variant="h6">
+                     Email: {user.email}
+                      </Typography>
 
                       <FormControlLabel
             control={
-              <Switch checked={item.isActive} color="success" name="isActive" />
+              <Switch checked={user.isActive} color="success" name="isActive"
+              onClick={()=>handleUser(user._id)}  />
             }
-            label="Active"
+            label={user.isActive ? "Active" : "Deleted"}
+            
           />
                     </CardContent>
                   </Card>
