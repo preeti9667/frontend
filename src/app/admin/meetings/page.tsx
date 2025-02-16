@@ -133,7 +133,7 @@ const Meeting = () => {
       setMeetingIdSort(meetingIdSort === "asc" ? "desc" : "asc");
       setStartDateSort(undefined); // Reset other sorting
     }
-  };
+  };  
 
 ////////////////
   const getStageColor = (interval: string) => {
@@ -154,7 +154,7 @@ const getStatusColor = (interval: string) => {
         case "CREATED":
             return 'var(--secondary-color)';
         case "COMPLETED":
-            return "var(--primary-color)";
+            return "#0000ff91";
     }
 }
 
@@ -166,11 +166,13 @@ const getStatusColor = (interval: string) => {
             xl: "block",
             md: "block",
             xs: "none",
-            sm: "block",
+            sm: "none",
             lg: "block",
           },
         }}
       >
+        
+                   
         <Box style={{ backgroundColor: "var( --text-color)", color: "white" }}>
           <Box className={style.meetingTop}>
             <Box sx={{ display: "flex", gap: "10px" }}>
@@ -180,6 +182,7 @@ const getStatusColor = (interval: string) => {
               >
                 <AddCircleOutlineIcon />
               </Button>
+
               <Button
                 sx={{ backgroundColor: "white", color: "black" }}
                 onClick={handleRefresh}
@@ -206,8 +209,8 @@ const getStatusColor = (interval: string) => {
           <Table sx={{ minWidth: 650 }} aria-label="simple table">
             <TableHead>
               <TableRow>
-                <TableCell sx={{ fontSize: "20px" }}>
-                  <TableSortLabel
+                <TableCell>
+                  <TableSortLabel sx={{ fontSize: "18px" }}
                     active={!!meetingIdSort}
                     direction={meetingIdSort || "asc"}
                     onClick={() => handleSort("meetingId")}
@@ -215,20 +218,20 @@ const getStatusColor = (interval: string) => {
                     Meeting Id
                   </TableSortLabel>
                 </TableCell>
-                <TableCell sx={{ fontSize: "20px" }}>Created At</TableCell>
-                <TableCell sx={{ fontSize: "20px" }}>Title</TableCell>
-                <TableCell sx={{ fontSize: "20px" }}>
+                <TableCell sx={{ fontSize: "18px" }}>Created At</TableCell>
+                <TableCell sx={{ fontSize: "18px" }}>Title</TableCell>
+                <TableCell sx={{ fontSize: "18px" }}>
                   <TableSortLabel
                     active={!!startDateSort}
                     direction={startDateSort || "asc"}
-                    onClick={() => handleSort("startDate")}
-                  >
-                    Date
+                    onClick={() => handleSort("startDate")} >
+                    Start Date
                   </TableSortLabel>
                 </TableCell>
-                <TableCell sx={{ fontSize: "20px" }}>Time</TableCell>
-                <TableCell sx={{ fontSize: "20px" }}>Type</TableCell>
-                <TableCell sx={{ fontSize: "20px" }}>Status</TableCell>
+                <TableCell sx={{ fontSize: "18px" }}>End Date</TableCell>
+                <TableCell sx={{ fontSize: "18px" }}>Time</TableCell>
+                <TableCell sx={{ fontSize: "18px" }}>Type</TableCell>
+                <TableCell sx={{ fontSize: "18px" }}>Status</TableCell>
               </TableRow>
             </TableHead>
 
@@ -272,7 +275,7 @@ const getStatusColor = (interval: string) => {
                         {item.meetingId}
                       </TableCell>
                       <TableCell>
-                        {moment(item.createdAt).format("LLL")}
+                        {moment(item.createdAt).format("lll")}
                       </TableCell>
 
                       <TableCell >
@@ -280,18 +283,23 @@ const getStatusColor = (interval: string) => {
                           item.title.slice(1).toLowerCase()}
                       </TableCell>
                       <TableCell>
-                        {moment(item.startDate).format("ll")} -{" "}
-                        {moment(item.endDate).format("ll")}
+                        {moment(item.startDate).format("ll")} 
                       </TableCell>
-                     
+                      <TableCell>{moment(item.endDate).format("ll")}</TableCell>
                       <TableCell>
                         {item.startTime} - {item.endTime}
                       </TableCell>
-                      <TableCell sx={{ color:getStageColor(item.type)}}>
-                        {item.type}
+                      <TableCell>
+                       <Box className={style.meetingTypeStatus}
+                       sx={{backgroundColor:getStageColor(item.type)}}>
+                        {item.type}</Box>
                       </TableCell>
-                      <TableCell sx={{ color:getStatusColor(item.status), boxShadow:'1px 1px 2px  '}}>
-                        {item.status}
+
+                      <TableCell >
+                      <Box className={style.meetingTypeStatus}
+                      sx={{ backgroundColor:getStatusColor(item.status), }}> 
+                      {item.status}
+                        </Box> 
                       </TableCell>
                     </TableRow>
                   ))}
@@ -317,7 +325,7 @@ const getStatusColor = (interval: string) => {
             xl: "none",
             md: "none",
             xs: "block",
-            sm: "none",
+            sm: "block",
             lg: "none",
           },
         }}
@@ -375,16 +383,14 @@ const getStatusColor = (interval: string) => {
                       onClick={() => handleItemClick(item._id)}
                       sx={{
                         display: "flex",
-                        gap: "15px",
+                        gap: "14px",
                         flexDirection: "column",
                       }}
                     >
-                      <Typography variant="h5" textAlign={"center"}>
-                        {item.title.charAt(0).toUpperCase() +
-                          item.title.slice(1).toLowerCase()}
-                      </Typography>
+                      <Typography>Title: {item.title.charAt(0).toUpperCase() +
+                          item.title.slice(1).toLowerCase()}</Typography>
                       <Typography>Meeting Id: {item.meetingId}</Typography>
-                      <Typography>Created At: {moment(item.createdAt).format("LLL")}</Typography>
+                      <Typography>Created At: {moment(item.createdAt).format("lll")}</Typography>
                       <Typography>
                         Start-Date: {moment(item.startDate).format("ll")}
                       </Typography>
@@ -395,21 +401,25 @@ const getStatusColor = (interval: string) => {
                       <Typography>
                         Time: {item.startTime}-{item.endTime}
                       </Typography>
-                      <Typography sx={{color:getStageColor(item.type)}}>
-                        Type: {item.type}
+                       <Box sx={{display:'flex', alignItems:'center', gap:'10px'}}>Title:
+                         <Typography className={style.meetingTypeStatus}
+                         sx={{backgroundColor:getStageColor(item.type),}}
+                         >
+                       {item.type}
                  </Typography>
-                    </CardContent>
-                    <Button
-                      sx={{
-                        fontSize: "20px",
-                        marginLeft: "10px",
-                        marginBottom: "15px",
-                        boxShadow:'0px 1px 1px 1px ',
-                        color:getStatusColor(item.status)
-                      }}
-                    >
+                        </Box>
+
+                 <Box sx={{display:'flex', alignItems:'center', gap:'10px'}}>
+                 Status:
+                 <Typography className={style.meetingTypeStatus}
+                 sx={{backgroundColor:getStatusColor(item.status)}}>
+
                       {item.status}
-                    </Button>
+                     </Typography>
+                 </Box>
+
+                    </CardContent>
+                   
                   </Card>
                 </Box>
               ))}

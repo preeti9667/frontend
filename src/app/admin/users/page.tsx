@@ -1,8 +1,8 @@
 'use client'
 import React, { useEffect, useState } from 'react'
 import AdminLayout from '../AdminLayout'
-import { Box, Button, Card, CardContent, Divider, FormControlLabel, InputBase, Pagination,
-   Paper, Skeleton, Switch, Table, TableBody, TableCell, TableContainer, TableHead, TablePagination, TableRow, TableSortLabel, Typography, 
+import { Box, Button, Card, CardContent, Divider, FormControlLabel, InputBase, MenuItem, Pagination,
+   Paper, Select, Skeleton, Switch, Table, TableBody, TableCell, TableContainer, TableHead, TablePagination, TableRow, TableSortLabel, Typography, 
    useMediaQuery} from '@mui/material'
    import axios from "axios";
    import { GET_USERS_API } from "@/constant/api.constant";
@@ -22,6 +22,8 @@ import { getCookie } from 'cookies-next';
     isActive: boolean,
      
    }
+
+
    export default function Users() {
    
      const [users, setUsers] = useState<DataItem[]>([]);
@@ -205,10 +207,8 @@ import { getCookie } from 'cookies-next';
                       </TableCell>  
                       <TableCell>
                         <Skeleton variant="text" width="100%" height={40} />
-                      </TableCell> 
-                      <TableCell>
-                        <Skeleton variant="text" width="100%" height={40} />
                       </TableCell>  
+                      
                     </TableRow>
                   ))
                 : users.map((user, index) => (
@@ -221,7 +221,7 @@ import { getCookie } from 'cookies-next';
                       }} >
               
                       <TableCell>
-                        { moment(user.createdAt).format('LLL')}
+                        { moment(user.createdAt).format('lll')}
                       </TableCell>
                       <TableCell>
                         {user.userId}
@@ -294,6 +294,9 @@ import { getCookie } from 'cookies-next';
               onClick={handleRefresh}>
               <RefreshIcon />
             </Button>
+
+         
+
           </Box>
           <Paper sx={{ borderRadius: "5px", border: "1px solid black" }}>
             <InputBase
@@ -308,6 +311,8 @@ import { getCookie } from 'cookies-next';
           sx={{ display: "flex", flexDirection: "column", gap: "20px" }}
           mt={3}
         >
+              
+             
           {isLoading
             ? Array.from({ length: limit }).map((_, index) => (
                 <Box key={index}>
@@ -335,7 +340,7 @@ import { getCookie } from 'cookies-next';
                      Name: {user.fullName}
                       </Typography> 
                       <Typography variant="h6">
-                      Crated At: { moment(user.createdAt).format('LLL')}
+                      Crated At: { moment(user.createdAt).format('lll')}
                       </Typography>
                       <Typography variant="h6">
                      User Id: {user.userId}

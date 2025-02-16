@@ -68,14 +68,19 @@ const  MeetingForm  =()=> {
 
   return (
     <AdminLayout>
-      <Box sx={{ background:{xs:"none",md:"white",lg:"white",xl:"white"}, height:"87vh",display:"flex", margin:"auto"}}>
+      <Box sx={{ background:{xs:"none",md:"white",lg:"white",xl:"white"}, height:"87vh",}}>
       
-          <Box sx={{height:'85vh'}}></Box>  
+          <Box sx={{background:"var(--text-color)", padding:"15px", display:"flex", alignItems:'center',gap:"40px"}}> 
+          <Link href={`${ADMIN_MEETING_ROUTE.url}`} sx={{color:"white"}}>
+            <ArrowBackIcon fontSize="small"  sx={{width:"30px",height:"30px"}}/>
+          </Link> 
+          <Typography variant="h5" color="white">
+          Add User
+          </Typography>
+            </Box> 
+
           <Box sx={{ width:{ xl:"450px",lg:"450px", sm:"300px",ms:"300px", md:"350px"},
-            padding:{xs:"0",md:"20px",lg:"20px",xl:"20px"}, margin:"auto"}}>
-            <Typography variant="h5" textAlign={"center"} color="success">
-              Add user
-            </Typography>
+            padding:{xs:"0",md:"20px",lg:"20px",xl:"20px"}}}>
             <Formik
               initialValues={initialValues}
               validationSchema={validationSchema}

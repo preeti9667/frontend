@@ -18,14 +18,7 @@ padding: 16px ;
     gap: 10px;
    
 }
-.back{
 
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    width: fit-content;
-    padding-bottom: 10px;
-}
 .time{
     display: flex;
     align-items: center;
@@ -51,4 +44,12 @@ margin: auto;
     width: 150px;
     font-size: 20px;
     text-transform: none;
+}
+.meetingTypeStatus{
+color: white;
+width: fit-content;
+padding: 5px 10px;
+text-align: center;
+border-radius: 20px;
+
 }

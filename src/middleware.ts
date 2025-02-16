@@ -10,7 +10,7 @@ export function middleware(req: NextRequest) {
     const userToken= req.cookies.get('userToken')?.value
    
     const isLoginPage = path === LOGIN_ROUTE.url;
-    const isAdminDashboard = path.startsWith(ADMIN_DASHBOARD_ROUTE.url);
+    const isAdminDashboard = path.startsWith(ADMIN_DASHBOARD_ROUTE.url );
     const isMeetingDashboard = path.startsWith(ADMIN_MEETING_ROUTE.url);
     const isUserDashboard = path.startsWith(ADMIN_USER_ROUTE.url); 
 

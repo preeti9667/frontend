@@ -1,19 +1,12 @@
 "use client";
 import {
-  Alert,
-  Avatar,
   Box,
   Button,
-  Dialog,
-  DialogActions,
-  DialogTitle,
   FormControl,
   InputLabel,
   MenuItem,
-  Paper,
   Select,
   SelectChangeEvent,
-  Snackbar,
   Typography,
 } from "@mui/material";
 import axios, { AxiosError } from "axios";
@@ -112,14 +105,14 @@ export default function page({
       <Box
         sx={{
           background: { xs: "none", md: "white", lg: "white", xl: "white" },
-          padding: { xs: "0", md: "20px", lg: "20px", xl: "20px" },
+          // padding: { xs: "0", md: "20px", lg: "20px", xl: "20px" },
         }}
       >
-        <Box>
-          <Link href={`${ADMIN_MEETING_ROUTE.url}`} className={style.back}>
-            <ArrowBackIcon fontSize="small" />
-            Back
+         <Box sx={{background:'var(--text-color)', display:"flex", alignItems:'center',padding:"15px",gap:"40px"}}>
+          <Link href={`${ADMIN_MEETING_ROUTE.url}`} >
+            <ArrowBackIcon fontSize="small"  sx={{width:"30px",height:"30px", color:"white"}}/>
           </Link>
+          <Typography variant="h5" color="white">Meeting Details</Typography>
         </Box>
 
         <Box
@@ -131,15 +124,12 @@ export default function page({
               md: "1fr 1fr",
               lg: "1fr 1fr",
             },
+          padding: { xs: "10px", md: "20px", lg: "20px", xl: "20px" },
+
           }}
         >
           <Box sx={{ display: "flex", flexDirection: "column", gap: "18px",}}>
-            <Box>
-              <Typography textAlign={"center"} color="success">
-                {meeting?.title.toLocaleUpperCase()}
-              </Typography>
-            </Box>
-
+              <Typography> Title: {meeting?.title.toLocaleUpperCase()}</Typography>
             <Typography>Meeting Id: {meeting?.meetingId}</Typography>
             <Typography>Created At: {moment(meeting?.createdAt).format("lll")}</Typography>
 

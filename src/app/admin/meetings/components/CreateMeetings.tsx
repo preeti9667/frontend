@@ -40,14 +40,14 @@ const validationSchema = Yup.object({
     }
   ),
     startDate: Yup.date()
-    .test("is-valid-date", "Invalid date", (value) => {
+    .test("is-valid-date", "Start date must be later than today", (value) => {
       const today = new Date();
       return value && value > today; // Custom validation
     })
     .required("Date is required"),
 
     endDate: Yup.date()
-    .test("is-after-start-date", "Invalid date", function(value){
+    .test("is-after-start-date", "End date must be equal or later than start date", function(value){
       const {startDate} = this.parent
 
       return value && startDate ? value === startDate || value >= startDate: true;
@@ -74,23 +74,22 @@ const  MeetingForm :React.FC<meetingProps> =({ initialValues,onSubmit,mode})=> {
   return (
     <AdminLayout>
       <Box sx={{ background:{xs:"none",md:"white",lg:"white",xl:"white"}}}>
-      <Box >
-          <Link href={`${ADMIN_MEETING_ROUTE.url}`} className={style.back}>
-            <ArrowBackIcon fontSize="small" />
-            Back
+      <Box sx={{background:'var(--text-color)', display:"flex", alignItems:'center',padding:"15px",gap:"40px"}}>
+
+          <Link href={`${ADMIN_MEETING_ROUTE.url}`} sx={{color:"white"}}>
+            <ArrowBackIcon fontSize="small"  sx={{width:"30px",height:"30px"}}/>
           </Link>
+          <Typography variant="h5"  sx={{color:"white"}}>
+          {mode === 'add' ? 'Add Meeting' : 'Edit Meeting'}
+          </Typography>
           </Box>
           <Box sx={{ display: "grid",gridTemplateColumns:{xs:"1fr",xl:"1fr 1fr",md:"1fr 1fr",lg:"1fr 1fr"}, 
-          // border:'1px solid black'
           }}>
             <Box>
         <Box 
         >
             
           <Box sx={{ width:{ xl:"100%"},padding:{xs:"0",md:"20px",lg:"20px",xl:"20px"}}}>
-            <Typography variant="h5" textAlign={"center"} color="success">
-            {mode === 'add' ? 'Add Meeting' : 'Edit Meeting'}
-            </Typography>
             <Formik
               initialValues={defaultValues}
               validationSchema={validationSchema}
@@ -222,7 +221,7 @@ const  MeetingForm :React.FC<meetingProps> =({ initialValues,onSubmit,mode})=> {
           </Box>
         </Box>
         </Box>
-        <Box sx={{border:"1px solid black"}}>hello</Box>
+        {/* <Box sx={{border:"1px solid black"}}>hello</Box> */}
         </Box>
       </Box></AdminLayout>
   );
