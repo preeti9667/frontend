@@ -19,16 +19,13 @@ interface FormValue {
  lastName: string;
  fullName: string;
  email: string;
-//  isActive: boolean;
-//  isDeleted: boolean;
+
 }
 const validationSchema = Yup.object({
   firstName: Yup.string().required("First-Name is required"),
   lastName: Yup.string().required("Last-Name is required"),
   fullName: Yup.string().required("Full-Name is required"),
   email: Yup.string().required("Email is required"),
-  // isActive: Yup.boolean().required("isActive is required"),
-  // isDeleted: Yup.boolean().required("isDeleted is required"),
 })
 
 const  MeetingForm  =()=> {
@@ -39,13 +36,10 @@ const  MeetingForm  =()=> {
     lastName: "",
     fullName: "",
     email: "",
-    // isActive: true,
-    // isDeleted: false,
   };
 
   const handleSubmit = async (values: FormValue) => {
     // console.log(values);
-         try {
               const response = await post(`${ADD_USERS_API}`,values)
               console.log(response)
               const {token} = response.data.data
@@ -56,22 +50,14 @@ const  MeetingForm  =()=> {
               if (response.status === 200) {
                 router.push(`${ADMIN_USER_ROUTE.url}`);
               }
-            } catch (error) {
-              console.error("Signup error", error);
-            }
-          
       };
-
-  // }
-
-
 
   return (
     <AdminLayout>
       <Box sx={{ background:{xs:"none",md:"white",lg:"white",xl:"white"}, height:"87vh",}}>
       
           <Box sx={{background:"var(--text-color)", padding:"15px", display:"flex", alignItems:'center',gap:"40px"}}> 
-          <Link href={`${ADMIN_MEETING_ROUTE.url}`} sx={{color:"white"}}>
+          <Link href={`${ADMIN_USER_ROUTE.url}`} sx={{color:"white"}}>
             <ArrowBackIcon fontSize="small"  sx={{width:"30px",height:"30px"}}/>
           </Link> 
           <Typography variant="h5" color="white">

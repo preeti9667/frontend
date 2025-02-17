@@ -10,16 +10,15 @@ export function middleware(req: NextRequest) {
     const userToken= req.cookies.get('userToken')?.value
    
     const isLoginPage = path === LOGIN_ROUTE.url;
-    const isAdminDashboard = path.startsWith(ADMIN_DASHBOARD_ROUTE.url );
-    const isMeetingDashboard = path.startsWith(ADMIN_MEETING_ROUTE.url);
-    const isUserDashboard = path.startsWith(ADMIN_USER_ROUTE.url); 
+const adminRoutes = [ADMIN_DASHBOARD_ROUTE.url, ADMIN_MEETING_ROUTE.url, ADMIN_USER_ROUTE.url];
+const isAdminDashboard = adminRoutes.some(route => path.startsWith(route));
 
     if ((isLoginPage ) && Token) {
         return NextResponse.redirect(new URL(ADMIN_DASHBOARD_ROUTE.url, req.url));
       }
     
       // Redirect users without token away from admin pages
-      if ((isAdminDashboard || isMeetingDashboard || isUserDashboard) && !Token) {
+      if ((isAdminDashboard) && !Token) {
         return NextResponse.redirect(new URL(LOGIN_ROUTE.url, req.url));
       }
    

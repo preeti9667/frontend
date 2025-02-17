@@ -21,26 +21,15 @@ const LogIn = () => {
   const router = useRouter();
 
   const handleSubmit = async (value: FormValue) => {
-    // console.log(value)
-       try {
             const response = await post(`${ADMIN_LOGIN_API}`,value)
-                console.log(response);
-
-              if(response.error){ 
-                console.log('toast called');
-              }
+                // console.log(response);
               const {token} = response.data.result
               setCookie("Token", token,{
                               maxAge: 60 * 60 * 30
                              });
-
       if (response.status === 200) {
         router.push(`${ADMIN_DASHBOARD_ROUTE.url}`);
       } 
-    } catch (error) {
-      console.error("Login error:", error);
-    
-    }
   };
 
   return (

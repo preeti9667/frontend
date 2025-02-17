@@ -37,7 +37,7 @@ import { ADD_MEETING_ROUTE, ADMIN_MEETING_ROUTE } from "@/constant";
 import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
 import RefreshIcon from "@mui/icons-material/Refresh";
 import { getCookie } from "cookies-next";
-import { get } from "@/util/http.util";
+import { useDebouncedCallback } from 'use-debounce';
 interface DataItem {
   _id: string;
   title: string;
@@ -55,7 +55,7 @@ interface DataItem {
 
 const Meeting = () => {
   const [meetings, setMeetings] = useState<DataItem[]>([]);
-  const [search, setSearch] = useState("");
+  const [search, setSearch] = useState('');
   const [page, setPage] = useState(0);
   const [totalCount, setTotalCount] = useState(0);
   const [limit, setLimit] = useState(10);
@@ -101,6 +101,15 @@ const Meeting = () => {
     fetchMeetings();
   }, [search, page, isMobile, limit, startDateSort, meetingIdSort]);
 
+
+
+  const debounced = useDebouncedCallback(
+    // function
+    (search) => {
+      setSearch(search);
+    },
+    1000
+  );
   const handleItemClick = (id: string) => {
     router.push(`${ADMIN_MEETING_ROUTE.url}/${id}/details`);
   };
@@ -198,8 +207,8 @@ const getStatusColor = (interval: string) => {
                   borderRadius: "10px",
                   width: { lg: "350px", sx: "300px" },
                 }}
-                value={search}
-                onChange={(e) => setSearch(e.target.value)}
+                defaultValue={debounced(search)}
+                onChange={(e) => debounced(e.target.value)}
               />
             </Paper>
           </Box>
@@ -260,6 +269,9 @@ const getStatusColor = (interval: string) => {
                       <TableCell>
                         <Skeleton variant="text" width="100%" height={40} />
                       </TableCell>
+                      <TableCell>
+                        <Skeleton variant="text" width="100%" height={40} />
+                      </TableCell>
                     </TableRow>
                   ))
                 : meetings.map((item, index) => (
@@ -268,13 +280,13 @@ const getStatusColor = (interval: string) => {
                       key={item._id}
                       sx={{
                         "&:last-child td, &:last-child th": { border: 0 },
-                        cursor: "pointer",
+                        cursor: "pointer", 
                       }}
                     >
-                      <TableCell >
+                      <TableCell>
                         {item.meetingId}
                       </TableCell>
-                      <TableCell>
+                      <TableCell >
                         {moment(item.createdAt).format("lll")}
                       </TableCell>
 
@@ -291,13 +303,13 @@ const getStatusColor = (interval: string) => {
                       </TableCell>
                       <TableCell>
                        <Box className={style.meetingTypeStatus}
-                       sx={{backgroundColor:getStageColor(item.type)}}>
+                       sx={{backgroundColor:getStageColor(item.type), fontSize:"11px"}}>
                         {item.type}</Box>
                       </TableCell>
 
                       <TableCell >
                       <Box className={style.meetingTypeStatus}
-                      sx={{ backgroundColor:getStatusColor(item.status), }}> 
+                      sx={{ backgroundColor:getStatusColor(item.status), fontSize:"11px" }}> 
                       {item.status}
                         </Box> 
                       </TableCell>
@@ -357,7 +369,7 @@ const getStatusColor = (interval: string) => {
               placeholder="search"
               sx={{ padding: "3px 10px", borderRadius: "10px" }}
               value={search}
-              onChange={(e) => setSearch(e.target.value)}
+              onChange={(e) => debounced(e.target.value)}
             />
           </Paper>
         </Box>
@@ -403,7 +415,7 @@ const getStatusColor = (interval: string) => {
                       </Typography>
                        <Box sx={{display:'flex', alignItems:'center', gap:'10px'}}>Title:
                          <Typography className={style.meetingTypeStatus}
-                         sx={{backgroundColor:getStageColor(item.type),}}
+                         sx={{backgroundColor:getStageColor(item.type), fontSize:"11px"}}
                          >
                        {item.type}
                  </Typography>
@@ -412,7 +424,7 @@ const getStatusColor = (interval: string) => {
                  <Box sx={{display:'flex', alignItems:'center', gap:'10px'}}>
                  Status:
                  <Typography className={style.meetingTypeStatus}
-                 sx={{backgroundColor:getStatusColor(item.status)}}>
+                 sx={{backgroundColor:getStatusColor(item.status),fontSize:"11px"}}>
 
                       {item.status}
                      </Typography>

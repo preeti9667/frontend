@@ -26,6 +26,7 @@
     "react-dom": "^18.3.1",
     "react-toastify": "^11.0.3",
     "styled-components": "^6.1.13",
+    "use-debounce": "^10.0.4",
     "yup": "^1.4.0"
   },
   "devDependencies": {

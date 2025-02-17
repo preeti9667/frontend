@@ -13,6 +13,7 @@ import { Box, Button, Card, CardContent, Divider, FormControlLabel, InputBase, M
    import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
    import RefreshIcon from "@mui/icons-material/Refresh";
 import { getCookie } from 'cookies-next';
+import { useDebouncedCallback } from 'use-debounce';
    interface DataItem {
      _id: string;
      createdAt: string;
@@ -90,6 +91,13 @@ import { getCookie } from 'cookies-next';
    
     //  const totalPages = Math.ceil(totalCount / limit);
   
+    const debounced = useDebouncedCallback(
+        // function
+        (search) => {
+          setSearch(search);
+        },
+        1000
+      );
    
      const userCreate = () => {
        router.push(`${ADD_USER_ROUTE.url}`);
@@ -151,8 +159,8 @@ import { getCookie } from 'cookies-next';
                   borderRadius: "10px",
                   width: { lg: "350px", sx: "300px" },
                 }}
-                value={search}
-                onChange={(e) => setSearch(e.target.value)}
+                defaultValue={debounced(search)}
+                onChange={(e) => debounced(e.target.value)}
               />
             </Paper>
           </Box>
@@ -163,10 +171,10 @@ import { getCookie } from 'cookies-next';
             <TableHead>
               <TableRow>
               
-                <TableCell sx={{ fontSize: "23px" }}>  
+                <TableCell sx={{ fontSize: "18px" }}>  
                Created At
                 </TableCell>
-                <TableCell sx={{ fontSize: "23px" }}>
+                <TableCell sx={{ fontSize: "18px" }}>
                 <TableSortLabel
                 active={!!userIdSort}
                 direction={userIdSort || "asc"}
@@ -175,7 +183,7 @@ import { getCookie } from 'cookies-next';
                 User ID
               </TableSortLabel>
                 </TableCell>
-                <TableCell sx={{ fontSize: "23px" }}>
+                <TableCell sx={{ fontSize: "18px" }}>
                 <TableSortLabel
                 active={!!fullNameSort}
                 direction={fullNameSort || "asc"}
@@ -184,8 +192,8 @@ import { getCookie } from 'cookies-next';
                Name
               </TableSortLabel>
                 </TableCell>
-                <TableCell sx={{ fontSize: "20px" }}>Email</TableCell>
-                <TableCell sx={{ fontSize: "23px" }}>Action</TableCell>
+                <TableCell sx={{ fontSize: "18px" }}>Email</TableCell>
+                <TableCell sx={{ fontSize: "18px" }}>Action</TableCell>
               </TableRow>
             </TableHead>
 
