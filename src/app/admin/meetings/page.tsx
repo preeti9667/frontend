@@ -29,15 +29,15 @@ import {
 } from "@mui/material";
 import axios, { AxiosError } from "axios";
 import { GET_MEETING_API } from "@/constant/api.constant";
-import CircularProgress from "@mui/material/CircularProgress";
 import style from "../admin.module.css";
-import moment from "moment";
 import { useRouter } from "next/navigation";
 import { ADD_MEETING_ROUTE, ADMIN_MEETING_ROUTE } from "@/constant";
 import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
 import RefreshIcon from "@mui/icons-material/Refresh";
 import { getCookie } from "cookies-next";
-import { useDebouncedCallback } from 'use-debounce';
+import { useDebouncedCallback } from "use-debounce";
+import { Moment, StatusColor, TypeColor } from "../components/Chip";
+
 interface DataItem {
   _id: string;
   title: string;
@@ -52,17 +52,17 @@ interface DataItem {
   type: string;
 }
 
-
 const Meeting = () => {
   const [meetings, setMeetings] = useState<DataItem[]>([]);
-  const [search, setSearch] = useState('');
+  const [search, setSearch] = useState("");
   const [page, setPage] = useState(0);
   const [totalCount, setTotalCount] = useState(0);
   const [limit, setLimit] = useState(10);
   const [isLoading, setIsLoading] = useState(false);
 
-  const [startDateSort, setStartDateSort] = useState< "asc" | "desc" | undefined >(undefined);
-  const [meetingIdSort, setMeetingIdSort] = useState<"asc" | "desc" | undefined>(undefined);
+  const [startDateSort, setStartDateSort] = useState<
+    "asc" | "desc" | undefined
+  >(undefined);
 
   const router = useRouter();
 
@@ -76,7 +76,6 @@ const Meeting = () => {
         params: {
           search,
           startDateSort,
-          meetingIdSort,
           page: page + 1,
           limit: isMobile ? 0 : limit,
         },
@@ -99,9 +98,7 @@ const Meeting = () => {
 
   useEffect(() => {
     fetchMeetings();
-  }, [search, page, isMobile, limit, startDateSort, meetingIdSort]);
-
-
+  }, [search, page, isMobile, limit, startDateSort]);
 
   const debounced = useDebouncedCallback(
     // function
@@ -121,7 +118,7 @@ const Meeting = () => {
   const handleRefresh = () => {
     fetchMeetings();
   };
-  
+
   const handleChangePage = (event: unknown, newPage: number) => {
     setPage(newPage);
   };
@@ -133,39 +130,11 @@ const Meeting = () => {
     setPage(0);
   };
 
-  const handleSort = (field:  'startDate' | 'meetingId') => {
+  const handleSort = (field: "startDate" | "meetingId") => {
     if (field === "startDate") {
       setStartDateSort(startDateSort === "asc" ? "desc" : "asc");
-      setMeetingIdSort(undefined); // Reset other sorting
-
-    } else  {
-      setMeetingIdSort(meetingIdSort === "asc" ? "desc" : "asc");
-      setStartDateSort(undefined); // Reset other sorting
     }
-  };  
-
-////////////////
-  const getStageColor = (interval: string) => {
-    switch (interval) {
-        case "ONCE":
-            return 'var(--primary-color)';
-        case "WEEKLY":
-            return "var( --text-color)";
-        case "MONTHLY":
-            return "var(--danger-color)";
-        case "DAILY":
-            return "var(--text1-color)";
-       
-    }
-};
-const getStatusColor = (interval: string) => {
-    switch (interval) {
-        case "CREATED":
-            return 'var(--secondary-color)';
-        case "COMPLETED":
-            return "#0000ff91";
-    }
-}
+  };
 
   return (
     <AdminLayout>
@@ -180,8 +149,6 @@ const getStatusColor = (interval: string) => {
           },
         }}
       >
-        
-                   
         <Box style={{ backgroundColor: "var( --text-color)", color: "white" }}>
           <Box className={style.meetingTop}>
             <Box sx={{ display: "flex", gap: "10px" }}>
@@ -215,25 +182,21 @@ const getStatusColor = (interval: string) => {
         </Box>
 
         <TableContainer component={Paper}>
-          <Table sx={{ minWidth: 650 }} aria-label="simple table">
+          <Table
+            sx={{ minWidth: 650, fontWeight: "bold" }}
+            aria-label="simple table"
+          >
             <TableHead>
               <TableRow>
-                <TableCell>
-                  <TableSortLabel sx={{ fontSize: "18px" }}
-                    active={!!meetingIdSort}
-                    direction={meetingIdSort || "asc"}
-                    onClick={() => handleSort("meetingId")}
-                  >
-                    Meeting Id
-                  </TableSortLabel>
-                </TableCell>
+                <TableCell sx={{ fontSize: "18px" }}>Meeting Id</TableCell>
                 <TableCell sx={{ fontSize: "18px" }}>Created At</TableCell>
                 <TableCell sx={{ fontSize: "18px" }}>Title</TableCell>
                 <TableCell sx={{ fontSize: "18px" }}>
                   <TableSortLabel
                     active={!!startDateSort}
                     direction={startDateSort || "asc"}
-                    onClick={() => handleSort("startDate")} >
+                    onClick={() => handleSort("startDate")}
+                  >
                     Start Date
                   </TableSortLabel>
                 </TableCell>
@@ -276,42 +239,37 @@ const getStatusColor = (interval: string) => {
                   ))
                 : meetings.map((item, index) => (
                     <TableRow
-                    onClick={() => handleItemClick(item._id)}
+                      onClick={() => handleItemClick(item._id)}
                       key={item._id}
                       sx={{
                         "&:last-child td, &:last-child th": { border: 0 },
-                        cursor: "pointer", 
+                        cursor: "pointer",
                       }}
                     >
+                      <TableCell>{item.meetingId}</TableCell>
                       <TableCell>
-                        {item.meetingId}
-                      </TableCell>
-                      <TableCell >
-                        {moment(item.createdAt).format("lll")}
+                        <Moment item={(item.createdAt)} type="lll" />
                       </TableCell>
 
-                      <TableCell >
+                      <TableCell>
                         {item.title.charAt(0).toUpperCase() +
                           item.title.slice(1).toLowerCase()}
                       </TableCell>
                       <TableCell>
-                        {moment(item.startDate).format("ll")} 
+                        <Moment item={String(item.startDate)} type="ll" />
                       </TableCell>
-                      <TableCell>{moment(item.endDate).format("ll")}</TableCell>
+                      <TableCell>
+                        <Moment item={String(item.endDate)} type="ll" />
+                      </TableCell>
                       <TableCell>
                         {item.startTime} - {item.endTime}
                       </TableCell>
                       <TableCell>
-                       <Box className={style.meetingTypeStatus}
-                       sx={{backgroundColor:getStageColor(item.type), fontSize:"11px"}}>
-                        {item.type}</Box>
+                        <TypeColor item={item.type} />
                       </TableCell>
 
-                      <TableCell >
-                      <Box className={style.meetingTypeStatus}
-                      sx={{ backgroundColor:getStatusColor(item.status), fontSize:"11px" }}> 
-                      {item.status}
-                        </Box> 
+                      <TableCell>
+                        <StatusColor item={item.status} />
                       </TableCell>
                     </TableRow>
                   ))}
@@ -399,39 +357,49 @@ const getStatusColor = (interval: string) => {
                         flexDirection: "column",
                       }}
                     >
-                      <Typography>Title: {item.title.charAt(0).toUpperCase() +
-                          item.title.slice(1).toLowerCase()}</Typography>
+                      <Typography>
+                        Title:{" "}
+                        {item.title.charAt(0).toUpperCase() +
+                          item.title.slice(1).toLowerCase()}
+                      </Typography>
                       <Typography>Meeting Id: {item.meetingId}</Typography>
-                      <Typography>Created At: {moment(item.createdAt).format("lll")}</Typography>
-                      <Typography>
-                        Start-Date: {moment(item.startDate).format("ll")}
-                      </Typography>
-                      <Typography>
-                        End-Date: {moment(item.endDate).format("ll")}
-                      </Typography>
 
+                      <Box className={style.momentStyle}>
+                        Created At:
+                        <Moment  item={item.createdAt} type="lll" />
+                      </Box>
+                      <Box className={style.momentStyle}>
+                        Start-Date:
+                        <Moment item={String(item.startDate)} type="ll" />
+                      </Box>
+                      <Box className={style.momentStyle}>
+                        End-Date:
+                        <Moment item={String(item.endDate)} type="ll" />
+                      </Box>
                       <Typography>
                         Time: {item.startTime}-{item.endTime}
                       </Typography>
-                       <Box sx={{display:'flex', alignItems:'center', gap:'10px'}}>Title:
-                         <Typography className={style.meetingTypeStatus}
-                         sx={{backgroundColor:getStageColor(item.type), fontSize:"11px"}}
-                         >
-                       {item.type}
-                 </Typography>
-                        </Box>
-
-                 <Box sx={{display:'flex', alignItems:'center', gap:'10px'}}>
-                 Status:
-                 <Typography className={style.meetingTypeStatus}
-                 sx={{backgroundColor:getStatusColor(item.status),fontSize:"11px"}}>
-
-                      {item.status}
-                     </Typography>
-                 </Box>
-
+                      <Box
+                        sx={{
+                          display: "flex",
+                          gap: "8px",
+                          alignItems: "center",
+                        }}
+                      >
+                        Type:
+                        <TypeColor item={item.type} />
+                      </Box>
+                      <Box
+                        sx={{
+                          display: "flex",
+                          gap: "8px",
+                          alignItems: "center",
+                        }}
+                      >
+                        Status:
+                        <StatusColor item={item.status} />
+                      </Box>
                     </CardContent>
-                   
                   </Card>
                 </Box>
               ))}

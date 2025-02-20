@@ -7,6 +7,10 @@ import {
   MenuItem,
   Select,
   SelectChangeEvent,
+  Table,
+  TableBody,
+  TableHead,
+  TableRow,
   Typography,
 } from "@mui/material";
 import axios, { AxiosError } from "axios";
@@ -14,14 +18,15 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import style from "@/app/admin/admin.module.css";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
-import moment from "moment";
+// import moment from "moment";
 import SpaIcon from "@mui/icons-material/Spa";
 import { useRouter } from "next/navigation";
 import { ADMIN_MEETING_ROUTE, GET_MEETING_API } from "@/constant";
 import AdminLayout from "../../../AdminLayout";
 import MyDialog from "@/app/admin/components/Dialog";
 import { toast } from "react-toastify";
-
+import { Moment, StatusColor, TypeColor } from "@/app/admin/components/Chip";
+import Grid from '@mui/material/Grid2';
 interface DataItem {
   _id: string;
   meetingId: string;
@@ -105,9 +110,7 @@ export default function page({
       <Box
         sx={{
           background: { xs: "none", md: "white", lg: "white", xl: "white" },
-          // padding: { xs: "0", md: "20px", lg: "20px", xl: "20px" },
-        }}
-      >
+        }} >
          <Box sx={{background:'var(--text-color)', display:"flex", alignItems:'center',padding:"15px",gap:"40px"}}>
           <Link href={`${ADMIN_MEETING_ROUTE.url}`} >
             <ArrowBackIcon fontSize="small"  sx={{width:"30px",height:"30px", color:"white"}}/>
@@ -124,29 +127,37 @@ export default function page({
               md: "1fr 1fr",
               lg: "1fr 1fr",
             },
-          padding: { xs: "10px", md: "20px", lg: "20px", xl: "20px" },
-
-          }}
-        >
+          padding: { xs: "10px", md: "20px", lg: "20px", xl: "20px" }, }}>
           <Box sx={{ display: "flex", flexDirection: "column", gap: "18px",}}>
               <Typography> Title: {meeting?.title.toLocaleUpperCase()}</Typography>
             <Typography>Meeting Id: {meeting?.meetingId}</Typography>
-            <Typography>Created At: {moment(meeting?.createdAt).format("lll")}</Typography>
+            <Box className={style.momentStyle}>Created At: <Moment item={String(meeting?.createdAt)} type="lll"/></Box>
+            
 
             <Typography>
               Time: {meeting?.startTime} - {meeting?.endTime}
             </Typography>
 
-            <Typography>
-              Date: {moment(meeting?.startDate).format("ll")} -{" "}
-              {moment(meeting?.endDate).format("ll")}
-            </Typography>
+            <Box className={style.momentStyle}>
+              Date: <Moment item={String(meeting?.startDate)} type="ll"/> -
+              <Moment item={String(meeting?.endDate)} type="ll"/>
+            </Box>
 
             <Typography>Description: {meeting?.description}</Typography>
 
-            <Typography>Type: {meeting?.type}</Typography>
+           
+              <Box >
+              Type:
+              <TypeColor item={String(meeting?.type)}/>
+              </Box>
+              <Box >
+              Status:
+              <StatusColor item={String(meeting?.status)}/>
+              </Box>
+
+             
           
-            <FormControl sx={{ width: '200px'}}  size="small">
+            {/* <FormControl sx={{ width: '200px'}}  size="small">
             <InputLabel id="demo-simple-select-label" >Status</InputLabel>
             <Select
              label="Status"
@@ -157,9 +168,9 @@ export default function page({
           <MenuItem value='CREATED' >CREATED</MenuItem>
           <MenuItem value='COMPLETED'>COMPLETED</MenuItem>
         </Select>
-             </FormControl>
+             </FormControl> */}
 
-            <Box className={style.action}>
+            {/* <Box className={style.action}>
               <Button
                 sx={{ textTransform: "none", fontSize: "20px", width: "150px" }}
                 variant="contained"
@@ -176,17 +187,17 @@ export default function page({
               >
                 Delete
               </Button>
-            </Box>
+            </Box> */}
           </Box>
 
           <Box sx={{ border: "1px solid black" }}>hello</Box>
-        </Box>
+          </Box>
 
-        <MyDialog
+        {/* <MyDialog
           handleDelete={deleteMeeting}
           onClose={handleClose}
           open={open}
-        />
+        /> */}
       </Box>
     </AdminLayout>
   );

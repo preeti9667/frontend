@@ -45,11 +45,9 @@ margin: auto;
     font-size: 20px;
     text-transform: none;
 }
-.meetingTypeStatus{
-color: white;
-width: fit-content;
-padding: 5px 10px;
-text-align: center;
-border-radius: 20px;
 
+.momentStyle{
+    display: flex;
+    gap: 5px;
+    align-items: center;
 }
