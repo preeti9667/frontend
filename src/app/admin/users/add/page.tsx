@@ -57,9 +57,10 @@ const  MeetingForm  =()=> {
       <Box sx={{ background:{xs:"none",md:"white",lg:"white",xl:"white"}, height:"87vh",}}>
       
           <Box sx={{background:"var(--text-color)", padding:"15px", display:"flex", alignItems:'center',gap:"40px"}}> 
-          <Link href={`${ADMIN_USER_ROUTE.url}`} sx={{color:"white"}}>
-            <ArrowBackIcon fontSize="small"  sx={{width:"30px",height:"30px"}}/>
-          </Link> 
+      
+            <ArrowBackIcon fontSize="small"  onClick={() => router.back()}
+             sx={{width:"30px",height:"30px", cursor:"pointer", color:"white"}}/>
+        
           <Typography variant="h5" color="white">
           Add User
           </Typography>

@@ -25,7 +25,7 @@ const LogIn = () => {
                 // console.log(response);
               const {token} = response.data.result
               setCookie("Token", token,{
-                              maxAge: 60 * 60 * 30
+                              maxAge: 60 * 60 * 24
                              });
       if (response.status === 200) {
         router.push(`${ADMIN_DASHBOARD_ROUTE.url}`);
