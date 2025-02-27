@@ -158,10 +158,11 @@ const closeUserList =()=>{
 }
 
 const handleAddUser = async() => {
+  // console.log("add user")
 try {
   const res = axios.post(`${PARTICIPANT_USERS_API}`)
-    
   console.log(res)
+
   if ((await res).status === 200) {
     toast.success('Status updated successfully', {theme: 'colored'});
   }
