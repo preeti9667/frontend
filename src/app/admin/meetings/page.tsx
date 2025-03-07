@@ -37,6 +37,7 @@ import RefreshIcon from "@mui/icons-material/Refresh";
 import { getCookie } from "cookies-next";
 import { useDebouncedCallback } from "use-debounce";
 import { Moment, StatusColor, TypeColor } from "../components/Chip";
+import MokData from "../components/ MokData";
 
 interface DataItem {
   _id: string;
@@ -58,7 +59,7 @@ const Meeting = () => {
   const [page, setPage] = useState(0);
   const [totalCount, setTotalCount] = useState(0);
   const [limit, setLimit] = useState(10);
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
 
   const [startDateSort, setStartDateSort] = useState<
     "asc" | "desc" | undefined
@@ -68,9 +69,7 @@ const Meeting = () => {
 
   const isMobile = useMediaQuery("(max-width:600px)");
 
-  const fetchMeetings = async () => {
-    setIsLoading(true); // Show Skeleton if API is slow
-
+  const fetchMeetings = async () => { 
     try {
       const response = await axios.get(GET_MEETING_API, {
         params: {
@@ -85,14 +84,12 @@ const Meeting = () => {
       });
       // const { data } = response.data;
       const data = response.data.data;
-      // console.log(data)
-
       setMeetings(data.list);
       setTotalCount(data.count);
       setIsLoading(false);
     } catch (error) {
       console.error("Error fetching users:", error);
-      setIsLoading(true);
+      // setIsLoading(true);
     }
   };
 
@@ -184,8 +181,7 @@ const Meeting = () => {
         <TableContainer component={Paper}>
           <Table
             sx={{ minWidth: 650, fontWeight: "bold" }}
-            aria-label="simple table"
-          >
+            aria-label="simple table">
             <TableHead>
               <TableRow>
                 <TableCell sx={{ fontSize: "18px" }}>Meeting Id</TableCell>
@@ -195,8 +191,7 @@ const Meeting = () => {
                   <TableSortLabel
                     active={!!startDateSort}
                     direction={startDateSort || "asc"}
-                    onClick={() => handleSort("startDate")}
-                  >
+                    onClick={() => handleSort("startDate")} >
                     Start Date
                   </TableSortLabel>
                 </TableCell>
@@ -207,45 +202,24 @@ const Meeting = () => {
               </TableRow>
             </TableHead>
 
-            <TableBody>
               {isLoading
                 ? Array.from({ length: limit }).map((_, index) => (
-                    <TableRow key={index}>
-                      <TableCell>
-                        <Skeleton variant="text" width="100%" height={40} />
-                      </TableCell>
-                      <TableCell>
-                        <Skeleton variant="text" width="100%" height={40} />
-                      </TableCell>
-                      <TableCell>
-                        <Skeleton variant="text" width="100%" height={40} />
-                      </TableCell>
-                      <TableCell>
-                        <Skeleton variant="text" width="100%" height={40} />
-                      </TableCell>
-                      <TableCell>
-                        <Skeleton variant="text" width="100%" height={40} />
-                      </TableCell>
-                      <TableCell>
-                        <Skeleton variant="text" width="100%" height={40} />
-                      </TableCell>
-                      <TableCell>
-                        <Skeleton variant="text" width="100%" height={40} />
-                      </TableCell>
-                      <TableCell>
-                        <Skeleton variant="text" width="100%" height={40} />
-                      </TableCell>
-                    </TableRow>
+               <TableBody key={index}>
+                  <TableRow>
+                     { [1,2,3,4,5,6,7,8].map((_,index)=>(
+                      <TableCell key={index}>
+                      <MokData height="40px" width="100%" key={index} />
+                    </TableCell>                    
+                     ))}
+                  </TableRow>                   
+                    </TableBody>                
                   ))
-                : meetings.map((item, index) => (
+                : 
+                meetings.map((item,) => (                 
+                  <TableBody key={item._id} >
                     <TableRow
                       onClick={() => handleItemClick(item._id)}
-                      key={item._id}
-                      sx={{
-                        "&:last-child td, &:last-child th": { border: 0 },
-                        cursor: "pointer",
-                      }}
-                    >
+                      sx={{cursor: "pointer", }}>
                       <TableCell>{item.meetingId}</TableCell>
                       <TableCell>
                         <Moment item={(item.createdAt)} type="lll" />
@@ -256,24 +230,17 @@ const Meeting = () => {
                           item.title.slice(1).toLowerCase()}
                       </TableCell>
                       <TableCell>
-                        <Moment item={String(item.startDate)} type="ll" />
+                        {/* <Moment item={String(item.startDate)} type="ll" /> */}
                       </TableCell>
                       <TableCell>
-                        <Moment item={String(item.endDate)} type="ll" />
+                        {/* <Moment item={String(item.endDate)} type="ll" /> */}
                       </TableCell>
-                      <TableCell>
-                        {item.startTime} - {item.endTime}
-                      </TableCell>
-                      <TableCell>
-                        <TypeColor item={item.type} />
-                      </TableCell>
-
-                      <TableCell>
-                        <StatusColor item={item.status} />
-                      </TableCell>
+                      <TableCell>{item.startTime} - {item.endTime} </TableCell>
+                      <TableCell><TypeColor item={item.type} /></TableCell>
+                      <TableCell><StatusColor item={item.status} /></TableCell>
                     </TableRow>
-                  ))}
             </TableBody>
+                  ))}
           </Table>
           <Divider />
 
@@ -297,9 +264,7 @@ const Meeting = () => {
             xs: "block",
             sm: "block",
             lg: "none",
-          },
-        }}
-      >
+          }, }} >
         <Box>
           <Box
             sx={{
@@ -307,18 +272,15 @@ const Meeting = () => {
               justifyContent: "space-between",
               alignContent: "center",
               margin: "10px 0",
-            }}
-          >
+            }} >
             <Button
               onClick={meetingCreate}
-              sx={{ backgroundColor: "white", color: "black" }}
-            >
+              sx={{ backgroundColor: "white", color: "black" }}>
               <AddCircleOutlineIcon />
             </Button>
             <Button
               sx={{ backgroundColor: "white", color: "black" }}
-              onClick={handleRefresh}
-            >
+              onClick={handleRefresh}>
               <RefreshIcon />
             </Button>
           </Box>
@@ -337,11 +299,11 @@ const Meeting = () => {
         >
           {isLoading
             ? Array.from({ length: limit }).map((_, index) => (
-                <Box key={index}>
-                  <Skeleton variant="text" width="100%" height={250} />
-                </Box>
+                <Box key={index}>              
+                <MokData width="100%" height={600} key={index} />                  
+              </Box>
               ))
-            : meetings.map((item, index) => (
+               : meetings.map((item, index) => (
                 <Box key={index}>
                   <Card
                     sx={{
@@ -358,7 +320,7 @@ const Meeting = () => {
                       }}
                     >
                       <Typography>
-                        Title:{" "}
+                        Title:
                         {item.title.charAt(0).toUpperCase() +
                           item.title.slice(1).toLowerCase()}
                       </Typography>

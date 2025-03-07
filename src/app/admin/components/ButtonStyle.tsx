@@ -1,6 +1,8 @@
 import { Box, Button ,} from "@mui/material"
 
-type ButtonColor = 'inherit' | 'primary' | 'secondary' | 'success' | 'error' | 'info' | 'warning';
+type ButtonColor = 'inherit' | 'primary' | 'secondary' | 'success' | 'error' | 'info' | 'warning' ;
+
+
 interface ButtonStyleProps {
     title: string,
     color: ButtonColor,
@@ -12,8 +14,9 @@ interface ButtonStyleProps {
 export const ButtonStyle: React.FC<ButtonStyleProps> = ({title,color,variant,onClick}) => {
     return (
         <>
-        <Button color={color} variant={variant} onClick={onClick}
-        sx={{textTransform:"none", boxShadow:"none"}}>
+        <Button variant={variant} onClick={onClick} color={color} 
+        sx={{textTransform:"none", boxShadow:"none",
+        }}>
             {title}
         </Button>
         </>

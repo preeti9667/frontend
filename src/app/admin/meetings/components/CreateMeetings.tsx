@@ -105,7 +105,7 @@ const MeetingForm: React.FC<meetingProps> = ({
        
             <ArrowBackIcon
               fontSize="small" onClick={() => history.back()}
-              sx={{ width: "30px", height: "30px", color: "white" }}
+              sx={{ width: "30px", height: "30px", color: "white", cursor: "pointer" }}
             />
           <Typography variant="h5" sx={{ color: "white" }}>
             {mode === "add" ? "Add Meeting" : "Edit Meeting"}
