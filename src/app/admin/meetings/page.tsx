@@ -230,10 +230,10 @@ const Meeting = () => {
                           item.title.slice(1).toLowerCase()}
                       </TableCell>
                       <TableCell>
-                        {/* <Moment item={String(item.startDate)} type="ll" /> */}
+                        <Moment item={String(item.startDate)} type="ll" />
                       </TableCell>
                       <TableCell>
-                        {/* <Moment item={String(item.endDate)} type="ll" /> */}
+                        <Moment item={String(item.endDate)} type="ll" />
                       </TableCell>
                       <TableCell>{item.startTime} - {item.endTime} </TableCell>
                       <TableCell><TypeColor item={item.type} /></TableCell>

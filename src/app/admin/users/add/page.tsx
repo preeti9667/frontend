@@ -1,5 +1,4 @@
 'use client'
-"use client";
 import React from "react";
 import { Box, Button, FormControl, FormControlLabel, FormLabel, Link,  Radio,  RadioGroup,  Switch,  TextField, Typography, } from "@mui/material";
 import Image from "next/image";
