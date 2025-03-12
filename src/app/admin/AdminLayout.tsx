@@ -27,7 +27,6 @@ import { usePathname,useRouter } from "next/navigation";
 import { ADMIN_MEETING_ROUTE,ADMIN_DASHBOARD_ROUTE, ADMIN_USER_ROUTE, LOGIN_ROUTE } from "@/constant/route.constant";
 import MyDialog from "./components/Dialog";
 import { deleteCookie } from "cookies-next"; //remove from "cookies-next";
-
 export default function AdminLayout({
   children,
 }: Readonly<{
@@ -36,7 +35,7 @@ export default function AdminLayout({
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
 
      const [logoutOpen, setLogoutOpen] = useState(false);
-
+     
   const pathname = usePathname();
   const router = useRouter();
   const toggleDrawer = (open: boolean) => () => {
@@ -58,9 +57,9 @@ export default function AdminLayout({
       onClick={toggleDrawer(false)}
       onKeyDown={toggleDrawer(false)}
       marginTop={7}
-    >
+    > 
       <List sx={{ display: "flex", flexDirection: "column" }}>
-        <Divider/>
+        <Divider/> 
         <ListItemButton
           href={`${ADMIN_DASHBOARD_ROUTE.url}`}
           disableRipple

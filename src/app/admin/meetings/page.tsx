@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { Suspense, useEffect, useState } from "react";
 import AdminLayout from "../AdminLayout";
 import {
   Alert,
@@ -38,8 +38,8 @@ import { getCookie } from "cookies-next";
 import { useDebouncedCallback } from "use-debounce";
 import { Moment, StatusColor, TypeColor } from "../components/Chip";
 import MokData from "../components/ MokData";
-
-interface DataItem {
+import useRequest from "../../../util/useRequest";
+interface DataItem{
   _id: string;
   title: string;
   description: string;
@@ -54,48 +54,61 @@ interface DataItem {
 }
 
 const Meeting = () => {
-  const [meetings, setMeetings] = useState<DataItem[]>([]);
+  // const [meetings, setMeetings] = useState<DataItem[]>([]);
   const [search, setSearch] = useState("");
   const [page, setPage] = useState(0);
   const [totalCount, setTotalCount] = useState(0);
   const [limit, setLimit] = useState(10);
-  const [isLoading, setIsLoading] = useState(true);
+  // const [isLoading, setIsLoading] = useState(true);
 
-  const [startDateSort, setStartDateSort] = useState<
-    "asc" | "desc" | undefined
-  >(undefined);
+  const [startDateSort, setStartDateSort] = useState<"asc" | "desc" | undefined>(undefined);
 
   const router = useRouter();
 
   const isMobile = useMediaQuery("(max-width:600px)");
+  
 
-  const fetchMeetings = async () => { 
-    try {
-      const response = await axios.get(GET_MEETING_API, {
-        params: {
-          search,
-          startDateSort,
-          page: page + 1,
-          limit: isMobile ? 0 : limit,
-        },
-        headers: {
-          Authorization: `Bearer ${getCookie("Token")}`,
-        },
-      });
-      // const { data } = response.data;
-      const data = response.data.data;
-      setMeetings(data.list);
-      setTotalCount(data.count);
-      setIsLoading(false);
-    } catch (error) {
-      console.error("Error fetching users:", error);
-      // setIsLoading(true);
-    }
-  };
+  // const fetchMeetings = async () => { 
+  //   try {
+  //     const response = await axios.get(GET_MEETING_API, {
+  //       params: {
+  //         search,
+  //         startDateSort,
+  //         page: page + 1,
+  //         limit: isMobile ? 0 : limit,
+  //       },
+  //       headers: {
+  //         Authorization: `Bearer ${getCookie("Token")}`,
+  //       },
+  //     });
+  //     // const { data } = response.data;
+  //     const data = response.data.data;
+  //     setMeetings(data.list);
+  //     setTotalCount(data.count);
+  //   } catch (error) {
+  //     console.error("Error fetching users:", error);
+      
+  //   }
+  // };
 
-  useEffect(() => {
-    fetchMeetings();
-  }, [search, page, isMobile, limit, startDateSort]);
+  // useEffect(() => {
+  //   fetchMeetings();
+  // }, [search, page, isMobile, limit, startDateSort]);
+
+
+  const { data, isLoading,  } = useRequest({
+    url: GET_MEETING_API,
+    params: { 
+      search,
+        page: page + 1,
+        limit: isMobile ? 0 : limit,
+        startDateSort
+
+     },
+  });
+  
+  const meetings = data?.data?.list as DataItem[] || [];
+  // console.log(meetings);
 
   const debounced = useDebouncedCallback(
     // function
@@ -113,7 +126,7 @@ const Meeting = () => {
   };
 
   const handleRefresh = () => {
-    fetchMeetings();
+    meetings
   };
 
   const handleChangePage = (event: unknown, newPage: number) => {
@@ -177,7 +190,7 @@ const Meeting = () => {
             </Paper>
           </Box>
         </Box>
-
+        <Suspense fallback={<Box>Loading...</Box>}>
         <TableContainer component={Paper}>
           <Table
             sx={{ minWidth: 650, fontWeight: "bold" }}
@@ -202,7 +215,7 @@ const Meeting = () => {
               </TableRow>
             </TableHead>
 
-              {isLoading
+              {/* {isLoading
                 ? Array.from({ length: limit }).map((_, index) => (
                <TableBody key={index}>
                   <TableRow>
@@ -214,7 +227,9 @@ const Meeting = () => {
                   </TableRow>                   
                     </TableBody>                
                   ))
-                : 
+                :  */}
+                  
+                {
                 meetings.map((item,) => (                 
                   <TableBody key={item._id} >
                     <TableRow
@@ -240,7 +255,9 @@ const Meeting = () => {
                       <TableCell><StatusColor item={item.status} /></TableCell>
                     </TableRow>
             </TableBody>
-                  ))}
+                  ))
+                }
+              
           </Table>
           <Divider />
 
@@ -253,7 +270,7 @@ const Meeting = () => {
             onPageChange={handleChangePage}
             onRowsPerPageChange={handleChangeRowsPerPage}
           />
-        </TableContainer>
+        </TableContainer>  </Suspense>
       </Box>
 
       <Box
