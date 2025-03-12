@@ -1,10 +1,8 @@
 'use client'
-
 import { Box, Button, Checkbox, Dialog, DialogContent, DialogTitle, Divider, InputBase } from "@mui/material";
 import { Field, Form, Formik } from "formik";
 import * as Yup from "yup";
 import HighlightOffOutlinedIcon from "@mui/icons-material/HighlightOffOutlined";
-import { on } from "events";
 
 interface User {
   _id: string;
@@ -22,10 +20,12 @@ interface AddUserDialogProps {
   onClose: () => void;
   participant : User[]; // List of all available users
   onSubmit: (values: string[]) => void; // Submit handler
+ search:string
+ onChange: any
 }
 
 const validationSchema = Yup.object({});
-const participatesAdd:React.FC<AddUserDialogProps> = ({initialValues,open, onClose, participant, onSubmit})=>{
+const participatesAdd:React.FC<AddUserDialogProps> = ({initialValues,open, onClose, participant, onSubmit , search , onChange})=>{
        
 
     return(
@@ -33,11 +33,12 @@ const participatesAdd:React.FC<AddUserDialogProps> = ({initialValues,open, onClo
   <Dialog open={open} onClose={onClose}>
   <DialogTitle
     color="success"
-    sx={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}
+    sx={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap:"20px" }}
   >
-    <HighlightOffOutlinedIcon onClick={onClose} sx={{ cursor: "pointer" }} />
     <InputBase
       placeholder="Search"
+      value={search}
+      onChange={onChange}
       sx={{
         padding: "3px 10px",
         borderRadius: "10px",
@@ -45,9 +46,10 @@ const participatesAdd:React.FC<AddUserDialogProps> = ({initialValues,open, onClo
         width: { lg: "350px", sx: "300px" },
       }}
     />
+      <HighlightOffOutlinedIcon onClick={onClose} sx={{ cursor: "pointer" }} />
   </DialogTitle>
   <Divider />
-  <DialogContent>
+  <DialogContent sx={{padding:"1px 2px"}}>
       <Formik
        validationSchema={validationSchema}
        initialValues={{ users: initialValues?.users || [] }} // Preselect users
@@ -55,9 +57,10 @@ const participatesAdd:React.FC<AddUserDialogProps> = ({initialValues,open, onClo
        enableReinitialize
       >
         {({ values, setFieldValue }) => (
-          <Form style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "20px", padding: "10px" }}>
+          <Form>
+            <Box sx={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "20px", padding: "10px", }}>
             {participant.map((user) => (
-              <Box key={user._id}>
+              <Box key={user._id}  >
                <Field
   type="checkbox"
   name="users"
@@ -74,8 +77,11 @@ const participatesAdd:React.FC<AddUserDialogProps> = ({initialValues,open, onClo
 />
                 <label>{user.fullName}</label>
               </Box>
-            ))}
-            <Button variant="contained" color="success" type="submit">
+            ))}</Box>
+            <Divider/>
+            <Button variant="contained" sx={{width:'300px', margin:"10px"}}
+             color="success"
+             type="submit">
               Submit
             </Button>
           </Form>
