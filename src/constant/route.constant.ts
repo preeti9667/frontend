@@ -39,6 +39,13 @@ export const ADMIN_MEETING_ROUTE = {
     }
 }
 
+export const ADMIN_PARTICIPANT_ROUTE = {
+    path: 'participants',
+    get url() {
+        return `${ADMIN_ROUTE.url}/${this.path}`
+    }
+}
+
 export const ADMIN_USER_ROUTE = {
     path: 'users',
     get url() {

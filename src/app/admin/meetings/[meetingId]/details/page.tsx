@@ -25,8 +25,9 @@ import { Moment, StatusColor, TypeColor } from "@/app/admin/components/Chip";
 import Grid from "@mui/material/Grid2";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import { useParams } from "next/navigation";
-import Participates from "../../components/Participates";
+import Participates from "../../../participants/components/Participates";
 import axios from "axios";
+import Participants from "@/app/admin/participants/page";
 interface DataItem {
   _id: string;
   meetingId: string;
@@ -211,9 +212,7 @@ const MeetingDetails = () => {
                   },
                 }}
               >
-                <MenuItem onClick={() => handleStatusChange("CREATED")}>
-                  CREATED
-                </MenuItem>
+          
                 <MenuItem onClick={() => handleStatusChange("COMPLETED")}>
                   COMPLETED
                 </MenuItem>
@@ -327,8 +326,8 @@ const MeetingDetails = () => {
             padding: { xs: "10px", md: "20px", lg: "20px", xl: "20px" },
           }}
         >
-          <Grid container spacing={2} gap={4}>
-            <Grid size={3} sx={{ display: "grid", gap: "8px" }}>
+          <Grid container spacing={2} gap={4} sx={{height:'400px', marginTop:"30px"}}>
+            <Grid size={3} sx={{ display: "grid", gap: "8px", }}>
               <Box>Title</Box>
               <Box>Meeting Id</Box>
               <Box> Created At</Box>
@@ -364,7 +363,8 @@ const MeetingDetails = () => {
             </Grid>
           </Grid>
 
-        <Participates meetingId={meetingId} />
+        <Participants meetingId={meetingId} />
+
         </Box>
 
         <MyDialog

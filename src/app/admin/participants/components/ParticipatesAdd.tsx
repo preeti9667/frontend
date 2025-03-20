@@ -3,6 +3,7 @@ import { Box, Button, Checkbox, Dialog, DialogContent, DialogTitle, Divider, Inp
 import { Field, Form, Formik } from "formik";
 import * as Yup from "yup";
 import HighlightOffOutlinedIcon from "@mui/icons-material/HighlightOffOutlined";
+import InfiniteScroll from 'react-infinite-scroller';
 
 interface User {
   _id: string;
@@ -10,6 +11,7 @@ interface User {
   email: string;
   userId: string;
   isActive: boolean;
+  // createdAt: string;
 }
 
 interface AddUserDialogProps {
@@ -20,14 +22,18 @@ interface AddUserDialogProps {
   onClose: () => void;
   participant : User[]; // List of all available users
   onSubmit: (values: string[]) => void; // Submit handler
- search:string
+ search: any
  onChange: any
+ getUsers: any
+ hasMore: any
 }
 
 const validationSchema = Yup.object({});
-const participatesAdd:React.FC<AddUserDialogProps> = ({initialValues,open, onClose, participant, onSubmit , search , onChange})=>{
-       
 
+
+
+const participatesAdd:React.FC<AddUserDialogProps> = ({initialValues,open, onClose, participant, onSubmit , search , onChange,getUsers,hasMore})=>{
+  
     return(
         <>
   <Dialog open={open} onClose={onClose}>
@@ -37,7 +43,7 @@ const participatesAdd:React.FC<AddUserDialogProps> = ({initialValues,open, onClo
   >
     <InputBase
       placeholder="Search"
-      value={search}
+      defaultValue={search}
       onChange={onChange}
       sx={{
         padding: "3px 10px",
@@ -46,10 +52,15 @@ const participatesAdd:React.FC<AddUserDialogProps> = ({initialValues,open, onClo
         width: { lg: "350px", sx: "300px" },
       }}
     />
-      <HighlightOffOutlinedIcon onClick={onClose} sx={{ cursor: "pointer" }} />
+      <HighlightOffOutlinedIcon color="error"
+      onClick={onClose}
+       sx={{ cursor: "pointer" }} />
   </DialogTitle>
   <Divider />
+
+ 
   <DialogContent sx={{padding:"1px 2px"}}>
+ 
       <Formik
        validationSchema={validationSchema}
        initialValues={{ users: initialValues?.users || [] }} // Preselect users
@@ -58,9 +69,20 @@ const participatesAdd:React.FC<AddUserDialogProps> = ({initialValues,open, onClo
       >
         {({ values, setFieldValue }) => (
           <Form>
-            <Box sx={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "20px", padding: "10px", }}>
+
+         
+            <InfiniteScroll  
+        pageStart={0}
+        loadMore={getUsers}
+        hasMore={!!hasMore}
+       loader={<div key={0}>Loading...</div>}
+         useWindow={false}> 
+
+     <Box 
+    sx={{padding: "20px", height:'320px', overflowY: "scroll",display:'grid', gridTemplateColumns:"1fr 1fr", gap:"20px"}}>
             {participant.map((user) => (
-              <Box key={user._id}  >
+              <Box key={user._id} >
+
                <Field
   type="checkbox"
   name="users"
@@ -77,9 +99,11 @@ const participatesAdd:React.FC<AddUserDialogProps> = ({initialValues,open, onClo
 />
                 <label>{user.fullName}</label>
               </Box>
-            ))}</Box>
+            ))}
+            </Box>
+            </InfiniteScroll>
             <Divider/>
-            <Button variant="contained" sx={{width:'300px', margin:"10px"}}
+            <Button variant="contained" sx={{ margin:"10px"}}
              color="success"
              type="submit">
               Submit
@@ -87,6 +111,7 @@ const participatesAdd:React.FC<AddUserDialogProps> = ({initialValues,open, onClo
           </Form>
         )}
       </Formik>
+    
     </DialogContent>
 </Dialog>
 

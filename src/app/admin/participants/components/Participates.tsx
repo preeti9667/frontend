@@ -1,14 +1,7 @@
 "use client";
-import React, { use, useEffect, useState } from "react";
+import React, {useEffect, useMemo, useState, } from "react";
 import {
   Box,
-  Button,
-  Checkbox,
-  Dialog,
-  DialogContent,
-  DialogTitle,
-  Divider,
-  InputBase,
   Table,
   TableBody,
   TableCell,
@@ -16,15 +9,14 @@ import {
   TableHead,
   TableRow,
 } from "@mui/material";
-import { Field, Form, Formik } from "formik";
-import * as Yup from "yup";
-import HighlightOffOutlinedIcon from "@mui/icons-material/HighlightOffOutlined";
 import { ButtonStyle } from "../../components/ButtonStyle";
 import { useDebouncedCallback } from "use-debounce";
 import ParticipatesAdd from "./ParticipatesAdd";
 import { PARTICIPANT_USERS_API } from "@/constant";
-import axios, { all } from "axios";
+import axios from "axios";
 import { toast } from "react-toastify";
+import { CircularProgress } from "@mui/material";
+
 
 interface User {
   _id: string;
@@ -49,25 +41,18 @@ interface AddUserDialogProps {
   meetingId: string;
 }
 
-// const debounced = useDebouncedCallback(
-//   // function
-//   (search) => {
-//     setSearch(search);
-//   },
-//   1000
-// );
-const Participates: React.FC<AddUserDialogProps> = ({ meetingId }) => {
-  // const [initialValues, setInitialValues] = useState<User | null >(null)
-  const [search, setSearch] = useState("");
-  // const [participant, setParticipant] = useState<User[]>([]);
 
-  // const [selectedUsers, setSelectedUsers] = useState<string[]>([]);
-
+const Participates: React.FC<AddUserDialogProps> =({ meetingId }) => {
+  const [search, setSearch] = useState(""); 
   const [openUser, setOpenUser] = useState(false);
-
   const [participant, setParticipant] = useState<User[]>([]); // Already added users
   const [allUsers, setAllUsers] = useState<Participants[]>([]); // All available users
   const [selectedUsers, setSelectedUsers] = useState<string[]>([]); // Track selected user IDs
+
+    const [nextPage, setNextPage] = useState<string | null>(null);
+  
+
+  const [limit] = useState(10);
   const openUserList = () => {
     setOpenUser(true);
   };
@@ -81,7 +66,9 @@ const Participates: React.FC<AddUserDialogProps> = ({ meetingId }) => {
       const response = await axios.post(`${PARTICIPANT_USERS_API}`, {
         userIds: selectedUserIds, // Send only checked users
         meetingId: meetingId,
+        removedUserIds: allUsers.filter((user) => !selectedUserIds.includes(user.user._id)).map((user) => user.user._id),
       });
+
       if (response.status === 200) {
         toast.success("Users added successfully", { theme: "colored" });
         closeUserList();
@@ -93,31 +80,42 @@ const Participates: React.FC<AddUserDialogProps> = ({ meetingId }) => {
     }
   };
   const getUsers = async () => {
+ 
     try {
       const response = await axios.get(
         `${PARTICIPANT_USERS_API}/${meetingId}/search-users`,
         {
           params: {
             search,
+            limit ,
+            nextPageTimeStamp: nextPage,
           },
         }
       );
-      const addedUsers = response.data.data.list;
-      // console.log(addedUsers)
-      setParticipant(addedUsers);
+
+      const { list, nextPage: newNextPage } = response.data.data;
+       
+        // const addedUsers = response.data.data.list;
+        setParticipant([...participant, ...list]);
+      
+        setNextPage(newNextPage);
+        // console.log(newNextPage) 
     } catch (error) {
       console.error(error);
+    
     }
   };
+
 
   const getParticipants = async () => {
     try {
       const response = await axios.get(`${PARTICIPANT_USERS_API}/${meetingId}`);
       const usersList = response.data.data.list;
-      console.log(usersList);
+      // console.log(usersList);
       setAllUsers(usersList);
 
       const select = usersList.map((user: Participants) => user.user._id);
+
       // console.log(select)
       setSelectedUsers(select);
     } catch (error) {
@@ -125,17 +123,25 @@ const Participates: React.FC<AddUserDialogProps> = ({ meetingId }) => {
     }
   };
 
+const debounced = useDebouncedCallback(
+    // function
+    (search) => {
+      setSearch(search);
+    },
+    1000
+  );
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setSearch(e.target.value);
+    debounced(e.target.value);
   };
+
 
   useEffect(() => {
     getParticipants();
     getUsers();
   }, [search]);
+
   return (
     <Box>
-      {" "}
       <Box
         sx={{
           display: "flex",
@@ -145,7 +151,7 @@ const Participates: React.FC<AddUserDialogProps> = ({ meetingId }) => {
       >
         <ButtonStyle
           onClick={openUserList}
-          title="Add User"
+          title="Add  Participant"
           color="success"
           variant="contained"
         />
@@ -154,14 +160,14 @@ const Participates: React.FC<AddUserDialogProps> = ({ meetingId }) => {
         <Table sx={{ border: "1px solid black" }}>
           <TableHead sx={{ display: "block" }}>
             <TableRow sx={{ display: "table", width: "100%" }}>
-              <TableCell>User Id</TableCell>
+              <TableCell>Participant Id</TableCell>
               <TableCell>Name</TableCell>
               <TableCell>Email</TableCell>
             </TableRow>
           </TableHead>
 
           <TableBody
-            sx={{ display: "block", maxHeight: 319, overflowY: "auto" }}
+            sx={{ display: "block", maxHeight: 410, overflowY: "auto" }}
           >
             {allUsers.map((user) => (
               <TableRow
@@ -176,17 +182,29 @@ const Participates: React.FC<AddUserDialogProps> = ({ meetingId }) => {
           </TableBody>
         </Table>
       </TableContainer>
+
+   
+            
+
+
       <ParticipatesAdd
         open={openUser}
         onClose={closeUserList}
         participant={participant} // Pass all users
         initialValues={{ users: selectedUsers }} // Pass pre-selected users
         onSubmit={handleAddParticipants}
-        search={search}
+        search={debounced}
         onChange={handleChange}
+        getUsers={getUsers}
+        hasMore={nextPage}
       />
+
     </Box>
   );
 };
 
 export default Participates;
+function useRef(selectedUsers: string[]) {
+  throw new Error("Function not implemented.");
+}
+

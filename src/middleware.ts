@@ -1,7 +1,7 @@
 
 import { NextResponse } from "next/server";
 import type { NextRequest } from 'next/server';
-import {ADMIN_ROUTE, LOGIN_ROUTE,ADMIN_DASHBOARD_ROUTE,ADMIN_MEETING_ROUTE, ADMIN_USER_ROUTE} from "./constant"
+import {ADMIN_ROUTE, LOGIN_ROUTE,ADMIN_DASHBOARD_ROUTE,ADMIN_MEETING_ROUTE, ADMIN_USER_ROUTE, ADMIN_PARTICIPANT_ROUTE} from "./constant"
 
 export function middleware(req: NextRequest) {
 
@@ -10,7 +10,7 @@ export function middleware(req: NextRequest) {
     const userToken= req.cookies.get('userToken')?.value
    
     const isLoginPage = path === LOGIN_ROUTE.url;
-const adminRoutes = [ADMIN_DASHBOARD_ROUTE.url, ADMIN_MEETING_ROUTE.url, ADMIN_USER_ROUTE.url];
+const adminRoutes = [ADMIN_DASHBOARD_ROUTE.url, ADMIN_MEETING_ROUTE.url, ADMIN_USER_ROUTE.url, ADMIN_PARTICIPANT_ROUTE.url];
 const isAdminDashboard = adminRoutes.some(route => path.startsWith(route));
 
     if ((isLoginPage ) && Token) {
@@ -26,5 +26,5 @@ const isAdminDashboard = adminRoutes.some(route => path.startsWith(route));
  
 }
 export const config = {
-    matcher: [`${LOGIN_ROUTE.url}`,`${ADMIN_ROUTE.url},${ADMIN_DASHBOARD_ROUTE.url},${ADMIN_MEETING_ROUTE.url},${ADMIN_USER_ROUTE.url}`],
+    matcher: [`${LOGIN_ROUTE.url}`,`${ADMIN_ROUTE.url},${ADMIN_DASHBOARD_ROUTE.url},${ADMIN_MEETING_ROUTE.url},${ADMIN_USER_ROUTE.url},${ADMIN_PARTICIPANT_ROUTE.url}`],
 }
