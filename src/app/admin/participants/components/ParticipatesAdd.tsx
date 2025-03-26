@@ -71,18 +71,17 @@ const participatesAdd:React.FC<AddUserDialogProps> = ({initialValues,open, onClo
           <Form>
 
          
-            <InfiniteScroll  
+            {/* <InfiniteScroll  
         pageStart={0}
         loadMore={getUsers}
         hasMore={!!hasMore}
        loader={<div key={0}>Loading...</div>}
-         useWindow={false}> 
+         useWindow={false}>  */}
 
      <Box 
     sx={{padding: "20px", height:'320px', overflowY: "scroll",display:'grid', gridTemplateColumns:"1fr 1fr", gap:"20px"}}>
-            {participant.map((user) => (
-              <Box key={user._id} >
-
+            {participant.map((user,index) => (
+              <Box key={index} >
                <Field
   type="checkbox"
   name="users"
@@ -101,7 +100,7 @@ const participatesAdd:React.FC<AddUserDialogProps> = ({initialValues,open, onClo
               </Box>
             ))}
             </Box>
-            </InfiniteScroll>
+            {/* </InfiniteScroll> */}
             <Divider/>
             <Button variant="contained" sx={{ margin:"10px"}}
              color="success"

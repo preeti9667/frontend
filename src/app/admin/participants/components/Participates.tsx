@@ -95,10 +95,10 @@ const Participates: React.FC<AddUserDialogProps> =({ meetingId }) => {
 
       const { list, nextPage: newNextPage } = response.data.data;
        
-        // const addedUsers = response.data.data.list;
-        setParticipant([...participant, ...list]);
-      
-        setNextPage(newNextPage);
+        const addedUsers = response.data.data.list;
+        // setParticipant([...participant, ...list]);
+        setParticipant(addedUsers);
+        // setNextPage(newNextPage);
         // console.log(newNextPage) 
     } catch (error) {
       console.error(error);
@@ -169,9 +169,9 @@ const debounced = useDebouncedCallback(
           <TableBody
             sx={{ display: "block", maxHeight: 410, overflowY: "auto" }}
           >
-            {allUsers.map((user) => (
+            {allUsers.map((user,index) => (
               <TableRow
-                key={user.user._id}
+                key={index}
                 sx={{ display: "grid", width: "100%", gridTemplateColumns:"1fr 1fr 1fr"}}
               >
                 <TableCell>{user.user.userId}</TableCell>
