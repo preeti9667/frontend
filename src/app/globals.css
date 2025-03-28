@@ -6,10 +6,10 @@ body{
     border: 2px solid black;
 }
 :root {
-    --primary-color:#FF6B1A;
+    --primary-color:#ff6a1ad4;
     --secondary-color:#238122f2;
     --danger-color: red;
-    --text-color: #b33f00e5;
+    --text-color: #b33f00cc;
     --text1-color: #0071b350;
 
   }

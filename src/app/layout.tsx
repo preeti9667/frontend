@@ -7,6 +7,8 @@ export const metadata: Metadata = {
   description: "This is a meeting app",
 };
 
+
+
 export default function RootLayout({
   children,
 }: Readonly<{

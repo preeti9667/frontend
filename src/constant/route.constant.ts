@@ -25,6 +25,14 @@ export const LOGIN_ROUTE = {
         return `${ADMIN_ROUTE.url}/${this.path}`
     }
 }
+
+export const FORGOT_PASSWORD_ROUTE = {
+    path: 'forgot-password',
+    get url() {
+        return `${ADMIN_ROUTE.url}/${this.path}`
+    }
+}
+
 export const SIGNUP_ROUTE = {
     path: 'signup',
     get url() {

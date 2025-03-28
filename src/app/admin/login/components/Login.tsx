@@ -1,39 +1,58 @@
 'use client'
-import { Box, Button, IconButton, InputAdornment, TextField, Typography } from '@mui/material'
+import { Box, Button, CircularProgress, IconButton, InputAdornment, Link, TextField, Typography } from '@mui/material'
 import { ErrorMessage, Field, Form, Formik } from 'formik'
 import React, { useState } from 'react'
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
 import * as Yup from "yup";
+import { ADMIN_DASHBOARD_ROUTE, ADMIN_LOGIN_API, FORGOT_PASSWORD_API, FORGOT_PASSWORD_ROUTE } from '@/constant';
+import { useRouter } from 'next/navigation';
+import useRequestPost from '@/util/useRequestPost';
+import { setCookie } from 'cookies-next';
 
 interface FormValue {
     email: string;
     password: string;
 }
-interface FormValueProps {
-    onSubmit: (values: any) => void;
-    title?:string;
-  
-}
 const validationSchema = Yup.object({
   email: Yup.string().required("Email is required"),
-  password: Yup.string().required("Password is required"),
+  password: Yup.string().min(6 ,"Password must be at least 6 characters").required("Password is required"),
 });
 
 
 
-const  Login:React.FC <FormValueProps>= ({onSubmit,title}) =>{
-
-
+const  Login:React.FC = () =>{
  const [showPassword, setShowPassword] = useState(false);
+ const router = useRouter();
+ const [isLoading, setIsLoading] = useState(false);
+ const [forgotPassword, setForgotPassword] = useState(false)
 
- 
-   const handleClickShowPassword = () => setShowPassword((show) => !show);
+ const handleClickShowPassword = () => setShowPassword((show) => !show);
+
+
+ const handleSubmit = async (value: FormValue) => {
+      setIsLoading(true);
+      const response = await useRequestPost({
+        url:  `${ADMIN_LOGIN_API}`,
+        data: value,
+      });
+      setIsLoading(false) 
+      if (response.status === 200) {
+        const { token } = await response.data.result;
+        setCookie("Token", token, {
+          maxAge: 60 * 60 * 24 * 7,
+        });
+        router.push(`${ADMIN_DASHBOARD_ROUTE.url}`);
+      }
+    };
+
+   
 
 const initialValues: FormValue = {
   email: "",
   password: "",
 };
+
   return (
   <Box>
      <Box sx={{
@@ -44,12 +63,12 @@ const initialValues: FormValue = {
           fontSize={{ xs: "20px", sm: "30px" }}
           textAlign="center"
           mb={2}>
-            {title}
+            Log In to Admin Account
         </Typography>
         <Formik
           validationSchema={validationSchema}
           initialValues={initialValues}
-          onSubmit={onSubmit}
+          onSubmit={handleSubmit}
         >
           {({ handleBlur, handleChange, touched, errors }) => (
             <Form >
@@ -91,22 +110,37 @@ const initialValues: FormValue = {
                   ),
                 }}
               />
+              <Box sx={{textAlign:'left', padding:"10px 0px"}}>
+              <Link href=''>
+                Forgot Password</Link>
+              </Box>
+
               <Button
                 type="submit"
                 variant="contained"
-                style={{ backgroundColor: 'var(--primary-color)' }}
                 fullWidth
+                disabled={isLoading}
                 sx={{
                   textTransform: "none",
                   fontSize: "large",
-                  padding: "10px 16px",
+                  backgroundColor: "var(--primary-color)",
+                  display: "flex",
+                  justifyContent: "center",
+                  alignItems: "center",
+                  gap: "10px",
+                  padding: "8px 0px",
                 }}
               >
                 Submit
+              <CircularProgress size={28} color="secondary" 
+                sx={{display: isLoading?"block":"none" }}/>
+             
+                
               </Button>
             </Form>
           )}
-        </Formik></Box>
+        </Formik>
+        </Box>
   </Box>
   )
 }

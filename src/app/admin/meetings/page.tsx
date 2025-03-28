@@ -54,12 +54,10 @@ interface DataItem{
 }
 
 const Meeting = () => {
-  // const [meetings, setMeetings] = useState<DataItem[]>([]);
   const [search, setSearch] = useState("");
   const [page, setPage] = useState(0);
-  const [totalCount, setTotalCount] = useState(0);
+  const [totalCount] = useState(0);
   const [limit, setLimit] = useState(10);
-  // const [isLoading, setIsLoading] = useState(true);
 
   const [startDateSort, setStartDateSort] = useState<"asc" | "desc" | undefined>(undefined);
 
@@ -67,35 +65,6 @@ const Meeting = () => {
 
   const isMobile = useMediaQuery("(max-width:600px)");
   
-
-  // const fetchMeetings = async () => { 
-  //   try {
-  //     const response = await axios.get(GET_MEETING_API, {
-  //       params: {
-  //         search,
-  //         startDateSort,
-  //         page: page + 1,
-  //         limit: isMobile ? 0 : limit,
-  //       },
-  //       headers: {
-  //         Authorization: `Bearer ${getCookie("Token")}`,
-  //       },
-  //     });
-  //     // const { data } = response.data;
-  //     const data = response.data.data;
-  //     setMeetings(data.list);
-  //     setTotalCount(data.count);
-  //   } catch (error) {
-  //     console.error("Error fetching users:", error);
-      
-  //   }
-  // };
-
-  // useEffect(() => {
-  //   fetchMeetings();
-  // }, [search, page, isMobile, limit, startDateSort]);
-
-
   const { data, isLoading,  } = useRequest({
     url: GET_MEETING_API,
     params: { 
@@ -109,7 +78,7 @@ const Meeting = () => {
   
   const meetings = data?.data?.list as DataItem[] || [];
   // console.log(meetings);
-
+ 
   const debounced = useDebouncedCallback(
     // function
     (search) => {
@@ -117,18 +86,11 @@ const Meeting = () => {
     },
     1000
   );
+
+ 
   const handleItemClick = (id: string) => {
     router.push(`${ADMIN_MEETING_ROUTE.url}/${id}/details`);
   };
-
-  const meetingCreate = () => {
-    router.push(`${ADD_MEETING_ROUTE.url}`);
-  };
-
-  const handleRefresh = () => {
-    meetings
-  };
-
   const handleChangePage = (event: unknown, newPage: number) => {
     setPage(newPage);
   };
@@ -163,7 +125,7 @@ const Meeting = () => {
           <Box className={style.meetingTop}>
             <Box sx={{ display: "flex", gap: "10px" }}>
               <Button
-                onClick={meetingCreate}
+                onClick={() => router.push(ADD_MEETING_ROUTE.url)} // meetingCreate }
                 sx={{ backgroundColor: "white", color: "black" }}
               >
                 <AddCircleOutlineIcon />
@@ -171,7 +133,7 @@ const Meeting = () => {
 
               <Button
                 sx={{ backgroundColor: "white", color: "black" }}
-                onClick={handleRefresh}
+                onClick={()=> window.location.reload()}
               >
                 <RefreshIcon />
               </Button>
@@ -215,8 +177,8 @@ const Meeting = () => {
               </TableRow>
             </TableHead>
 
-              {/* {isLoading
-                ? Array.from({ length: limit }).map((_, index) => (
+              {isLoading &&
+                Array.from({ length: limit }).map((_, index) => (
                <TableBody key={index}>
                   <TableRow>
                      { [1,2,3,4,5,6,7,8].map((_,index)=>(
@@ -226,8 +188,8 @@ const Meeting = () => {
                      ))}
                   </TableRow>                   
                     </TableBody>                
-                  ))
-                :  */}
+                  ))}
+                
                   
                 {
                 meetings.map((item,) => (                 
@@ -291,13 +253,13 @@ const Meeting = () => {
               margin: "10px 0",
             }} >
             <Button
-              onClick={meetingCreate}
+              onClick={() => router.push(ADD_MEETING_ROUTE.url)}
               sx={{ backgroundColor: "white", color: "black" }}>
               <AddCircleOutlineIcon />
             </Button>
             <Button
               sx={{ backgroundColor: "white", color: "black" }}
-              onClick={handleRefresh}>
+              onClick={()=> window.location.reload()}>
               <RefreshIcon />
             </Button>
           </Box>

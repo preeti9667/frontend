@@ -372,7 +372,6 @@ const MeetingDetails = () => {
           onClose={handleClose}
           open={open}
         />
-
       </Box>
     </AdminLayout>
   );

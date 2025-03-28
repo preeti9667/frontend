@@ -11,8 +11,7 @@ interface FetchOptions {
 }
 
 const useRequest = ({ url, params }: FetchOptions) => {
-  const [isLoading, setIsLoading] = useState<boolean>(false);
-  // const [error, setError] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
   const [data, setData] = useState< any | null>([]);
 
   // Prevent infinite loops by stringifying `params`
@@ -23,8 +22,6 @@ const useRequest = ({ url, params }: FetchOptions) => {
  
   const fetchData = async () => {
     setIsLoading(true); // Start loading
- 
-
     try {
       
       const response = await axios.get(url, {
@@ -33,9 +30,9 @@ const useRequest = ({ url, params }: FetchOptions) => {
           Authorization: `Bearer ${getCookie("Token")}`, // Include auth token in headers
         },
       });
-
       setData(response.data); // Store the response data
-      console.log(response.data); // Log the response data for debugging
+      setIsLoading(false);
+      // console.log(response.data); // Log the response data for debugging
     } catch (error: any) {
       toast.error(error.message || "Something went wrong");
     } finally {
