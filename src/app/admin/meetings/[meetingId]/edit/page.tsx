@@ -29,7 +29,6 @@ function Edit({
   
   useEffect( () => {
         const fetchMeeting = async () => {
-          const meeingId = ((await params).meetingId)
           try {
             
             const response = await axios.get(`${GET_MEETING_API}/${(await params).meetingId}`);
