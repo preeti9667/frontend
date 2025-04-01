@@ -1,6 +1,7 @@
 import React from 'react'
 import { LOGIN_ROUTE, SIGNUP_ROUTE } from '@/constant'
-import { Box, Link, Typography } from '@mui/material'
+import { Box, Typography } from '@mui/material'
+import Link from 'next/link'
 export default function Home() {
   return (
     <Box className="fullImage" >

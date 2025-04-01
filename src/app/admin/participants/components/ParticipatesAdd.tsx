@@ -3,7 +3,7 @@ import { Box, Button, Checkbox, Dialog, DialogContent, DialogTitle, Divider, Inp
 import { Field, Form, Formik } from "formik";
 import * as Yup from "yup";
 import HighlightOffOutlinedIcon from "@mui/icons-material/HighlightOffOutlined";
-import InfiniteScroll from 'react-infinite-scroller';
+// import InfiniteScroll from 'react-infinite-scroller';
 
 interface User {
   _id: string;

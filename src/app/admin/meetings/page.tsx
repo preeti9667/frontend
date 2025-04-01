@@ -1,20 +1,13 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, {  useState } from "react";
 import AdminLayout from "../AdminLayout";
+import ResponsiveMeetings from "./components/ResponsiveMeetings";
 import {
-  Alert,
   Box,
   Button,
-  Card,
-  CardContent,
   Divider,
-  Input,
-  InputBase,
-  Pagination,
   Paper,
-  Skeleton,
-  Snackbar,
   Table,
   TableBody,
   TableCell,
@@ -23,23 +16,19 @@ import {
   TablePagination,
   TableRow,
   TableSortLabel,
-  TextField,
-  Typography,
   useMediaQuery,
 } from "@mui/material";
-import axios, { AxiosError } from "axios";
 import { GET_MEETING_API } from "@/constant/api.constant";
 import style from "../admin.module.css";
 import { useRouter } from "next/navigation";
 import { ADD_MEETING_ROUTE, ADMIN_MEETING_ROUTE } from "@/constant";
 import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
 import RefreshIcon from "@mui/icons-material/Refresh";
-import { getCookie } from "cookies-next";
-import { useDebouncedCallback } from "use-debounce";
 import { Moment, StatusColor, TypeColor } from "../components/Chip";
 import MokData from "../components/ MokData";
-
-interface DataItem {
+import useRequest from "../../../util/useRequest";
+import CustomInputBase from "../components/InputBase";
+interface DataItem{
   _id: string;
   title: string;
   description: string;
@@ -54,70 +43,32 @@ interface DataItem {
 }
 
 const Meeting = () => {
-  const [meetings, setMeetings] = useState<DataItem[]>([]);
   const [search, setSearch] = useState("");
   const [page, setPage] = useState(0);
-  const [totalCount, setTotalCount] = useState(0);
   const [limit, setLimit] = useState(10);
-  const [isLoading, setIsLoading] = useState(true);
-
-  const [startDateSort, setStartDateSort] = useState<
-    "asc" | "desc" | undefined
-  >(undefined);
-
+  const [startDateSort, setStartDateSort] = useState<"asc" | "desc" | undefined>(undefined);
   const router = useRouter();
-
   const isMobile = useMediaQuery("(max-width:600px)");
+  
+  const { data, isLoading,  } = useRequest({
+    url: GET_MEETING_API,
+    params: { 
+      search,
+        page: page + 1,
+        limit: isMobile ? 0 : limit,
+        startDateSort
 
-  const fetchMeetings = async () => { 
-    try {
-      const response = await axios.get(GET_MEETING_API, {
-        params: {
-          search,
-          startDateSort,
-          page: page + 1,
-          limit: isMobile ? 0 : limit,
-        },
-        headers: {
-          Authorization: `Bearer ${getCookie("Token")}`,
-        },
-      });
-      // const { data } = response.data;
-      const data = response.data.data;
-      setMeetings(data.list);
-      setTotalCount(data.count);
-      setIsLoading(false);
-    } catch (error) {
-      console.error("Error fetching users:", error);
-      // setIsLoading(true);
-    }
-  };
-
-  useEffect(() => {
-    fetchMeetings();
-  }, [search, page, isMobile, limit, startDateSort]);
-
-  const debounced = useDebouncedCallback(
-    // function
-    (search) => {
-      setSearch(search);
-    },
-    1000
-  );
+     },
+  });
+  
+  const meetings = data?.data?.list as DataItem[] || [];
+  const totalCount = data?.data?.count 
+  
   const handleItemClick = (id: string) => {
     router.push(`${ADMIN_MEETING_ROUTE.url}/${id}/details`);
   };
-
-  const meetingCreate = () => {
-    router.push(`${ADD_MEETING_ROUTE.url}`);
-  };
-
-  const handleRefresh = () => {
-    fetchMeetings();
-  };
-
   const handleChangePage = (event: unknown, newPage: number) => {
-    setPage(newPage);
+    setPage(newPage); 
   };
 
   const handleChangeRowsPerPage = (
@@ -150,34 +101,21 @@ const Meeting = () => {
           <Box className={style.meetingTop}>
             <Box sx={{ display: "flex", gap: "10px" }}>
               <Button
-                onClick={meetingCreate}
-                sx={{ backgroundColor: "white", color: "black" }}
-              >
+                onClick={() => router.push(ADD_MEETING_ROUTE.url)}
+                sx={{ backgroundColor: "white", color: "black" }}>
                 <AddCircleOutlineIcon />
               </Button>
 
               <Button
                 sx={{ backgroundColor: "white", color: "black" }}
-                onClick={handleRefresh}
-              >
+                onClick={()=> window.location.reload()} >
                 <RefreshIcon />
               </Button>
             </Box>
-            <Paper sx={{ borderRadius: "5px" }}>
-              <InputBase
-                placeholder="search"
-                sx={{
-                  padding: "3px 10px",
-                  borderRadius: "10px",
-                  width: { lg: "350px", sx: "300px" },
-                }}
-                defaultValue={debounced(search)}
-                onChange={(e) => debounced(e.target.value)}
-              />
-            </Paper>
+            <CustomInputBase defaultValue={search} setSearch={setSearch} inputSize="300px"/>
           </Box>
         </Box>
-
+        
         <TableContainer component={Paper}>
           <Table
             sx={{ minWidth: 650, fontWeight: "bold" }}
@@ -202,8 +140,9 @@ const Meeting = () => {
               </TableRow>
             </TableHead>
 
-              {isLoading
-                ? Array.from({ length: limit }).map((_, index) => (
+{/* Meeting Loading */}
+              {isLoading &&
+                Array.from({ length: limit }).map((_, index) => (
                <TableBody key={index}>
                   <TableRow>
                      { [1,2,3,4,5,6,7,8].map((_,index)=>(
@@ -213,37 +152,44 @@ const Meeting = () => {
                      ))}
                   </TableRow>                   
                     </TableBody>                
-                  ))
-                : 
-                meetings.map((item,) => (                 
-                  <TableBody key={item._id} >
-                    <TableRow
-                      onClick={() => handleItemClick(item._id)}
-                      sx={{cursor: "pointer", }}>
-                      <TableCell>{item.meetingId}</TableCell>
-                      <TableCell>
-                        <Moment item={(item.createdAt)} type="lll" />
-                      </TableCell>
-
-                      <TableCell>
-                        {item.title.charAt(0).toUpperCase() +
-                          item.title.slice(1).toLowerCase()}
-                      </TableCell>
-                      <TableCell>
-                        <Moment item={String(item.startDate)} type="ll" />
-                      </TableCell>
-                      <TableCell>
-                        <Moment item={String(item.endDate)} type="ll" />
-                      </TableCell>
-                      <TableCell>{item.startTime} - {item.endTime} </TableCell>
-                      <TableCell><TypeColor item={item.type} /></TableCell>
-                      <TableCell><StatusColor item={item.status} /></TableCell>
-                    </TableRow>
-            </TableBody>
-                  ))}
+                  ))}   
+ {/* Fetching Meetings */}
+                { meetings.map((item,) => (  
+                    <TableBody key={item._id}>               
+                     <TableRow
+                            onClick={() => handleItemClick(item._id)}
+                            sx={{ cursor: "pointer" }}
+                          >
+                            <TableCell>{item.meetingId}</TableCell>
+                            <TableCell>
+                              <Moment item={item.createdAt} type="lll" />
+                            </TableCell>
+                    
+                            <TableCell>
+                              {item.title.charAt(0).toUpperCase() +
+                                item.title.slice(1).toLowerCase()}
+                            </TableCell>
+                            <TableCell>
+                              <Moment item={String(item.startDate)} type="ll" />
+                            </TableCell>
+                            <TableCell>
+                              <Moment item={String(item.endDate)} type="ll" />
+                            </TableCell>
+                            <TableCell>
+                              {item.startTime} - {item.endTime}{" "}
+                            </TableCell>
+                            <TableCell>
+                              <TypeColor item={item.type} />
+                            </TableCell>
+                            <TableCell>
+                              <StatusColor item={item.status} />
+                            </TableCell>
+                          </TableRow>
+                    </TableBody>
+                  )) }
           </Table>
           <Divider />
-
+{/* Meetings Pagination */}
           <TablePagination
             rowsPerPageOptions={[10, 20]}
             component="div"
@@ -256,117 +202,24 @@ const Meeting = () => {
         </TableContainer>
       </Box>
 
-      <Box
-        sx={{
-          display: {
-            xl: "none",
-            md: "none",
-            xs: "block",
-            sm: "block",
-            lg: "none",
-          }, }} >
-        <Box>
-          <Box
-            sx={{
-              display: "flex",
-              justifyContent: "space-between",
-              alignContent: "center",
-              margin: "10px 0",
-            }} >
-            <Button
-              onClick={meetingCreate}
-              sx={{ backgroundColor: "white", color: "black" }}>
-              <AddCircleOutlineIcon />
-            </Button>
-            <Button
-              sx={{ backgroundColor: "white", color: "black" }}
-              onClick={handleRefresh}>
-              <RefreshIcon />
-            </Button>
-          </Box>
-          <Paper sx={{ borderRadius: "5px", border: "1px solid black" }}>
-            <InputBase
-              placeholder="search"
-              sx={{ padding: "3px 10px", borderRadius: "10px" }}
-              value={search}
-              onChange={(e) => debounced(e.target.value)}
-            />
-          </Paper>
-        </Box>
-        <Box
-          sx={{ display: "flex", flexDirection: "column", gap: "20px" }}
-          mt={3}
-        >
-          {isLoading
-            ? Array.from({ length: limit }).map((_, index) => (
-                <Box key={index}>              
-                <MokData width="100%" height={600} key={index} />                  
-              </Box>
-              ))
-               : meetings.map((item, index) => (
-                <Box key={index}>
-                  <Card
-                    sx={{
-                      borderRadius: "20px 15px",
-                      background: "var(--text1-color)",
-                    }}
-                  >
-                    <CardContent
-                      onClick={() => handleItemClick(item._id)}
-                      sx={{
-                        display: "flex",
-                        gap: "14px",
-                        flexDirection: "column",
-                      }}
-                    >
-                      <Typography>
-                        Title:
-                        {item.title.charAt(0).toUpperCase() +
-                          item.title.slice(1).toLowerCase()}
-                      </Typography>
-                      <Typography>Meeting Id: {item.meetingId}</Typography>
 
-                      <Box className={style.momentStyle}>
-                        Created At:
-                        <Moment  item={item.createdAt} type="lll" />
-                      </Box>
-                      <Box className={style.momentStyle}>
-                        Start-Date:
-                        <Moment item={String(item.startDate)} type="ll" />
-                      </Box>
-                      <Box className={style.momentStyle}>
-                        End-Date:
-                        <Moment item={String(item.endDate)} type="ll" />
-                      </Box>
-                      <Typography>
-                        Time: {item.startTime}-{item.endTime}
-                      </Typography>
-                      <Box
-                        sx={{
-                          display: "flex",
-                          gap: "8px",
-                          alignItems: "center",
-                        }}
-                      >
-                        Type:
-                        <TypeColor item={item.type} />
-                      </Box>
-                      <Box
-                        sx={{
-                          display: "flex",
-                          gap: "8px",
-                          alignItems: "center",
-                        }}
-                      >
-                        Status:
-                        <StatusColor item={item.status} />
-                      </Box>
-                    </CardContent>
-                  </Card>
+ {/* This is  Responsive Meetings Page */}
+      <Box
+       sx={{
+           display: {
+                  xl: "none",
+                  md: "none",
+                  xs: "block",
+                  sm: "block",
+                  lg: "none",
+                }, }} >
+                    <ResponsiveMeetings 
+                    meetings={meetings}
+                     isLoading={isLoading} 
+                     handleClick={handleItemClick}
+                     search={search}
+                     setSearch={setSearch}/>
                 </Box>
-              ))}
-        </Box>
-      </Box>
     </AdminLayout>
   );
 };
