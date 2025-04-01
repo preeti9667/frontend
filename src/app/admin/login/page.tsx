@@ -1,20 +1,10 @@
 "use client";
 
 import { Box } from "@mui/material";
-import React, { useState } from "react";
-import * as Yup from "yup";
+import React from "react";
 import Image from "next/image";
-import { useRouter } from "next/navigation";
-import { ADMIN_DASHBOARD_ROUTE, ADMIN_LOGIN_API } from "@/constant";
 import Login from "./components/Login";
-import { setCookie } from "cookies-next";
-import useRequestPost from "@/util/useRequestPost";
 import { LOGIN_TEMPLATE_IMAGE } from "@/util/images";
-interface FormValue {
-  email: string;
-  password: string;
-}
-
 const LogIn = () => {
  
   return (

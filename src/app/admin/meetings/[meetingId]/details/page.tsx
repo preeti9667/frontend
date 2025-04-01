@@ -25,7 +25,6 @@ import { Moment, StatusColor, TypeColor } from "@/app/admin/components/Chip";
 import Grid from "@mui/material/Grid2";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import { useParams } from "next/navigation";
-import Participates from "../../components/Participates";
 import axios from "axios";
 interface DataItem {
   _id: string;
@@ -43,6 +42,7 @@ interface DataItem {
 
 const MeetingDetails = () => {
   const params = useParams<{ meetingId: string }>();
+
   const meetingId = params.meetingId;
 
   const [meeting, setMeeting] = useState<DataItem | null>(null);
@@ -117,8 +117,6 @@ const MeetingDetails = () => {
     setAction(!action);
   };
 
- 
-
   const handleClickStatus = () => {
     setIsOpen(!isOpen);
   };
@@ -168,18 +166,6 @@ const MeetingDetails = () => {
             }}
           >
             <Box sx={{ display: "flex", gap: "10px", alignItems: "center" }}>
-              {/* <FormControl sx={{m:1,minWidth:100, background:"white", borderRadius:"5px"}} 
-          size="small" >
-
-            <InputLabel>Status</InputLabel>
-            <Select sx={{height:"35px"}}
-             label="Status"
-          value={status}
-          onChange={handleStatusChange}>
-          <MenuItem value='CREATED'>CREATED</MenuItem>
-          <MenuItem value='COMPLETED'>COMPLETED</MenuItem>
-        </Select>
-             </FormControl> */}
 
               <Button
                 onClick={handleClickStatus}
@@ -364,7 +350,8 @@ const MeetingDetails = () => {
             </Grid>
           </Grid>
 
-        <Participates meetingId={meetingId} />
+        {/* <Participates meetingId={meetingId} /> */}
+
         </Box>
 
         <MyDialog
@@ -376,6 +363,7 @@ const MeetingDetails = () => {
     </AdminLayout>
   );
 };
+
 export default MeetingDetails;
 function setSnackbarMessage(arg0: string) {
   throw new Error("Function not implemented.");

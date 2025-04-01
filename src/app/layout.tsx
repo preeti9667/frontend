@@ -16,7 +16,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body>
+      <body >
         <ToastContainer
           position="top-right"
           autoClose={3000}
@@ -30,6 +30,7 @@ export default function RootLayout({
           theme="light"
         />
         {children}
+  
       </body>
     </html>
   );

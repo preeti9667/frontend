@@ -1,7 +1,9 @@
 import React from 'react'
+import Link from 'next/link'
 import { LOGIN_ROUTE, SIGNUP_ROUTE } from '@/constant'
-import { Box, Link, Typography } from '@mui/material'
+import { Box, Typography } from '@mui/material'
 export default function Home() {
+
   return (
     <Box className="fullImage" >
     <Box sx={{display:'flex', justifyContent:"end", padding:"10px",gap:"10px", alignItems:"center"}}>

@@ -10,7 +10,7 @@ export default function Dashboard() {
   return (
    <AdminLayout>
     <Box>
-     
+        dashboard 
     </Box>
    </AdminLayout>
   )

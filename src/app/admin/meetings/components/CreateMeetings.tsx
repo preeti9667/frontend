@@ -4,7 +4,6 @@ import {
   Box,
   Button,
   FormControlLabel,
-  Link,
   Radio,
   RadioGroup,
   TextField,
@@ -13,7 +12,6 @@ import {
 import { ErrorMessage, Field, Form, Formik } from "formik";
 import * as Yup from "yup";
 import style from "@/app/admin/admin.module.css";
-import { ADD_MEETING_API, ADMIN_MEETING_ROUTE } from "@/constant";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import AdminLayout from "@/app/admin/AdminLayout";
 import moment from "moment";
@@ -29,7 +27,6 @@ interface meetingProps {
     type: string;
   };
   mode: "add" | "edit";
-
   onSubmit: (values: any) => void;
 }
 
@@ -285,7 +282,6 @@ const MeetingForm: React.FC<meetingProps> = ({
                       <Button
                         onClick={handleReset}
                         variant="contained"
-                        className={style.actionBtnForm1}
                         color="error"
                       >
                         Clear
@@ -295,7 +291,6 @@ const MeetingForm: React.FC<meetingProps> = ({
                         type="submit"
                         variant="contained"
                         color="success"
-                        className={style.actionBtnForm1}
                         disabled={!(isValid && dirty)}
                       >
                         {mode === "add" ? "Submit" : "Update"}

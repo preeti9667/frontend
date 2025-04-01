@@ -1,10 +1,11 @@
 'use client'
 import { Box } from '@mui/material'
 import axios from 'axios';
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, } from 'react'
 import MeetingForm from '../../components/CreateMeetings'
-import {useRouter} from 'next/navigation';
+import {useParams, useRouter} from 'next/navigation';
 import { ADD_MEETING_API, ADMIN_MEETING_ROUTE, GET_MEETING_API } from '@/constant';
+import useRequest from '@/util/useRequest';
 
 interface DataItem {
   title: string;
@@ -16,39 +17,46 @@ interface DataItem {
   type: string;
 }
 
-function Edit({
-  params,
-}: {
-  params: Promise<{ meetingId: string }>;
-})  {
+const Edit = ()=>{
+  const MeetingId = useParams<{meetingId: string}>()
+console.log(MeetingId)
+
+// ({
+//   params,
+// }: {
+//   params: Promise<{ meetingId: string }>;
+// })  {
 
 
   const router = useRouter()
   const [initialValues, setInitialValues] = useState<DataItem | null >(null);
-  
-  
-  useEffect( () => {
-        const fetchMeeting = async () => {
-          const meeingId = ((await params).meetingId)
-          try {
-            
-            const response = await axios.get(`${GET_MEETING_API}/${(await params).meetingId}`);
-            const data = response.data.meeting;
-            // console.log(data)
-            setInitialValues(data);
+  // const [isLoading, setIsLoading] = useState(false)
 
-          } catch (error) {
-            console.error('Error fetching meeting data:', error);
-          }
-        };
+  // useEffect( () => {
+  //       const fetchMeeting = async () => {
+  //         try {
+  //           const response = await axios.get(`${GET_MEETING_API}${MeetingId}`);
+  //           console.log(response)
+  //           const data = response.data.meeting;
+  //           // console.log(data)
+  //           setInitialValues(data);
+
+  //         } catch (error) {
+  //           console.error('Error fetching meeting data:', error);
+  //         }
+  //       };
     
-         fetchMeeting();
-      }, [params]);
+  //        fetchMeeting();
+  //     }, [MeetingId]);
 
-        const handleSubmit = async (values: any) => {
-      
+const {data,isLoading} = useRequest({
+url:`${GET_MEETING_API}/${MeetingId}`
+})
+const upDate = data.meeting
+
+   const handleSubmit = async (values: any) => {  
             try {    
-              const response = await axios.put(`${ADD_MEETING_API}/${(await params).meetingId}`,
+              const response = await axios.put(`${ADD_MEETING_API}/${MeetingId}`,
               {
                 title: values.title,
                 description: values.description,
@@ -62,7 +70,7 @@ function Edit({
               setInitialValues(response.data.meeting);
               
               if (response.status === 200) {
-                  router.push(`${ADMIN_MEETING_ROUTE.url}/${(await params).meetingId}/details`);
+                  router.push(`${ADMIN_MEETING_ROUTE.url}/${MeetingId}/details`);
             // console.log('Meeting updated successfully');
           }
         } catch (error) {
@@ -79,10 +87,9 @@ function Edit({
       {initialValues && (
         <MeetingForm onSubmit={handleSubmit} mode='edit' initialValues={initialValues} />
       )}
-    
          </Box>
      </>
   )
 }
 
-export default Edit 
+export default Edit;

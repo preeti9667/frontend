@@ -3,8 +3,7 @@ import moment from 'moment';
 import React from 'react'
 
 interface propsItem{
-    item:  string;
-    
+    item:  string;  
 }
 
 interface propsMoment{
