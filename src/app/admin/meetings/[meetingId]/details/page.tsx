@@ -2,17 +2,13 @@
 import {
   Box,
   Button,
-  Divider,
   Menu,
   MenuItem,
-  Paper,
   Typography,
 } from "@mui/material";
-
-import { useEffect, useState } from "react";
+import {useState } from "react";
 import style from "@/app/admin/admin.module.css";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
-
 import { useRouter } from "next/navigation";
 import {
   ADMIN_MEETING_ROUTE,
@@ -23,11 +19,12 @@ import MyDialog from "@/app/admin/components/Dialog";
 import { toast } from "react-toastify";
 import { Moment, StatusColor, TypeColor } from "@/app/admin/components/Chip";
 import Grid from "@mui/material/Grid2";
-import MoreVertIcon from "@mui/icons-material/MoreVert";
 import { useParams } from "next/navigation";
-import Participates from "../../../participants/components/Participates";
 import axios from "axios";
 import Participants from "@/app/admin/participants/page";
+import useRequest from "@/util/useRequest";
+import Responsive from "./ResponsiveAction";
+import MokData from "@/app/admin/components/ MokData";
 interface DataItem {
   _id: string;
   meetingId: string;
@@ -45,65 +42,48 @@ interface DataItem {
 const MeetingDetails = () => {
   const params = useParams<{ meetingId: string }>();
   const meetingId = params.meetingId;
-
-  const [meeting, setMeeting] = useState<DataItem | null>(null);
   const [open, setOpen] = useState(false);
   const [status, setStatus] = useState("");
-  const [action, setAction] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
   const router = useRouter();
 
-  const fetchMeetings = async () => {
-    try {
-      const response = await axios.get(`${GET_MEETING_API}/${meetingId}`);
-      setMeeting(response.data.meeting);
-      // console.log(response.data.meeting)
-    } catch (error) {
-      console.error("Error fetching meetings:", error);
+ 
+  const {data, isLoading} = useRequest({
+    url: `${GET_MEETING_API}/${meetingId}`,
+    params:{
+      status
     }
-  };
+  });
+  const meeting = data?.meeting as DataItem || null;
 
   const deleteMeeting = async () => {
-    const meetingId = (await params).meetingId;
     try {
       await axios.delete(`${GET_MEETING_API}/${meetingId}`);
       router.push(`${ADMIN_MEETING_ROUTE.url}`);
-    } catch (error) {
-      console.error("Error deleting meeting:", error);
-      setSnackbarOpen(true);
+    } catch (error:any) {
+      toast.error(error.message || "Something went wrong", { theme: "colored" });
     }
-  };
-
-  const handleDelete = () => {
-    setOpen(true);
   };
   const handleClose = () => {
     setOpen(false);
   };
   
 
-  useEffect(() => {
-    fetchMeetings();
-  }, [status,]);
-
-
   const handleUpDate = (_id: string | undefined) => {
     // console.log(id)
     router.push(`${ADMIN_MEETING_ROUTE.url}/${_id}/edit`);
   };
   const handleStatusChange = async (event: String) => {
-    // const value = event.target.value;
     const value = event;
-
     try {
-      const res = axios.put(
-        `${GET_MEETING_API}/${(await params).meetingId}/status`,
+      const res = await axios.put(
+        `${GET_MEETING_API}/${meetingId}/status`,
         {
           status: value,
         }
       );
-      setStatus((await res).data.meeting.status);
-      if ((await res).status === 200) {
+      setStatus(res.data.meeting.status);
+      if (res.status === 200) {
         toast.success("Status updated successfully", { theme: "colored" });
         setIsOpen(false);
       }
@@ -114,12 +94,6 @@ const MeetingDetails = () => {
     }
   };
 
-  const handleShowAction = () => {
-    setAction(!action);
-  };
-
- 
-
   const handleClickStatus = () => {
     setIsOpen(!isOpen);
   };
@@ -128,8 +102,15 @@ const MeetingDetails = () => {
     <AdminLayout>
       <Box
         sx={{
-          background: { xs: "none", md: "white", lg: "white", xl: "white" },
+          background: { xs: "none", sm:'white', md: "white", lg: "white", xl: "white" },
           position: "relative",
+          margin:{
+            xs: "0px -24px",
+            sm: "0px",
+            md: "0px",
+            lg: "0px",
+            xl: "0px",
+          },
         }}
       >
         <Box
@@ -168,20 +149,9 @@ const MeetingDetails = () => {
               },
             }}
           >
+    
+    {/* Top Action */}
             <Box sx={{ display: "flex", gap: "10px", alignItems: "center" }}>
-              {/* <FormControl sx={{m:1,minWidth:100, background:"white", borderRadius:"5px"}} 
-          size="small" >
-
-            <InputLabel>Status</InputLabel>
-            <Select sx={{height:"35px"}}
-             label="Status"
-          value={status}
-          onChange={handleStatusChange}>
-          <MenuItem value='CREATED'>CREATED</MenuItem>
-          <MenuItem value='COMPLETED'>COMPLETED</MenuItem>
-        </Select>
-             </FormControl> */}
-
               <Button
                 onClick={handleClickStatus}
                 variant="contained"
@@ -241,79 +211,24 @@ const MeetingDetails = () => {
                   }}
                   variant="outlined"
                   color="error"
-                  onClick={handleDelete}
+                  onClick={() => setOpen(true)}
                 >
                   Delete
                 </Button>
               </Box>
             </Box>
           </Box>
-          <Box
-            sx={{
-              display: {
-                lg: "none",
-                xl: "none",
-                md: "none",
-                sm: "block",
-                xs: "block",
-              },
-            }}
-          >
-            <Button
-              onClick={handleShowAction}
-              sx={{ background: "white", borderRadius: "40px" }}
-            >
-              <MoreVertIcon />
-            </Button>
-          </Box>
-          {action && (
-            <Paper
-              elevation={0}
-              sx={{
-                position: "absolute",
-                right: "29px",
-                marginTop: "36px",
-                display: "flex",
-                flexDirection: "column",
-              }}
-            >
-              <Button
-                id="basic-button"
-                onClick={handleClickStatus}
-                variant="contained"
-                sx={{
-                  backgroundColor: "white",
-                  textTransform: "none",
-                  color: "var(--text-color)",
-                  boxShadow: "none",
-                }}
-              >
-                Status
-              </Button>
 
-              <Divider />
+{/* Top Action Responsive */}
+          <Responsive
+            handleClickStatus={handleClickStatus}
+            handleOpen={()=>setOpen(true)}
+            handleUpdate={() => handleUpDate(meeting?._id)}
+          />
 
-              <Button
-                sx={{ textTransform: "none" }}
-                color="success"
-                // variant="outlined"
-                onClick={() => handleUpDate(meeting?._id)}
-              >
-                Update
-              </Button>
-              <Divider />
-              <Button
-                sx={{ textTransform: "none" }}
-                color="error"
-                // variant="outlined"
-                onClick={handleDelete}
-              >
-                Delete
-              </Button>
-            </Paper>
-          )}
         </Box>
 
+      {/* Meeting Details */}
         <Box
           sx={{
             display: "grid",
@@ -338,6 +253,15 @@ const MeetingDetails = () => {
               <Box>Type</Box>
               <Box>Status</Box>
             </Grid>
+           
+         
+          {isLoading ?
+          <Box sx={{display: "grid", gap: "2px",marginTop:"30px"}}>
+            {[1, 2, 3, 4, 5, 6, 7, 8, 9].map((item) => (
+              <MokData width="200px" height="6px" key={item}/>
+            ))
+            }
+          </Box>  :
             <Grid size={8} sx={{ display: "grid", gap: "8px" }}>
               <Box>{meeting?.title.toLocaleUpperCase()}</Box>
               <Box>{meeting?.meetingId}</Box>
@@ -360,12 +284,13 @@ const MeetingDetails = () => {
               <Box>
                 <StatusColor item={String(meeting?.status)} />
               </Box>
-            </Grid>
+            </Grid>}
           </Grid>
 
         <Participants meetingId={meetingId} />
 
         </Box>
+
 
         <MyDialog
           handleDelete={deleteMeeting}

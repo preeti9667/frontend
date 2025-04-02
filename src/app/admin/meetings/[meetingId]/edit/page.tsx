@@ -3,8 +3,10 @@ import { Box } from '@mui/material'
 import axios from 'axios';
 import React, { useEffect, useState } from 'react'
 import MeetingForm from '../../components/CreateMeetings'
-import {useRouter} from 'next/navigation';
+import {useParams, useRouter} from 'next/navigation';
 import { ADD_MEETING_API, ADMIN_MEETING_ROUTE, GET_MEETING_API } from '@/constant';
+import useRequest from '@/util/useRequest';
+import { toast } from 'react-toastify';
 
 interface DataItem {
   title: string;
@@ -16,38 +18,28 @@ interface DataItem {
   type: string;
 }
 
-function Edit({
-  params,
-}: {
-  params: Promise<{ meetingId: string }>;
-})  {
-
-
+const  Edit = ()=>{
+  const params = useParams<{ meetingId: string }>();
   const router = useRouter()
-  const [initialValues, setInitialValues] = useState<DataItem | null >(null);
-  
-  
-  useEffect( () => {
-        const fetchMeeting = async () => {
-          try {
-            
-            const response = await axios.get(`${GET_MEETING_API}/${(await params).meetingId}`);
-            const data = response.data.meeting;
-            // console.log(data)
-            setInitialValues(data);
+  const [initialValues, setInitialValues] = useState<DataItem | null >(null); 
+  const [isLoading, setIsLoading] = useState(false);
 
-          } catch (error) {
-            console.error('Error fetching meeting data:', error);
-          }
-        };
-    
-         fetchMeeting();
-      }, [params]);
+  const {data} = useRequest({
+    url: `${GET_MEETING_API}/${params.meetingId}`,
+  })
+  const response = data?.meeting as DataItem || null;
+  
+
+  useEffect(() => {
+    if (response) {
+      setInitialValues(response);
+    }
+  }, [response]);
 
         const handleSubmit = async (values: any) => {
-      
+            setIsLoading(true);
             try {    
-              const response = await axios.put(`${ADD_MEETING_API}/${(await params).meetingId}`,
+              const response = await axios.put(`${ADD_MEETING_API}/${params.meetingId}`,
               {
                 title: values.title,
                 description: values.description,
@@ -59,25 +51,23 @@ function Edit({
               });
 
               setInitialValues(response.data.meeting);
-              
+              setIsLoading(false);
               if (response.status === 200) {
-                  router.push(`${ADMIN_MEETING_ROUTE.url}/${(await params).meetingId}/details`);
-            // console.log('Meeting updated successfully');
+                  router.push(`${ADMIN_MEETING_ROUTE.url}/${params.meetingId}/details`);
           }
-        } catch (error) {
-          console.error('Error updating meeting:', error);
+        } catch (error:any) {
+          toast.error(error.message || "Something went wrong", { theme: "colored" });
         }
-      // };
         };
-
-
   
   return (
     <>
         <Box>
       {initialValues && (
-        <MeetingForm onSubmit={handleSubmit} mode='edit' initialValues={initialValues} />
-      )}
+        <MeetingForm onSubmit={handleSubmit} mode='edit' initialValues={initialValues} 
+        isLoading={isLoading}
+        />
+       )} 
     
          </Box>
      </>

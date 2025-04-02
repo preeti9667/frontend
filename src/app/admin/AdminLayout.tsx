@@ -47,8 +47,7 @@ export default function AdminLayout({
            <Sidebar toggleDrawer={toggleDrawer} />
           </Drawer>
           <Box component="main" 
-          sx={{ flexGrow: 1,p:3,mt:8 }}
-          >
+          sx={{ flexGrow: 1,mt:8, p:3}} >
             {children}
           </Box>
          

@@ -7,9 +7,6 @@ interface FetchOptions {
   }
 
 const  useRequestPost = async ( { url, data }: FetchOptions) => {
-    
-//   const toastId =  toast.loading('Please wait', {theme: 'colored'})
-
         try {
             const response = await axios.post(url, data);
             const status = response.status;
@@ -21,8 +18,5 @@ const  useRequestPost = async ( { url, data }: FetchOptions) => {
             return {error: errorResponse};
         }
     }
-
-
-
 
 export default useRequestPost

@@ -3,8 +3,8 @@ import React from "react";
 import {
   Box,
   Button,
+  CircularProgress,
   FormControlLabel,
-  Link,
   Radio,
   RadioGroup,
   TextField,
@@ -13,7 +13,6 @@ import {
 import { ErrorMessage, Field, Form, Formik } from "formik";
 import * as Yup from "yup";
 import style from "@/app/admin/admin.module.css";
-import { ADD_MEETING_API, ADMIN_MEETING_ROUTE } from "@/constant";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import AdminLayout from "@/app/admin/AdminLayout";
 import moment from "moment";
@@ -29,8 +28,8 @@ interface meetingProps {
     type: string;
   };
   mode: "add" | "edit";
-
   onSubmit: (values: any) => void;
+  isLoading : boolean
 }
 
 const validationSchema = Yup.object({
@@ -71,11 +70,8 @@ const validationSchema = Yup.object({
   type: Yup.string().required("type is required"),
 });
 
-const MeetingForm: React.FC<meetingProps> = ({
-  initialValues,
-  onSubmit,
-  mode,
-}) => {
+const MeetingForm: React.FC<meetingProps> = ({initialValues,onSubmit,mode,isLoading}) => {
+
   const defaultValues = {
     title: "",
     description: "",
@@ -102,8 +98,7 @@ const MeetingForm: React.FC<meetingProps> = ({
             gap: "40px",
           }}
         >
-       
-            <ArrowBackIcon
+                      <ArrowBackIcon
               fontSize="small" onClick={() => history.back()}
               sx={{ width: "30px", height: "30px", color: "white", cursor: "pointer" }}
             />
@@ -131,8 +126,6 @@ const MeetingForm: React.FC<meetingProps> = ({
                   errors,
                   touched,
                   handleReset,
-                  dirty,
-                  isValid,
                 }) => (
                   <Form>
                     <Box mt={1}>
@@ -285,7 +278,6 @@ const MeetingForm: React.FC<meetingProps> = ({
                       <Button
                         onClick={handleReset}
                         variant="contained"
-                        className={style.actionBtnForm1}
                         color="error"
                       >
                         Clear
@@ -295,10 +287,14 @@ const MeetingForm: React.FC<meetingProps> = ({
                         type="submit"
                         variant="contained"
                         color="success"
-                        className={style.actionBtnForm1}
-                        disabled={!(isValid && dirty)}
+                          disabled={isLoading}
+                          sx={{display: "flex",gap:"10px", alignItems:"center"}}
                       >
-                        {mode === "add" ? "Submit" : "Update"}
+                       {mode === "add" ? "Submit" : "Update" }
+                        <CircularProgress size={28} color="secondary" 
+                                        sx={{display: isLoading? "block":"none" }}
+                        />
+                                        
                       </Button>
                     </Box>
                   </Form>

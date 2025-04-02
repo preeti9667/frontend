@@ -37,7 +37,7 @@ const  Login:React.FC = () =>{
         url:  `${ADMIN_LOGIN_API}`,
         data: value,
       });
-      setIsLoading(false) 
+      setIsLoading(false)  
       if (response.status === 200) {
         const { token } = await response.data.result;
         setCookie("Token", token, {
@@ -46,6 +46,8 @@ const  Login:React.FC = () =>{
         router.push(`${ADMIN_DASHBOARD_ROUTE.url}`);
       }
     };
+  
+    
 
    
 
@@ -135,8 +137,6 @@ const initialValues: FormValue = {
                 Submit
               <CircularProgress size={28} color="secondary" 
                 sx={{display: isLoading?"block":"none" }}/>
-             
-                
               </Button>
             </Form>
           )}

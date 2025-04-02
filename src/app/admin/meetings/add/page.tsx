@@ -1,10 +1,9 @@
 'use client'
-import React from 'react'
+import React, { useState } from 'react'
 import MeetingForm from '../components/CreateMeetings'
-import axios from 'axios';
 import { ADD_MEETING_API, ADMIN_MEETING_ROUTE } from '@/constant';
 import {useRouter} from 'next/navigation';
-import { post } from '@/util/http.util';
+import useRequestPost from '@/util/useRequestPost';
 
 interface DataItem {
   title: string;
@@ -17,13 +16,18 @@ interface DataItem {
 }
 
 export default function AddMeeting() {
+  const [isLoading, setIsLoading] = useState(false)
   const router = useRouter()
 
   const handleSubmit = async (value:DataItem)=>{
-   
-      const response =  post(`${ADD_MEETING_API}`,value)
-      // console.log(response)
-      if((await response).status === 200){
+ setIsLoading(true);
+   const response  =  await useRequestPost({
+      url: ADD_MEETING_API,
+      data: value
+    });
+    // console.log(response)
+    setIsLoading(false)
+    if(response.status === 200){
         router.push(`${ADMIN_MEETING_ROUTE.url}`);
       }
   }
@@ -31,7 +35,7 @@ export default function AddMeeting() {
   return (
     <>
     <MeetingForm onSubmit={handleSubmit} 
-      mode='add'
+      mode='add' isLoading={isLoading}
     />
     </>
   )
