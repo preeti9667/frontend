@@ -2,6 +2,7 @@
 import React, {useEffect, useMemo, useState, } from "react";
 import {
   Box,
+  Tab,
   Table,
   TableBody,
   TableCell,
@@ -16,15 +17,11 @@ import { PARTICIPANT_USERS_API } from "@/constant";
 import axios from "axios";
 import { toast } from "react-toastify";
 import { CircularProgress } from "@mui/material";
+import useRequest from "@/util/useRequest";
+import MokData, { CustomCircularProgress } from "../../components/ MokData";
 
 
-interface User {
-  _id: string;
-  fullName: string;
-  email: string;
-  userId: string;
-  isActive: boolean;
-}
+
 
 interface Participants {
   createdAt: string;
@@ -43,16 +40,8 @@ interface AddUserDialogProps {
 
 
 const Participates: React.FC<AddUserDialogProps> =({ meetingId }) => {
-  const [search, setSearch] = useState(""); 
   const [openUser, setOpenUser] = useState(false);
-  const [participant, setParticipant] = useState<User[]>([]); // Already added users
-  const [allUsers, setAllUsers] = useState<Participants[]>([]); // All available users
-  const [selectedUsers, setSelectedUsers] = useState<string[]>([]); // Track selected user IDs
 
-    const [nextPage, setNextPage] = useState<string | null>(null);
-  
-
-  const [limit] = useState(10);
   const openUserList = () => {
     setOpenUser(true);
   };
@@ -60,85 +49,14 @@ const Participates: React.FC<AddUserDialogProps> =({ meetingId }) => {
     setOpenUser(false);
   };
 
-  const handleAddParticipants = async (selectedUserIds: string[]) => {
-    // console.log(selectedUserIds)
-    try {
-      const response = await axios.post(`${PARTICIPANT_USERS_API}`, {
-        userIds: selectedUserIds, // Send only checked users
-        meetingId: meetingId,
-        removedUserIds: allUsers.filter((user) => !selectedUserIds.includes(user.user._id)).map((user) => user.user._id),
-      });
-
-      if (response.status === 200) {
-        toast.success("Users added successfully", { theme: "colored" });
-        closeUserList();
-      } else {
-        toast.error("Failed to add participants");
-      }
-    } catch (error) {
-      console.error("Error adding participants:", error);
-    }
-  };
-  const getUsers = async () => {
- 
-    try {
-      const response = await axios.get(
-        `${PARTICIPANT_USERS_API}/${meetingId}/search-users`,
-        {
-          params: {
-            search,
-            limit ,
-            nextPageTimeStamp: nextPage,
-          },
-        }
-      );
-
-      const { list, nextPage: newNextPage } = response.data.data;
-       
-        const addedUsers = response.data.data.list;
-        // setParticipant([...participant, ...list]);
-        setParticipant(addedUsers);
-        // setNextPage(newNextPage);
-        // console.log(newNextPage) 
-    } catch (error) {
-      console.error(error);
-    
-    }
-  };
-
-
-  const getParticipants = async () => {
-    try {
-      const response = await axios.get(`${PARTICIPANT_USERS_API}/${meetingId}`);
-      const usersList = response.data.data.list;
-      // console.log(usersList);
-      setAllUsers(usersList);
-
-      const select = usersList.map((user: Participants) => user.user._id);
-
-      // console.log(select)
-      setSelectedUsers(select);
-    } catch (error) {
-      console.error(error);
-    }
-  };
-
-const debounced = useDebouncedCallback(
-    // function
-    (search) => {
-      setSearch(search);
-    },
-    1000
-  );
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    debounced(e.target.value);
-  };
-
-
-  useEffect(() => {
-    getParticipants();
-    getUsers();
-  }, [search]);
+  const { data,isLoading } = useRequest({
+    url: `${PARTICIPANT_USERS_API}/${meetingId}`,
+    params: {
+        
+      },
+  });
+  const participantsList = data?.data?.list as Participants [] || [];
+  const selectedUsers = participantsList.map((user: Participants) => user.user._id);
 
   return (
     <Box>
@@ -156,49 +74,47 @@ const debounced = useDebouncedCallback(
           variant="contained"
         />
       </Box>
+     
       <TableContainer>
         <Table sx={{ border: "1px solid black" }}>
           <TableHead sx={{ display: "block" }}>
-            <TableRow sx={{ display: "table", width: "100%" }}>
+            <TableRow sx={{ display: "grid",gridTemplateColumns:"1fr 1fr 1fr", width: "100%" }}>
               <TableCell>Participant Id</TableCell>
               <TableCell>Name</TableCell>
               <TableCell>Email</TableCell>
             </TableRow>
           </TableHead>
+          {isLoading &&
+                Array.from({length: 8}).map((_, index) => (
+               <TableBody key={index}>
+                  <TableRow>                    
+                      <TableCell key={index}>
+                      <MokData height="10px" width="100%" key={index} />
+                    </TableCell>                    
+                  </TableRow>                   
+                    </TableBody>                
+                  ))}   
 
           <TableBody
-            sx={{ display: "block", maxHeight: 410, overflowY: "auto" }}
-          >
-            {allUsers.map((user,index) => (
+            sx={{ display: "block", maxHeight: 410, overflowY: "auto" }}>
+            {participantsList.map((participant,index) => (
               <TableRow
                 key={index}
-                sx={{ display: "grid", width: "100%", gridTemplateColumns:"1fr 1fr 1fr"}}
-              >
-                <TableCell>{user.user.userId}</TableCell>
-                <TableCell>{user.user.fullName}</TableCell>
-                <TableCell>{user.user.email}</TableCell>
+                sx={{ display: "grid", width: "100%", gridTemplateColumns:"1fr 1fr 1fr"}} >
+                <TableCell>{participant.user.userId}</TableCell>
+                <TableCell>{participant.user.fullName}</TableCell>
+                <TableCell>{participant.user.email}</TableCell>
               </TableRow>
             ))}
           </TableBody>
         </Table>
       </TableContainer>
 
-   
-            
-
-
       <ParticipatesAdd
         open={openUser}
         onClose={closeUserList}
-        participant={participant} // Pass all users
         initialValues={{ users: selectedUsers }} // Pass pre-selected users
-        onSubmit={handleAddParticipants}
-        search={debounced}
-        onChange={handleChange}
-        getUsers={getUsers}
-        hasMore={nextPage}
-      />
-
+          meetingId={meetingId}  />
     </Box>
   );
 };

@@ -3,7 +3,13 @@ import { Box, Button, Checkbox, Dialog, DialogContent, DialogTitle, Divider, Inp
 import { Field, Form, Formik } from "formik";
 import * as Yup from "yup";
 import HighlightOffOutlinedIcon from "@mui/icons-material/HighlightOffOutlined";
-// import InfiniteScroll from 'react-infinite-scroller';
+import { PARTICIPANT_USERS_API } from "@/constant";
+import { useEffect, useState } from "react";
+import CustomInputBase from "../../components/InputBase";
+import useRequest from "@/util/useRequest";
+import useRequestPost from "@/util/useRequestPost";
+import { CustomCircularProgress } from "../../components/ MokData";
+import InfiniteScroll from "react-infinite-scroller";
 
 interface User {
   _id: string;
@@ -11,7 +17,6 @@ interface User {
   email: string;
   userId: string;
   isActive: boolean;
-  // createdAt: string;
 }
 
 
@@ -21,67 +26,102 @@ interface AddUserDialogProps {
       };
   open: boolean;
   onClose: () => void;
-  participant : User[]; // List of all available users
-  onSubmit: (values: string[]) => void; // Submit handler
- search: any
- onChange: any
- getUsers: any
- hasMore: any
+  meetingId: string
 }
 
 const validationSchema = Yup.object({});
 
+const participatesAdd:React.FC<AddUserDialogProps> = ({initialValues,open, onClose,meetingId,})=>{
+const [limit] = useState(10);
+const [search, setSearch] = useState(""); 
+const [newNextPage, setNextPage] = useState()
 
+  const handleAddParticipants = async (selectedUserIds: string[]) => {
+    const response = await useRequestPost({
+      url: `${PARTICIPANT_USERS_API}`,
+      data: {
+        userIds: selectedUserIds, // Send only checked users
+        meetingId: meetingId,
+        removedUserIds: allUsers.filter((user) => !selectedUserIds.includes(user._id)).map((user) => user._id),
+      }
+    })
+    if (response.status === 200) {
+      window.location.reload();
+      onClose();
+    }
+  };
 
-const participatesAdd:React.FC<AddUserDialogProps> = ({initialValues,open, onClose, participant, onSubmit , search , onChange,getUsers,hasMore})=>{
+ 
+
+  const {data, isLoading} = useRequest({
+    url: `${PARTICIPANT_USERS_API}/${meetingId}/search-users`,
+    params: {
+      search,
+      limit,
+      newNextPage : newNextPage
+    }
+  })
+  const allUsers = data?.data?.list as User[] || [];
+  const next = data?.data?.nextPage
+
+ 
+   
   
+        // const { list, nextPage: newNextPage } = data;
+         
+          // const allUsers = list as User[]  || [];
+          // console.log(list)
+          // setParticipant([...participant, ...list]);
+          // setParticipant(addedUsers);
+          // setNextPage(newNextPage);
+          // console.log(newNextPage) 
+  
+
+
     return(
         <>
   <Dialog open={open} onClose={onClose}>
   <DialogTitle
-    color="success"
-    sx={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap:"20px" }}
-  >
-    <InputBase
-      placeholder="Search"
-      defaultValue={search}
-      onChange={onChange}
-      sx={{
-        padding: "3px 10px",
-        borderRadius: "10px",
-        border: "1px solid black",
-        width: { lg: "350px", sx: "300px" },
-      }}
-    />
+    sx={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap:"20px",backgroundColor:"var(--text1-color)",padding:"10px" }} >
+   <CustomInputBase setSearch={setSearch} defaultValue={search} inputSize="300px"/>
       <HighlightOffOutlinedIcon color="error"
       onClick={onClose}
        sx={{ cursor: "pointer" }} />
   </DialogTitle>
   <Divider />
-
+{newNextPage}
  
   <DialogContent sx={{padding:"1px 2px"}}>
  
       <Formik
        validationSchema={validationSchema}
        initialValues={{ users: initialValues?.users || [] }} // Preselect users
-       onSubmit={(values) => onSubmit(values.users)} // Extract user IDs
+       onSubmit={(values) => handleAddParticipants(values.users)} // Extract user IDs
        enableReinitialize
       >
         {({ values, setFieldValue }) => (
           <Form>
 
          
-            {/* <InfiniteScroll  
-        pageStart={0}
-        loadMore={getUsers}
-        hasMore={!!hasMore}
-       loader={<div key={0}>Loading...</div>}
-         useWindow={false}>  */}
+  
+{
+  isLoading ? 
+  <Box sx={{height:"320px", display:"flex", justifyContent:"center", alignItems:"center"}}> 
+  <CustomCircularProgress/>
+  </Box>
+  :
 
-     <Box 
-    sx={{padding: "20px", height:'320px', overflowY: "scroll",display:'grid', gridTemplateColumns:"1fr 1fr", gap:"20px"}}>
-            {participant.map((user,index) => (
+     <Box id='scrollableDiv'
+    sx={{padding: "10px",height:'320px', overflowY: "scroll",display:'grid', gridTemplateColumns:"1fr 1fr", gap:"10px"}}>
+                      <InfiniteScroll  
+        initialLoad={false}
+        loadMore={() => setNextPage(next)}
+        hasMore={next !== null}
+        loader={<div>Loading ...</div>}
+        useWindow={false}
+        
+>
+            {allUsers.map((user,index) => (
               <Box key={index} >
                <Field
   type="checkbox"
@@ -100,8 +140,8 @@ const participatesAdd:React.FC<AddUserDialogProps> = ({initialValues,open, onClo
                 <label>{user.fullName}</label>
               </Box>
             ))}
-            </Box>
-            {/* </InfiniteScroll> */}
+            </InfiniteScroll>
+            </Box>}
             <Divider/>
             <Button variant="contained" sx={{ margin:"10px"}}
              color="success"
@@ -111,6 +151,7 @@ const participatesAdd:React.FC<AddUserDialogProps> = ({initialValues,open, onClo
           </Form>
         )}
       </Formik>
+     
     
     </DialogContent>
 </Dialog>
@@ -119,3 +160,7 @@ const participatesAdd:React.FC<AddUserDialogProps> = ({initialValues,open, onClo
     )
 }
 export default participatesAdd;
+
+function closeUserList() {
+  throw new Error("Function not implemented.");
+}

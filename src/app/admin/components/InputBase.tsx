@@ -8,20 +8,22 @@ interface props {
   defaultValue: any;
   inputSize: any
 }
-const CustomInputBase: React.FC<props> = ({ setSearch, defaultValue ,inputSize}) => {
+const CustomInputBase: React.FC<props> = ({ setSearch, defaultValue ,inputSize,}) => {
+
   const debounced = useDebouncedCallback(
     // function
     (search) => {
       setSearch(search);
-    }
+    },
+    1000
   );
-  1000;
+
   return (
     <Paper sx={{ borderRadius: "5px", width:inputSize}}  >
       <InputBase
         placeholder="search"
         sx={{ padding: "3px 10px", borderRadius: "10px" }}
-        defaultValue={defaultValue}
+        defaultValue={debounced(defaultValue)}
         onChange={(e) => debounced(e.target.value)}
       />
     </Paper>

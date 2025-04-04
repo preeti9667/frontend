@@ -19,7 +19,7 @@ export default MokData;
 export function CustomCircularProgress (){
   return(
     <>
-  <CircularProgress size={70}  sx={{color:'#918484'}} thickness={2}/> 
+  <CircularProgress size={60}  sx={{color:'#918484'}} thickness={2}/> 
   
     </>
   )

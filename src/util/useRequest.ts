@@ -3,10 +3,14 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import { getCookie } from "cookies-next";
 import { toast } from "react-toastify";
+import { GET_USERS_API } from "@/constant";
 
 interface FetchOptions {
   url: string;
   params?: Record<string, unknown>;
+}
+interface userProps {
+  id: string
 }
 
 const useRequest = ({ url, params }: FetchOptions) => {
@@ -16,7 +20,7 @@ const useRequest = ({ url, params }: FetchOptions) => {
   // Prevent infinite loops by stringifying `params`
   useEffect(() => {
     fetchData();
-  },[url,  JSON.stringify(params)]); 
+  },[url, JSON.stringify(params)]); 
 
  
   const fetchData = async () => {
@@ -45,3 +49,6 @@ const useRequest = ({ url, params }: FetchOptions) => {
 };
 
 export default useRequest;
+
+
+

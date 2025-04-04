@@ -48,7 +48,9 @@ export default function AdminLayout({
           </Drawer>
           <Box component="main" 
           sx={{ flexGrow: 1,mt:8, p:3}} >
+          
             {children}
+          
           </Box>
          
         </Box>

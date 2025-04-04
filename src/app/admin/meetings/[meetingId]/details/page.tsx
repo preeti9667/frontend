@@ -180,6 +180,10 @@ const MeetingDetails = () => {
                     },
                     left: "auto !important",
                   },
+                  ".css-1toxriw-MuiList-root-MuiMenu-list": {
+                    paddingTop:'0',
+                    paddingBottom:'0'
+                  }
                 }}
               >
           
@@ -248,7 +252,7 @@ const MeetingDetails = () => {
               <Box> Created At</Box>
               <Box> Time</Box>
               <Box>StartDate</Box>
-              <Box>endDate</Box>
+              <Box>EndDate</Box>
               <Box>Description</Box>
               <Box>Type</Box>
               <Box>Status</Box>
