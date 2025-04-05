@@ -9,7 +9,7 @@ import CustomInputBase from "../../components/InputBase";
 import useRequest from "@/util/useRequest";
 import useRequestPost from "@/util/useRequestPost";
 import { CustomCircularProgress } from "../../components/ MokData";
-import InfiniteScroll from "react-infinite-scroller";
+import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 
 interface User {
   _id: string;
@@ -32,9 +32,9 @@ interface AddUserDialogProps {
 const validationSchema = Yup.object({});
 
 const participatesAdd:React.FC<AddUserDialogProps> = ({initialValues,open, onClose,meetingId,})=>{
-const [limit] = useState(10);
+const [limit] = useState();
 const [search, setSearch] = useState(""); 
-const [newNextPage, setNextPage] = useState()
+const [newNextPage, setNextPage] = useState<string| null>(null)
 
   const handleAddParticipants = async (selectedUserIds: string[]) => {
     const response = await useRequestPost({
@@ -51,33 +51,18 @@ const [newNextPage, setNextPage] = useState()
     }
   };
 
- 
-
   const {data, isLoading} = useRequest({
     url: `${PARTICIPANT_USERS_API}/${meetingId}/search-users`,
     params: {
       search,
       limit,
-      newNextPage : newNextPage
+      nextPageTimeStamp : newNextPage
     }
   })
   const allUsers = data?.data?.list as User[] || [];
-  const next = data?.data?.nextPage
+  const nextPage = data?.data?.nextPage 
 
- 
-   
   
-        // const { list, nextPage: newNextPage } = data;
-         
-          // const allUsers = list as User[]  || [];
-          // console.log(list)
-          // setParticipant([...participant, ...list]);
-          // setParticipant(addedUsers);
-          // setNextPage(newNextPage);
-          // console.log(newNextPage) 
-  
-
-
     return(
         <>
   <Dialog open={open} onClose={onClose}>
@@ -89,10 +74,15 @@ const [newNextPage, setNextPage] = useState()
        sx={{ cursor: "pointer" }} />
   </DialogTitle>
   <Divider />
-{newNextPage}
  
   <DialogContent sx={{padding:"1px 2px"}}>
- 
+  
+  <Button onClick={() => setNextPage(nextPage)} disabled={isLoading}
+    sx={{textTransform:"none", color:'var(--text-color)',display:"flex", alignItems:"center"}}>
+    Next Page
+    <ArrowForwardIcon sx={{fontSize:"18px"}}/>
+    </Button>
+   
       <Formik
        validationSchema={validationSchema}
        initialValues={{ users: initialValues?.users || [] }} // Preselect users
@@ -101,29 +91,19 @@ const [newNextPage, setNextPage] = useState()
       >
         {({ values, setFieldValue }) => (
           <Form>
-
-         
-  
 {
   isLoading ? 
   <Box sx={{height:"320px", display:"flex", justifyContent:"center", alignItems:"center"}}> 
   <CustomCircularProgress/>
   </Box>
   :
-
      <Box id='scrollableDiv'
     sx={{padding: "10px",height:'320px', overflowY: "scroll",display:'grid', gridTemplateColumns:"1fr 1fr", gap:"10px"}}>
-                      <InfiniteScroll  
-        initialLoad={false}
-        loadMore={() => setNextPage(next)}
-        hasMore={next !== null}
-        loader={<div>Loading ...</div>}
-        useWindow={false}
-        
->
+                     
             {allUsers.map((user,index) => (
               <Box key={index} >
                <Field
+               sx={{paddingLeft:"0px"}}
   type="checkbox"
   name="users"
   value={user._id}
@@ -140,7 +120,7 @@ const [newNextPage, setNextPage] = useState()
                 <label>{user.fullName}</label>
               </Box>
             ))}
-            </InfiniteScroll>
+            {/* </InfiniteScroll> */}
             </Box>}
             <Divider/>
             <Button variant="contained" sx={{ margin:"10px"}}
@@ -151,8 +131,6 @@ const [newNextPage, setNextPage] = useState()
           </Form>
         )}
       </Formik>
-     
-    
     </DialogContent>
 </Dialog>
 

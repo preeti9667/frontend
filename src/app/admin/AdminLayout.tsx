@@ -7,6 +7,8 @@ import {
 } from "@mui/material";
 import Sidebar from "./components/Sidebar";
 import Navbar from "./components/Navbar";
+import CustomError from "../customError/page";
+
 export default function AdminLayout({
   children,
 }: Readonly<{
@@ -48,9 +50,9 @@ export default function AdminLayout({
           </Drawer>
           <Box component="main" 
           sx={{ flexGrow: 1,mt:8, p:3}} >
-          
+        
             {children}
-          
+  
           </Box>
          
         </Box>
