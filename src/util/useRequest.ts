@@ -4,6 +4,7 @@ import axios from "axios";
 import { getCookie } from "cookies-next";
 import { toast } from "react-toastify";
 import { GET_USERS_API } from "@/constant";
+import { ref } from "yup";
 
 interface FetchOptions {
   url: string;
@@ -45,7 +46,7 @@ const useRequest = ({ url, params }: FetchOptions) => {
  
   
 
-  return { isLoading, data,  };
+  return { isLoading, data, refetch: fetchData };
 };
 
 export default useRequest;

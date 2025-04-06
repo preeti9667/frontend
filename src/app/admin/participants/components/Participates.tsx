@@ -49,15 +49,14 @@ const Participates: React.FC<AddUserDialogProps> =({ meetingId }) => {
     setOpenUser(false);
   };
 
-  const { data,isLoading } = useRequest({
+  const { data,isLoading} = useRequest({
     url: `${PARTICIPANT_USERS_API}/${meetingId}`,
-    params: {
-        
-      },
+      params: {
+        openUser
+      }
   });
   const participantsList = data?.data?.list as Participants [] || [];
   const selectedUsers = participantsList.map((user: Participants) => user.user._id);
-
   return (
     <Box>
       <Box

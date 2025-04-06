@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React, { use, useEffect, useState } from "react";
 import AdminLayout from "../AdminLayout";
 import {
   Box,
@@ -30,6 +30,8 @@ import CustomInputBase from "../components/InputBase";
 import ResponsiveUsers from "./components/ResponsiveUsers";
 import MokData from "../components/ MokData";
 import axios from "axios";
+import { toast } from "react-toastify";
+
 
 interface DataItem {
   _id: string;
@@ -65,7 +67,9 @@ export default function Users() {
     setPage(0);
   };
 
-  const { data, isLoading } = useRequest({
+
+  
+   const { data, isLoading, refetch } = useRequest({
     url: GET_USERS_API,
     params: {
       search,
@@ -78,6 +82,7 @@ export default function Users() {
   const userList = (data?.data?.list as DataItem[]) || [];
   const totalCount = data?.data?.count;
 
+  
   const handleSort = (field: "fullName" | "userId") => {
     if (field === "fullName") {
       setSortFullName(fullNameSort === "asc" ? "desc" : "asc");
@@ -87,13 +92,17 @@ export default function Users() {
       setSortFullName(undefined); // Reset other sorting
     }
   };
-
-  const handleUser = async (id: string) => {
+ 
+ 
+  const handleUser = async (id: string,) => {
     const ras = await axios.put(`${GET_USERS_API}/${id}/status`);
+
     if (ras.status === 200) {
-      window.location.reload();
+      toast.success("Status updated successfully", { theme: "colored" });
+      refetch();
     }
   };
+
 
   return (
     <AdminLayout>
@@ -194,9 +203,9 @@ export default function Users() {
                   <TableCell sx={{ padding: "0" }}>
                     <Switch
                       checked={user.isActive}
-                      onClick={() => handleUser(user._id)}
-                      color="success"
                       name="isActive"
+                      onChange={(e) => handleUser(user._id,)}
+                      color="success"
                     />
                   </TableCell>
                 </TableRow>

@@ -32,9 +32,22 @@ interface AddUserDialogProps {
 const validationSchema = Yup.object({});
 
 const participatesAdd:React.FC<AddUserDialogProps> = ({initialValues,open, onClose,meetingId,})=>{
-const [limit] = useState();
+const [limit] = useState(10);
 const [search, setSearch] = useState(""); 
 const [newNextPage, setNextPage] = useState<string| null>(null)
+
+
+
+const {data, isLoading, refetch} = useRequest({
+  url: `${PARTICIPANT_USERS_API}/${meetingId}/search-users`,
+  params: {
+    search,
+    limit,
+    nextPageTimeStamp : newNextPage
+  }
+})
+const allUsers = data?.data?.list as User[] || [];
+const nextPage = data?.data?.nextPage 
 
   const handleAddParticipants = async (selectedUserIds: string[]) => {
     const response = await useRequestPost({
@@ -46,21 +59,9 @@ const [newNextPage, setNextPage] = useState<string| null>(null)
       }
     })
     if (response.status === 200) {
-      window.location.reload();
       onClose();
     }
   };
-
-  const {data, isLoading} = useRequest({
-    url: `${PARTICIPANT_USERS_API}/${meetingId}/search-users`,
-    params: {
-      search,
-      limit,
-      nextPageTimeStamp : newNextPage
-    }
-  })
-  const allUsers = data?.data?.list as User[] || [];
-  const nextPage = data?.data?.nextPage 
 
   
     return(
