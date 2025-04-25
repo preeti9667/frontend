@@ -85,6 +85,7 @@ const Meeting = () => {
   };
 
   return (
+    
     <AdminLayout>
       <Box
         sx={{
@@ -219,7 +220,7 @@ const Meeting = () => {
                      handleClick={handleItemClick}
                      search={search}
                      setSearch={setSearch}/>
-                </Box>
+                              </Box>
     </AdminLayout>
   );
 };

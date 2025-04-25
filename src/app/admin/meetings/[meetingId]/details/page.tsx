@@ -55,7 +55,7 @@ const MeetingDetails = () => {
     }
   });
   const meeting = data?.meeting as DataItem || null;
-
+  
   const deleteMeeting = async () => {
     try {
       await axios.delete(`${GET_MEETING_API}/${meetingId}`);
@@ -224,6 +224,7 @@ const MeetingDetails = () => {
           </Box>
 
 {/* Top Action Responsive */}
+
           <Responsive
             handleClickStatus={handleClickStatus}
             handleOpen={()=>setOpen(true)}
@@ -233,6 +234,7 @@ const MeetingDetails = () => {
         </Box>
 
       {/* Meeting Details */}
+     
         <Box
           sx={{
             display: "grid",
@@ -245,6 +247,15 @@ const MeetingDetails = () => {
             padding: { xs: "10px", md: "20px", lg: "20px", xl: "20px" },
           }}
         >
+         {isLoading ?
+          <Box sx={{display: "grid", 
+          gap:{xs:"25px", sm: "25px", md: "2px", lg: "2px", xl: "2px"},
+          marginTop:"30px", marginRight:{xs:"0px", sm: "0px", md: "40px", lg: "40px", xl: "40px"} }}>
+            {[1, 2, 3, 4, 5, 6, 7, 8, 9].map((item) => (
+              <MokData width='100%' height="6px" key={item}/>
+            ))
+            }
+          </Box>:
           <Grid container spacing={2} gap={4} sx={{height:'400px', marginTop:"30px"}}>
             <Grid size={3} sx={{ display: "grid", gap: "8px", }}>
               <Box>Title</Box>
@@ -259,13 +270,7 @@ const MeetingDetails = () => {
             </Grid>
            
          
-          {isLoading ?
-          <Box sx={{display: "grid", gap: "2px",marginTop:"30px"}}>
-            {[1, 2, 3, 4, 5, 6, 7, 8, 9].map((item) => (
-              <MokData width="200px" height="6px" key={item}/>
-            ))
-            }
-          </Box>  :
+         
             <Grid size={8} sx={{ display: "grid", gap: "8px" }}>
               <Box>{meeting?.title.toLocaleUpperCase()}</Box>
               <Box>{meeting?.meetingId}</Box>
@@ -288,8 +293,8 @@ const MeetingDetails = () => {
               <Box>
                 <StatusColor item={String(meeting?.status)} />
               </Box>
-            </Grid>}
-          </Grid>
+            </Grid>
+          </Grid>}
 
         <Participants meetingId={meetingId} />
 

@@ -21,7 +21,7 @@ import {
 import { GET_USERS_API } from "@/constant/api.constant";
 import style from "../admin.module.css";
 import { useRouter } from "next/navigation";
-import { ADD_USER_ROUTE } from "@/constant";
+import { ADD_USER_ROUTE, ADMIN_USER_ROUTE } from "@/constant";
 import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
 import RefreshIcon from "@mui/icons-material/Refresh";
 import { Moment } from "../components/Chip";
@@ -96,7 +96,6 @@ export default function Users() {
  
   const handleUser = async (id: string,) => {
     const ras = await axios.put(`${GET_USERS_API}/${id}/status`);
-
     if (ras.status === 200) {
       toast.success("Status updated successfully", { theme: "colored" });
       refetch();
@@ -189,11 +188,11 @@ export default function Users() {
               {userList.map((user) => (
                 <TableRow
                   key={user._id}
+                  onClick={() => router.push(`${ADMIN_USER_ROUTE.url}/${user._id}/details`)}
                   sx={{
                     "&:last-child td, &:last-child th": { border: 0 },
                     cursor: "pointer",
-                  }}
-                >
+                  }}>
                   <TableCell>{user.userId}</TableCell>
                   <TableCell>
                     <Moment item={String(user.createdAt)} type="lll" />

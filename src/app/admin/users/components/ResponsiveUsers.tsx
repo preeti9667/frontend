@@ -11,7 +11,7 @@ import React from "react";
 import { Moment } from "../../components/Chip";
 import CustomInputBase from "../../components/InputBase";
 import { useRouter } from "next/navigation";
-import { ADD_USER_ROUTE } from "@/constant";
+import { ADD_USER_ROUTE, ADMIN_USER_ROUTE } from "@/constant";
 import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
 import RefreshIcon from "@mui/icons-material/Refresh";
 import style from "@/app/admin/admin.module.css";
@@ -89,7 +89,9 @@ const ResponsiveUsers: React.FC<Props> = ({
           </Box>
         ) : (
           users.map((user: any) => (
-            <Box key={user._id}>
+            <Box key={user._id}
+            onClick={() => router.push(`${ADMIN_USER_ROUTE.url}/${user._id}/details`)}
+            >
               <Card
                 sx={{
                   borderRadius: "20px 15px",
