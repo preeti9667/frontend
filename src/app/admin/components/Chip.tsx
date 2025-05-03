@@ -11,6 +11,10 @@ interface propsMoment{
     item:  string;
     type: string
 }
+
+interface propsDate{
+    item:  string;
+}
  export const TypeColor: React.FC<propsItem> = ({item}) => {
     const getStageColor = (interval: string) => {
         switch (interval) {
@@ -66,6 +70,26 @@ export const Moment:React.FC<propsMoment> =({item,type})=>{
         <>
         <Box>
             {moment(item).format(type)}
+        </Box>
+        </>
+    )
+}
+
+export const DateChip:React.FC<propsDate> =({item})=>{
+    const getStatusColor = (interval: string) => {
+        switch (interval) {
+            case "1:00":
+                return 'var(--secondary-color)';
+            // case "COMPLETED":
+            //     return "#0000ff91";
+        }
+    }  
+
+    return(
+        <>
+        <Box 
+        sx={{background:getStatusColor(item)}}>
+            {moment(item).format("YYYY-MM-DD")}
         </Box>
         </>
     )
