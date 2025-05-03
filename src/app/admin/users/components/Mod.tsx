@@ -133,7 +133,7 @@ const NotesTableByDate: React.FC = () => {
   
 
   useEffect(() => {
-    dispatch(addNote({ date : moment().format("YYYY-MM-DD"), note: { text: "", time: "" } }));
+    dispatch(addNote());
   }, [dispatch,]);
 
   const list = useSelector((state: any) => state.notes);
