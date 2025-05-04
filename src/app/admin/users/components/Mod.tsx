@@ -26,7 +26,7 @@ import TextDraft from "../../components/Textdraft";
 
 
 import { useDispatch, useSelector } from "react-redux";
-import { addNote, loadNotes, removeNote } from "@/customStore/userSlice";
+import { add, remove, load } from "@/customStore/userSlice";
 import { ContentState, convertFromRaw, RawDraftContentState } from "draft-js";
 import moment from "moment";
 
@@ -104,10 +104,10 @@ const NotesTableByDate: React.FC = () => {
         updatedNotes[selectedDateIndex].push(newNote);
       }
 
-      const dates = visibleDates.map((date) => moment(date).format("YYYY-MM-DD"));
-      const selectedDate = dates[selectedDateIndex];
-      dispatch(addNote({ date: selectedDate, note: { text: textInput, time: timeInput } }));
-      // dispatch(add({text:textInput, time:timeInput}));
+      // const dates = visibleDates.map((date) => moment(date).format("YYYY-MM-DD"));
+      // const selectedDate = dates[selectedDateIndex];
+      // dispatch(addNote({ date: selectedDate, note: { text: textInput, time: timeInput } }));
+      dispatch(add({text:textInput, time:timeInput}));
 
       setNotes(updatedNotes);
     
@@ -133,64 +133,64 @@ const NotesTableByDate: React.FC = () => {
   
 
   useEffect(() => {
-    dispatch(addNote());
+    dispatch(load());
   }, [dispatch,]);
 
   const list = useSelector((state: any) => state.notes);
-  console.log(list)
+  // console.log(list)
   
   
 
   // const applyInlineStyles = (text: string, styleRanges: any[]) => {
-  //   if (!styleRanges || styleRanges.length === 0) return [text];
+  // //   if (!styleRanges || styleRanges.length === 0) return [text];
   
-  //   // Build an array of characters and apply styles
-  //   const styledChars = text.split("").map((char, index) => ({
-  //     char,
-  //     bold: false,
-  //     italic: false,
-  //     underline: false,
-  //   }));
+  // //   // Build an array of characters and apply styles
+  // //   const styledChars = text.split("").map((char, index) => ({
+  // //     char,
+  // //     bold: false,
+  // //     italic: false,
+  // //     underline: false,
+  // //   }));
   
-  //   styleRanges.forEach((range) => {
-  //     const { offset, length, style } = range;
-  //     for (let i = offset; i < offset + length; i++) {
-  //       if (styledChars[i]) {
-  //         if (style === "BOLD") styledChars[i].bold = true;
-  //         if (style === "ITALIC") styledChars[i].italic = true;
-  //         if (style === "UNDERLINE") styledChars[i].underline = true;
-  //       }
-  //     }
-  //   });
+  // //   styleRanges.forEach((range) => {
+  // //     const { offset, length, style } = range;
+  // //     for (let i = offset; i < offset + length; i++) {
+  // //       if (styledChars[i]) {
+  // //         if (style === "BOLD") styledChars[i].bold = true;
+  // //         if (style === "ITALIC") styledChars[i].italic = true;
+  // //         if (style === "UNDERLINE") styledChars[i].underline = true;
+  // //       }
+  // //     }
+  // //   });
   
-  //   // Group styled characters into spans
-  //   const elements: React.JSX.Element[] = [];
-  //   let currentStyle: { bold: any; italic: any; underline: any; } | null = null;
-  //   let currentText = "";
+  // //   // Group styled characters into spans
+  // //   const elements: React.JSX.Element[] = [];
+  // //   let currentStyle: { bold: any; italic: any; underline: any; } | null = null;
+  // //   let currentText = "";
   
-  //   const flush = () => {
-  //     if (currentText === "") return;
-  //     let el = <>{currentText}</>;
-  //     if (currentStyle) {
-  //       if (currentStyle.bold) el = <strong>{el}</strong>;
-  //       if (currentStyle.italic) el = <em>{el}</em>;
-  //       if (currentStyle.underline) el = <u>{el}</u>;
-  //     }
-  //     elements.push(el);
-  //     currentText = "";
-  //   };
+  // //   const flush = () => {
+  // //     if (currentText === "") return;
+  // //     let el = <>{currentText}</>;
+  // //     if (currentStyle) {
+  // //       if (currentStyle.bold) el = <strong>{el}</strong>;
+  // //       if (currentStyle.italic) el = <em>{el}</em>;
+  // //       if (currentStyle.underline) el = <u>{el}</u>;
+  // //     }
+  // //     elements.push(el);
+  // //     currentText = "";
+  // //   };
   
-  //   styledChars.forEach(({ char, bold, italic, underline }, i) => {
-  //     const styleKey = JSON.stringify({ bold, italic, underline });
-  //     if (!currentStyle || styleKey !== JSON.stringify(currentStyle)) {
-  //       flush();
-  //       currentStyle = { bold, italic, underline };
-  //     }
-  //     currentText += char;
-  //   });
-  //   flush();
+  // //   styledChars.forEach(({ char, bold, italic, underline }, i) => {
+  // //     const styleKey = JSON.stringify({ bold, italic, underline });
+  // //     if (!currentStyle || styleKey !== JSON.stringify(currentStyle)) {
+  // //       flush();
+  // //       currentStyle = { bold, italic, underline };
+  // //     }
+  // //     currentText += char;
+  // //   });
+  // //   flush();
   
-  //   return elements;
+  // //   return elements;
   // };
   
   const formatDraftContent = (rawString: string) => {
@@ -304,7 +304,7 @@ const NotesTableByDate: React.FC = () => {
                   <TableCell key={i} sx={{ verticalAlign: "top" , borderRight:'1px solid #ccc',width:'200px', padding:"inherit"}}>
                      
 
-                    {/* {notes[globalIndex].map((note:any, index: number) => (
+                    {notes[globalIndex].map((note:any, index: number) => (
                       <Box key={index} mb={1} sx={{borderBottom:'1px solid #ccc',}}>
                         <Box sx={{margin:'0 10px'}}>
 
@@ -335,7 +335,7 @@ const NotesTableByDate: React.FC = () => {
                       
                            
                       </Box>
-                    ))} */}
+                    ))}
                   </TableCell>
                 
                 );
