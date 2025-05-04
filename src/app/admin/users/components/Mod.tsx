@@ -26,7 +26,7 @@ import TextDraft from "../../components/Textdraft";
 
 
 import { useDispatch, useSelector } from "react-redux";
-import { add, remove, load } from "@/customStore/userSlice";
+import { addNote, removeNote } from "@/customStore/userSlice";
 import { ContentState, convertFromRaw, RawDraftContentState } from "draft-js";
 import moment from "moment";
 
@@ -82,12 +82,7 @@ const NotesTableByDate: React.FC = () => {
     setOpen(true);
   };
 
-  const handleRemove = (globalIndex: number, noteIndex: number) => {
-    const updatedNotes = [...notes];
-    updatedNotes[globalIndex].splice(noteIndex, 1);
-    setNotes(updatedNotes);
-   
-  };
+  
 
   const handleSubmit = () => {
     if (selectedDateIndex !== null) {
@@ -107,7 +102,11 @@ const NotesTableByDate: React.FC = () => {
       // const dates = visibleDates.map((date) => moment(date).format("YYYY-MM-DD"));
       // const selectedDate = dates[selectedDateIndex];
       // dispatch(addNote({ date: selectedDate, note: { text: textInput, time: timeInput } }));
-      dispatch(add({text:textInput, time:timeInput}));
+
+      dispatch(addNote({
+        note: { text: textInput, time: timeInput },
+        date: ""
+      }));
 
       setNotes(updatedNotes);
     
@@ -132,66 +131,14 @@ const NotesTableByDate: React.FC = () => {
 
   
 
-  useEffect(() => {
-    dispatch(load());
-  }, [dispatch,]);
+  // useEffect(() => {
+  //   dispatch(load());
+  // }, [dispatch,]);
 
-  const list = useSelector((state: any) => state.notes);
-  // console.log(list)
+  const notesByDate: { [date: string]: { time: string; text: string }[] } = useSelector((state: any) => state.notes);
   
   
 
-  // const applyInlineStyles = (text: string, styleRanges: any[]) => {
-  // //   if (!styleRanges || styleRanges.length === 0) return [text];
-  
-  // //   // Build an array of characters and apply styles
-  // //   const styledChars = text.split("").map((char, index) => ({
-  // //     char,
-  // //     bold: false,
-  // //     italic: false,
-  // //     underline: false,
-  // //   }));
-  
-  // //   styleRanges.forEach((range) => {
-  // //     const { offset, length, style } = range;
-  // //     for (let i = offset; i < offset + length; i++) {
-  // //       if (styledChars[i]) {
-  // //         if (style === "BOLD") styledChars[i].bold = true;
-  // //         if (style === "ITALIC") styledChars[i].italic = true;
-  // //         if (style === "UNDERLINE") styledChars[i].underline = true;
-  // //       }
-  // //     }
-  // //   });
-  
-  // //   // Group styled characters into spans
-  // //   const elements: React.JSX.Element[] = [];
-  // //   let currentStyle: { bold: any; italic: any; underline: any; } | null = null;
-  // //   let currentText = "";
-  
-  // //   const flush = () => {
-  // //     if (currentText === "") return;
-  // //     let el = <>{currentText}</>;
-  // //     if (currentStyle) {
-  // //       if (currentStyle.bold) el = <strong>{el}</strong>;
-  // //       if (currentStyle.italic) el = <em>{el}</em>;
-  // //       if (currentStyle.underline) el = <u>{el}</u>;
-  // //     }
-  // //     elements.push(el);
-  // //     currentText = "";
-  // //   };
-  
-  // //   styledChars.forEach(({ char, bold, italic, underline }, i) => {
-  // //     const styleKey = JSON.stringify({ bold, italic, underline });
-  // //     if (!currentStyle || styleKey !== JSON.stringify(currentStyle)) {
-  // //       flush();
-  // //       currentStyle = { bold, italic, underline };
-  // //     }
-  // //     currentText += char;
-  // //   });
-  // //   flush();
-  
-  // //   return elements;
-  // };
   
   const formatDraftContent = (rawString: string) => {
     try {
@@ -237,16 +184,7 @@ const NotesTableByDate: React.FC = () => {
   return (
     <Box sx={{ mt: 1, px: 2 }}>
       <Box>
-    {/* {
-      list.map((item: any, index: number) => {
-        return (
-          <Box sx={{mb:2}} key={index}>
-            <Typography variant="h6" sx={{mb:2}}>{ formatDraftContent(item.text)}</Typography>
-            <Typography variant="h6" sx={{mb:2}}> {item.time}</Typography>
-          </Box>
-        )
-      })
-    } */}
+   
 
 
 
@@ -272,39 +210,49 @@ const NotesTableByDate: React.FC = () => {
       {/* Table */}
       <Paper elevation={0} sx={{border:'1px solid #ccc'}}>
         <Table>
-          <TableHead>
+          {/* <TableHead> */}
             <TableRow>
-              {visibleDates.map((date, i) => (
-               
-                <TableCell key={i} align="center" sx={{borderRight:'1px solid #ccc',}}>
-                  <Typography variant="body2" sx={{display:"flex", alignItems:"center", justifyContent:"center", gap:"10px"}}>
-                    {date.toLocaleDateString(undefined, { month: "short", day: "numeric" })}
+              <TableCell sx={{ borderRight:'1px solid #ccc',width:'200px', padding:"inherit"}}>Date</TableCell>
+{/* 
+              {Object.entries(notesByDate).map(([date, notes], index) => (
+                  const globalIndex = page * 3 + i;
+                  
 
-                    <AddCircleOutlineRoundedIcon 
-                    onClick={() => handleOpenDialog(page * 3 + i)} 
-                   
-                     color="success"
-                      sx={{cursor:'pointer'}}/>
-                  </Typography>
-                </TableCell>
+
+
+
+<Box>
+
+ <Box>
+ <Typography variant="body2" sx={{display:"flex", alignItems:"center", justifyContent:"center", gap:"10px"}}>
+   {date}
+ </Typography>
+ <AddCircleOutlineRoundedIcon 
+         onClick={() => handleOpenDialog(page * 3 + index)} 
+        
+          color="success"
+           sx={{cursor:'pointer'}}/>
+ </Box>
+
+</Box>
               ))}
             </TableRow>
-          </TableHead>
-          <TableBody>
+          </TableHead> */}
+        
 
             {/* Notes Row (display notes vertically under each date) */}
-            <TableRow>
+             <TableRow>
               {visibleDates.map((_, i) => {
                 const globalIndex = page * 3 + i;
-                const dayNotes = list[globalIndex];
+                // const dayNotes = notesByDate[globalIndex]; 
               
 
 
-                return (
-                  <TableCell key={i} sx={{ verticalAlign: "top" , borderRight:'1px solid #ccc',width:'200px', padding:"inherit"}}>
+                
+              
                      
 
-                    {notes[globalIndex].map((note:any, index: number) => (
+                    {/* {notes[globalIndex].map((note:any, index: number) => (
                       <Box key={index} mb={1} sx={{borderBottom:'1px solid #ccc',}}>
                         <Box sx={{margin:'0 10px'}}>
 
@@ -335,17 +283,39 @@ const NotesTableByDate: React.FC = () => {
                       
                            
                       </Box>
-                    ))}
-                  </TableCell>
-                
-                );
-              })}
-            </TableRow>
-          </TableBody>
-        </Table>
-      
-      </Paper>
+                    ))} */}
 
+
+
+         return (
+           <TableCell sx={{ verticalAlign: "top" , borderRight:'1px solid #ccc',width:'200px', padding:"inherit"}}>
+
+           {notes.map((note: any, index: number) => (
+             <Box key={index} mb={1} sx={{borderBottom:'1px solid #ccc',}}>
+               <Box sx={{margin:'0 10px'}}></Box>
+
+            
+               <Box sx={{ display: "flex", gap:"10px", alignItems:"center" , padding:"5px 10px"}}>
+               <Typography variant="body2" sx={{backgroundColor:"var(--text-color)", padding:"5px 10px", borderRadius:"20px",color:'white'}}
+               >{note.time}
+               </Typography>
+           </Box>
+
+               {
+                 formatDraftContent(note.text)
+               }
+             
+
+                
+             </Box>
+           ))}
+           </TableCell>)
+                })}
+
+                  </TableRow>
+                </TableRow>
+        </Table>
+      </Paper>
      
       {/* Dialog */}
       <Dialog open={open} onClose={() => setOpen(false)} fullWidth maxWidth="sm">
@@ -383,4 +353,8 @@ const NotesTableByDate: React.FC = () => {
 export default NotesTableByDate;
 
 
+
+function load(): any {
+  throw new Error("Function not implemented.");
+}
  
