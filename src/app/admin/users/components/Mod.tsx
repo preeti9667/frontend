@@ -1,347 +1,185 @@
 "use client";
-import React, { useEffect, useRef, useState } from "react";
 import {
-  Box,
-  Button,
-  Dialog,
-  DialogTitle,
-  DialogContent,
-  DialogActions,
-  TextField,
-  Table,
-  TableHead,
-  TableRow,
-  TableCell,
-  TableBody,
-  IconButton,
-  Typography,
-  Paper,
+  Box, Button, Dialog, DialogTitle, DialogContent, DialogActions,
+  TextField, Table, TableHead, TableRow, TableCell, TableBody,
+  IconButton, Typography, Paper
 } from "@mui/material";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 import KeyboardArrowLeftIcon from '@mui/icons-material/KeyboardArrowLeft';
 import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight';
 import AddCircleOutlineRoundedIcon from '@mui/icons-material/AddCircleOutlineRounded';
-import TextDraft from "../../components/Textdraft";
-
-
+import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { addNote, removeNote } from "@/customStore/userSlice";
-import { ContentState, convertFromRaw, RawDraftContentState } from "draft-js";
 import moment from "moment";
-
+import MyEditor from "../../components/Textdraft";
+import { addNote, removeNote } from "@/customStore/userSlice";
 type Note = {
   text: string;
   time: string;
 };
 
-const NotesTableByDate: React.FC = () => {
- const dispatch = useDispatch();
-//  const list  = useSelector((state: any) => state.notes);
-//  console.log(list)
+const NotesTableByDate = () => {
+  const dispatch = useDispatch();
+  const notesByDate = useSelector((state: any) => state.notes);
 
   const today = new Date();
-  const [page, setPage] = useState(0); // 0 = first 7 days, 1 = next 7
-  const [open, setOpen] = useState(false);
-  const [selectedDateIndex, setSelectedDateIndex] = useState<number | null>(null);
-  const [textInput, setTextInput] = useState("");
-  const [timeInput, setTimeInput] = useState("");
-  const [editingIndex, setEditingIndex] = useState<number | null>(null);
-  const [notes, setNotes] = useState<Note[][]>(Array(14).fill([]).map(() => []));
-  // const [openDialog, setOpenDialog] = useState(false);
-  const [error, setError] = useState('');
-
-  const get14Days = (start: Date): Date[] => {
-    const days: Date[] = [];
-    for (let i = 0; i < 14; i++) {
-      const date = new Date(start);
-      date.setDate(start.getDate() + i);
-      days.push(date);
-    }
-    return days;
+  const get14Days = (start: Date): string[] => {
+    return Array.from({ length: 14 }, (_, i) => {
+      const d = new Date(start);
+      d.setDate(start.getDate() + i);
+      return moment(d).format("YYYY-MM-DD");
+    });
   };
 
   const allDates = get14Days(today);
+  const [page, setPage] = useState(0);
   const visibleDates = allDates.slice(page * 3, page * 3 + 3);
 
-  const handleOpenDialog = (globalIndex: number) => {
-    setSelectedDateIndex(globalIndex);
-    // setTextInput("");
+  const [open, setOpen] = useState(false);
+  const [selectedDate, setSelectedDate] = useState<string | null>(null);
+  const [textInput, setTextInput] = useState("");
+  const [timeInput, setTimeInput] = useState("");
+  const [editingIndex, setEditingIndex] = useState<number | null>(null);
+  const [error, setError] = useState("");
+
+  const handleOpenDialog = (date: string) => {
+    setSelectedDate(date);
+    setTextInput("");
     setTimeInput("");
     setEditingIndex(null);
+    setError("");
     setOpen(true);
   };
 
-  const handleEdit = (globalIndex: number, noteIndex: number) => {
-    const note = notes[globalIndex][noteIndex];
-    setSelectedDateIndex(globalIndex);
+  const handleEdit = (date: string, index: number, note: Note) => {
+    setSelectedDate(date);
     setTextInput(note.text);
     setTimeInput(note.time);
-    setEditingIndex(noteIndex);
-   
+    setEditingIndex(index);
     setOpen(true);
   };
 
-  
+  const handleDelete = (date: string, index: number) => {
+    dispatch(removeNote({ date, index }));
+  };
 
   const handleSubmit = () => {
-    if (selectedDateIndex !== null) {
-      const updatedNotes = [...notes];
-      const newNote = { text: textInput, time: timeInput };
-
-      if(timeInput === ""){
-       return setError("Time is required");
-      } 
-
-      if (editingIndex !== null) {
-        updatedNotes[selectedDateIndex][editingIndex] = newNote;
-      } else {
-        updatedNotes[selectedDateIndex].push(newNote);
-      }
-
-      // const dates = visibleDates.map((date) => moment(date).format("YYYY-MM-DD"));
-      // const selectedDate = dates[selectedDateIndex];
-      // dispatch(addNote({ date: selectedDate, note: { text: textInput, time: timeInput } }));
-
-      dispatch(addNote({
-        note: { text: textInput, time: timeInput },
-        date: ""
-      }));
-
-      setNotes(updatedNotes);
-    
-      
+    if (!timeInput) {
+      setError("Time is required");
+      return;
     }
 
-     
+    if (selectedDate) {
+      const note = { text: textInput, time: timeInput };
+      if (editingIndex !== null) {
+        // For simplicity, remove and add again
+        dispatch(removeNote({ date: selectedDate, index: editingIndex }));
+      }
+      dispatch(addNote({ date: selectedDate, note }));
+    }
 
     setOpen(false);
     setTextInput("");
     setTimeInput("");
     setEditingIndex(null);
-    
   };
 
- 
-
- 
-
-
-  // const globalIndex = page * 5 + i;
-
-  
-
-  // useEffect(() => {
-  //   dispatch(load());
-  // }, [dispatch,]);
-
-  const notesByDate: { [date: string]: { time: string; text: string }[] } = useSelector((state: any) => state.notes);
-  
-  
-
-  
   const formatDraftContent = (rawString: string) => {
     try {
       const raw = JSON.parse(rawString);
-      const blocks = raw.blocks;
-  
       return (
         <Box sx={{ padding: "0 10px 10px" }}>
-          {blocks.map((block: any, i: number) => {
-            // const styledContent = applyInlineStyles(block.text, block.inlineStyleRanges);
-  
+          {raw.blocks.map((block: any, i: number) => {
             switch (block.type) {
-
               case "header-one":
-                return <Typography key={i} variant="h3">
-                  {/* {styledContent} */}
-                  {block.text}
-                </Typography>;
-              case "header-two":
-                return <Typography key={i} variant="h5">
-                  {block.text}</Typography>;
-              case "header-three":
-                return <Typography key={i} variant="h6">{block.text}</Typography>;
+                return <Typography key={i} variant="h5">{block.text}</Typography>;
               case "unordered-list-item":
                 return <li key={i}>{block.text}</li>;
-              case "ordered-list-item":
-                return <ol key={i}><li>{block.text}</li></ol>;
               default:
                 return <Typography key={i} variant="body2">{block.text}</Typography>;
             }
           })}
         </Box>
       );
-    } catch (error) {
-      return <Typography variant="body2">{rawString}</Typography>;
+    } catch {
+      return <Typography>{rawString}</Typography>;
     }
   };
-  
-// console.log(formatDraftContent(textInput))
-
-
 
   return (
-    <Box sx={{ mt: 1, px: 2 }}>
-      <Box>
-   
-
-
-
-
-      <Typography variant="h6" >User Name :</Typography>
-      <Typography variant="h6" sx={{mb:2}}>User Email :</Typography>
-      
-
-      <Box textAlign="center" sx={{textAlign:'end', mr:5}}>
-      
-      <IconButton onClick={() => setPage((p) => Math.max(p - 1, 0))} disabled={page === 0}>
-        <KeyboardArrowLeftIcon />
-      </IconButton>
-      <IconButton onClick={() => setPage((p) => Math.min(p + 1, Math.ceil(notes.length / 3) - 1))}
-       disabled={page === Math.ceil(notes.length / 3) - 1}
-       sx={{ ml: 2 }}>
-        <KeyboardArrowRightIcon />
-      </IconButton>
-    </Box>
-
+    <Box sx={{ mt: 2, px: 3 }}>
+      <Box textAlign="right" mb={2}>
+        <IconButton onClick={() => setPage((p) => Math.max(p - 1, 0))} disabled={page === 0}>
+          <KeyboardArrowLeftIcon />
+        </IconButton>
+        <IconButton onClick={() => setPage((p) => Math.min(p + 1, 3))} disabled={page >= 3}>
+          <KeyboardArrowRightIcon />
+        </IconButton>
       </Box>
 
-      {/* Table */}
-      <Paper elevation={0} sx={{border:'1px solid #ccc'}}>
+      <Paper elevation={1}>
         <Table>
-          {/* <TableHead> */}
+          <TableHead>
             <TableRow>
-              <TableCell sx={{ borderRight:'1px solid #ccc',width:'200px', padding:"inherit"}}>Date</TableCell>
-{/* 
-              {Object.entries(notesByDate).map(([date, notes], index) => (
-                  const globalIndex = page * 3 + i;
-                  
-
-
-
-
-<Box>
-
- <Box>
- <Typography variant="body2" sx={{display:"flex", alignItems:"center", justifyContent:"center", gap:"10px"}}>
-   {date}
- </Typography>
- <AddCircleOutlineRoundedIcon 
-         onClick={() => handleOpenDialog(page * 3 + index)} 
-        
-          color="success"
-           sx={{cursor:'pointer'}}/>
- </Box>
-
-</Box>
+              {visibleDates.map((date) => (
+                <TableCell key={date} align="center">
+                  <Typography variant="subtitle2">
+                    {moment(date).format("MMM DD")}
+                    <AddCircleOutlineRoundedIcon
+                      onClick={() => handleOpenDialog(date)}
+                      color="success"
+                      sx={{ ml: 1, cursor: "pointer" }}
+                    />
+                  </Typography>
+                </TableCell>
               ))}
             </TableRow>
-          </TableHead> */}
-        
-
-            {/* Notes Row (display notes vertically under each date) */}
-             <TableRow>
-              {visibleDates.map((_, i) => {
-                const globalIndex = page * 3 + i;
-                // const dayNotes = notesByDate[globalIndex]; 
-              
-
-
-                
-              
-                     
-
-                    {/* {notes[globalIndex].map((note:any, index: number) => (
-                      <Box key={index} mb={1} sx={{borderBottom:'1px solid #ccc',}}>
-                        <Box sx={{margin:'0 10px'}}>
-
-                     
-                        <Box sx={{ display: "flex", gap:"10px", alignItems:"center" , padding:"5px 10px"}}>
-                        <Typography variant="body2" sx={{backgroundColor:"var(--text-color)", padding:"5px 10px", borderRadius:"20px",color:'white'}}
-                        >{note.time}
-                        </Typography>
-
-                        <IconButton size="small"  sx={{border:'1px solid green',}}
-                        onClick={() => handleEdit(globalIndex, index)} 
-                        color="success">
-                          <EditIcon fontSize="small" />
-                        </IconButton>
-                        <IconButton size="small" sx={{border:'1px solid red',}}
-                        onClick={() => 
-                           handleRemove(globalIndex, index) } 
-                           color="error"
-                           >
-                          <DeleteIcon fontSize="small" />
-                        </IconButton>
-                        </Box>        
+          </TableHead>
+          <TableBody>
+            <TableRow>
+              {visibleDates.map((date) => (
+                <TableCell key={date} sx={{ verticalAlign: "top" }}>
+                  {(notesByDate[date] || []).map((note: Note, idx: number) => (
+                    <Box key={idx} mb={2} sx={{ borderBottom: "1px solid #ccc", pb: 1 }}>
+                      <Box display="flex" alignItems="center" justifyContent="space-between">
+                        <Typography variant="caption" color="primary">{note.time}</Typography>
+                        <Box>
+                          <IconButton size="small" color="success" onClick={() => handleEdit(date, idx, note)}>
+                            <EditIcon fontSize="small" />
+                          </IconButton>
+                          <IconButton size="small" color="error" onClick={() => handleDelete(date, idx)}>
+                            <DeleteIcon fontSize="small" />
+                          </IconButton>
                         </Box>
-
-                        {
-                          formatDraftContent(note.text)
-                        }
-                      
-                           
                       </Box>
-                    ))} */}
-
-
-
-         return (
-           <TableCell sx={{ verticalAlign: "top" , borderRight:'1px solid #ccc',width:'200px', padding:"inherit"}}>
-
-           {notes.map((note: any, index: number) => (
-             <Box key={index} mb={1} sx={{borderBottom:'1px solid #ccc',}}>
-               <Box sx={{margin:'0 10px'}}></Box>
-
-            
-               <Box sx={{ display: "flex", gap:"10px", alignItems:"center" , padding:"5px 10px"}}>
-               <Typography variant="body2" sx={{backgroundColor:"var(--text-color)", padding:"5px 10px", borderRadius:"20px",color:'white'}}
-               >{note.time}
-               </Typography>
-           </Box>
-
-               {
-                 formatDraftContent(note.text)
-               }
-             
-
-                
-             </Box>
-           ))}
-           </TableCell>)
-                })}
-
-                  </TableRow>
-                </TableRow>
+                      {formatDraftContent(note.text)}
+                    </Box>
+                  ))}
+                </TableCell>
+              ))}
+            </TableRow>
+          </TableBody>
         </Table>
       </Paper>
-     
-      {/* Dialog */}
+
       <Dialog open={open} onClose={() => setOpen(false)} fullWidth maxWidth="sm">
-        <DialogTitle sx={{backgroundColor: "var(--text-color)", color: "white"}}>{editingIndex !== null ? "Edit Note" : "Add Note"}</DialogTitle>
+        <DialogTitle>{editingIndex !== null ? "Edit Note" : "Add Note"}</DialogTitle>
         <DialogContent>
-        <Box sx={{display:"flex", flexDirection:"column"}}>
-        <TextField
+          <TextField
             label="Time"
             type="time"
             fullWidth
-            sx={{width:"150px"}}
-            margin="normal"
             value={timeInput}
             onChange={(e) => setTimeInput(e.target.value)}
-            InputLabelProps={{
-              shrink: true,
-            }}
+            sx={{ my: 2, width: 200 }}
           />
-          {<Typography sx={{color:"red", paddingBottom:"10px"}}>{error}</Typography>}
-          </Box>
-        <TextDraft  value={textInput} onChange={(e) => setTextInput(e)}/>
-          
+          {error && <Typography color="error">{error}</Typography>}
+          <MyEditor value={textInput} onChange={(val) => setTextInput(val)} />
         </DialogContent>
         <DialogActions>
-          <Button onClick={() => setOpen(false)}  sx={{ textTransform: "none", }}>Cancel</Button>
-          <Button variant="contained" onClick={handleSubmit} sx={{ textTransform: "none", backgroundColor: "green" }}>
+          <Button onClick={() => setOpen(false)}>Cancel</Button>
+          <Button variant="contained" onClick={handleSubmit}>
             {editingIndex !== null ? "Save" : "Add"}
           </Button>
         </DialogActions>
@@ -352,9 +190,4 @@ const NotesTableByDate: React.FC = () => {
 
 export default NotesTableByDate;
 
-
-
-function load(): any {
-  throw new Error("Function not implemented.");
-}
  
