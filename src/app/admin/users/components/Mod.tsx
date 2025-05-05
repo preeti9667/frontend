@@ -9,6 +9,7 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import KeyboardArrowLeftIcon from '@mui/icons-material/KeyboardArrowLeft';
 import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight';
 import AddCircleOutlineRoundedIcon from '@mui/icons-material/AddCircleOutlineRounded';
+import HighlightOffIcon from '@mui/icons-material/HighlightOff';
 import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import moment from "moment";
@@ -118,12 +119,12 @@ const NotesTableByDate = () => {
         </IconButton>
       </Box>
 
-      <Paper elevation={1}>
-        <Table>
+      <Paper elevation={0} sx={{border: "1px solid #ccc"}}>
+        {/* <Table>
           <TableHead>
             <TableRow>
               {visibleDates.map((date) => (
-                <TableCell key={date} align="center">
+                <TableCell key={date} align="center" sx={{ borderRight: "1px solid #ccc" }}>
                   <Typography variant="subtitle2">
                     {moment(date).format("MMM DD")}
                     <AddCircleOutlineRoundedIcon
@@ -139,19 +140,41 @@ const NotesTableByDate = () => {
           <TableBody>
             <TableRow>
               {visibleDates.map((date) => (
-                <TableCell key={date} sx={{ verticalAlign: "top" }}>
+                <TableCell key={date} sx={{ borderRight: "1px solid #ccc", padding: "inherit", }}>
                   {(notesByDate[date] || []).map((note: Note, idx: number) => (
-                    <Box key={idx} mb={2} sx={{ borderBottom: "1px solid #ccc", pb: 1 }}>
-                      <Box display="flex" alignItems="center" justifyContent="space-between">
-                        <Typography variant="caption" color="primary">{note.time}</Typography>
-                        <Box>
-                          <IconButton size="small" color="success" onClick={() => handleEdit(date, idx, note)}>
+                    <Box key={idx}  sx={{ borderBottom: "1px solid #ccc",  }}>
+                      <Box sx={{ display: "flex",gap:'3px', padding:"10px 5px"}} >
+                        <Typography variant="caption" color="primary"
+                        
+                        sx={{border:"1px solid #ccc", padding:"5px 20px", borderRadius:"30px", backgroundColor:"var(--text-color)", color:"white",
+                        }}
+                        >{note.time}</Typography>
+                      
+                          <IconButton 
+                          size="small"  
+                          sx={{border:"1px solid #ccc", padding:"5px 20px", borderRadius:"30px", fontSize:"initial",
+                             background:"var(--secondary-color)", color:"white",
+                            "&:hover":{
+                            background:"var(--secondary-color)",
+                            color:"white"
+                        }
+                           }}
+                           onClick={() => handleEdit(date, idx, note)}>
                             <EditIcon fontSize="small" />
                           </IconButton>
-                          <IconButton size="small" color="error" onClick={() => handleDelete(date, idx)}>
+                          <IconButton 
+                          size="small" 
+                          color="error" 
+                          sx={{border:"1px solid #ccc", padding:"5px 20px", borderRadius:"30px", fontSize:"initial",
+                            backgroundColor:"var(--danger-color)", color:"white", 
+                            "&:hover":{
+                              background:"var(--danger-color)",
+                              color:"white"
+                          }
+                          }}
+                          onClick={() => handleDelete(date, idx)}>
                             <DeleteIcon fontSize="small" />
                           </IconButton>
-                        </Box>
                       </Box>
                       {formatDraftContent(note.text)}
                     </Box>
@@ -160,26 +183,97 @@ const NotesTableByDate = () => {
               ))}
             </TableRow>
           </TableBody>
-        </Table>
+        </Table> */}
+
+          <Box sx={{ display:"grid", gridTemplateColumns:"1fr 1fr 1fr"}} >
+            {visibleDates.map((date) => (
+              <Box key={date} sx={{ borderRight: "1px solid #ccc", padding: "inherit", }}>
+                <Box  sx={{borderBottom:"1px solid #ccc", padding:"10px 34px", textAlign:"center",display:"flex", alignItems:"center"}}>
+                <Typography variant="subtitle2">{moment(date).format("MMM DD")} </Typography>
+                  <AddCircleOutlineRoundedIcon
+                    onClick={() => handleOpenDialog(date)}
+                    color="success"
+                    sx={{ ml: 1, cursor: "pointer" }}
+                  />
+                </Box>
+
+<Box sx={{height:"400px", overflow:"auto"}}>
+                {(notesByDate[date] || []).map((note: Note, idx: number) => (
+                  <Box key={idx}  sx={{ borderBottom: "1px solid #ccc",}}>
+                    <Box sx={{  padding:"10px 5px" , display:"flex", justifyContent:"space-between",
+                      //  textAlign:"-webkit-right"
+                       }} >
+                      {/* <Box sx={{display:"flex", alignItems:"center", width:"fit-content"}}> */}
+                      <Typography  color="primary"
+                        
+                        sx={{border:"1px solid #ccc", padding:"1px 10px", borderRadius:"30px",width:"fit-content", fontSize:"smaller",
+                           backgroundColor:"var(--text-color)", color:"white"}}
+                        >{note.time}</Typography>
+                      <Box sx={{display:"flex", alignItems:"center", gap:"5px"}}>
+                          <IconButton  
+                          sx={{
+                            background:"#29b127d1", color:"white", borderRadius:'10px', padding:"1px 7px",
+                            "&:hover":{
+                              background:"var(--secondary-color)",
+                              color:"white"
+                          }
+                          }}
+                           onClick={() => handleEdit(date, idx, note)}>
+                            <EditIcon sx={{fontSize:"medium"}}/>
+                          </IconButton>
+                          <IconButton 
+                        
+                          color="error" 
+                          sx={{
+                            background:"#ec0a0aad", color:"white", borderRadius:'7px', padding:"1px 7px",
+                            "&:hover":{
+                              background:"var(--danger-color)",
+                              color:"white"
+                          }
+                          }}
+                          onClick={() => handleDelete(date, idx)}>
+                            <DeleteIcon sx={{fontSize:"medium"}} />
+                          </IconButton>
+                          </Box>
+                      </Box>
+                      {formatDraftContent(note.text)}
+                  </Box>
+                ))}
+              </Box>            
+            </Box>
+            ))} 
+          </Box>
+
+
       </Paper>
 
       <Dialog open={open} onClose={() => setOpen(false)} fullWidth maxWidth="sm">
-        <DialogTitle>{editingIndex !== null ? "Edit Note" : "Add Note"}</DialogTitle>
+        <DialogTitle sx={{backgroundColor: "var(--text-color)", color: "white", display:"flex", justifyContent:"space-between",alignItems:"center"}}>
+          {editingIndex !== null ? "Edit Note" : "Add Note"}
+          <HighlightOffIcon  onClick={() => setOpen(false)} sx={{cursor:"pointer"}}/>
+          </DialogTitle>
         <DialogContent>
-          <TextField
+        <Box sx={{display:"flex", flexDirection:"column"}}>
+        <TextField
             label="Time"
             type="time"
             fullWidth
+            sx={{width:"150px"}}
+            margin="normal"
             value={timeInput}
             onChange={(e) => setTimeInput(e.target.value)}
-            sx={{ my: 2, width: 200 }}
+            InputLabelProps={{
+              shrink: true,
+            }}
           />
-          {error && <Typography color="error">{error}</Typography>}
-          <MyEditor value={textInput} onChange={(val) => setTextInput(val)} />
+          {<Typography sx={{color:"red", paddingBottom:"10px"}}>{error}</Typography>}
+          </Box>
+        <MyEditor  value={textInput} onChange={(e) => setTextInput(e)}/>
+          
         </DialogContent>
         <DialogActions>
-          <Button onClick={() => setOpen(false)}>Cancel</Button>
-          <Button variant="contained" onClick={handleSubmit}>
+          <Button onClick={() => setOpen(false)}  sx={{ textTransform: "none", }}>Cancel</Button>
+          <Button variant="contained" onClick={handleSubmit} sx={{ textTransform: "none", backgroundColor: "green" }}>
             {editingIndex !== null ? "Save" : "Add"}
           </Button>
         </DialogActions>
