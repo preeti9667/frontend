@@ -188,17 +188,20 @@ export default function Users() {
               {userList.map((user) => (
                 <TableRow
                   key={user._id}
-                  onClick={() => router.push(`${ADMIN_USER_ROUTE.url}/${user._id}/details`)}
+                
                   sx={{
                     "&:last-child td, &:last-child th": { border: 0 },
                     cursor: "pointer",
                   }}>
-                  <TableCell>{user.userId}</TableCell>
+                  <TableCell 
+                    onClick={() => router.push(`${ADMIN_USER_ROUTE.url}/${user._id }/details`)}
+                  >{user.userId}</TableCell>
                   <TableCell>
                     <Moment item={String(user.createdAt)} type="lll" />
                   </TableCell>
                   <TableCell>{user.fullName}</TableCell>
                   <TableCell>{user.email}</TableCell>
+                 
                   <TableCell sx={{ padding: "0" }}>
                     <Switch
                       checked={user.isActive}

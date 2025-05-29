@@ -104,9 +104,10 @@ const MyEditor: React.FC<MyEditorProps> = ({ value, onChange }) => {
         background: '#f9f9f9'
       }}>
         {/* Inline Styles */}
-        <button style={buttonStyle} onClick={() => handleInlineStyleToggle('BOLD')}>Bold</button>
+        {/* <button style={buttonStyle} onClick={() => handleInlineStyleToggle('BOLD')}>Bold</button>
         <button style={buttonStyle} onClick={() => handleInlineStyleToggle('ITALIC')}>Italic</button>
-        <button style={buttonStyle} onClick={() => handleInlineStyleToggle('UNDERLINE')}>Underline</button>
+        <button style={buttonStyle} onClick={() => handleInlineStyleToggle('UNDERLINE')}>Underline</button> */}
+
 
         {/* Block Styles */}
         <button style={buttonStyle} onClick={() => handleBlockTypeToggle('header-one')}>H1</button>
@@ -115,7 +116,6 @@ const MyEditor: React.FC<MyEditorProps> = ({ value, onChange }) => {
         <button style={buttonStyle} onClick={() => handleBlockTypeToggle('unordered-list-item')}>UL</button>
         <button style={buttonStyle} onClick={() => handleBlockTypeToggle('ordered-list-item')}>OL</button>
       </div>
-
       <div style={{
         border: '1px solid #ccc',
         minHeight: '150px',
