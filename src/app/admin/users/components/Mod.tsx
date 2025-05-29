@@ -213,8 +213,10 @@ useEffect(() => {
   }
 }, [dispatch, params.userId]);
 
+const { userDoc, loading, } = useSelector((state: any) => state.diet);
 
 
+  
 
 
   return (
