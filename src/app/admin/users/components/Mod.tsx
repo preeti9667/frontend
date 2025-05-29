@@ -159,41 +159,11 @@ useEffect(() => {
   // }
 }, [dispatch,userId]);
 
-const notesByDate= useSelector((state: any) => state.diet);
-
 
  const notes = useSelector((state: any) => state.diet.userDoc?.notes || []);
 
-
-  
-
-
   return (
-    <Box sx={{ mt: 2, px: 3 }}>
-{visibleDates.map((date) => {
-  const matchedNote = notes.find((note: any) => {
-    const noteDate = moment(note.date).format("YYYY-MM-DD");
-    return noteDate === date;
-  });
-
-  return (
-    <div key={date}>
-      <h3>{date}</h3>
-      {matchedNote ? (
-        matchedNote.entries.map((entry: any) => (
-          <div key={entry._id}>
-            <p>Time: {entry.time}</p>
-            <p>Text: {entry.text}</p>
-          </div>
-        ))
-      ) : (
-        <p>No entries</p>
-      )}
-    </div>
-  );
-})}
-
-      
+    <Box sx={{ mt: 2, px: 3 }}>  
       <Box textAlign="right" mb={2} sx={{ display: "flex", alignItems: "center", justifyContent:"space-between" }}>
         <Box sx={{textAlign:"left"}}>
           <Typography sx={{textTransform:"uppercase"}}>{ user?.fullName}</Typography>

@@ -48,7 +48,7 @@ export const addDiet = createAsyncThunk(
 export const updateDiet = createAsyncThunk(
   'diet/updateDiet',
   async ({ userId, date, id, time, text }: { userId: string; date: string; id: string; time: string; text: string }) => {
-    const response = await axios.put(`/api/diet/${userId}/${date}/${id}`, { time, text });
+    const response = await axios.put(`${API_BASE}/${userId}/${date}/${id}`, { time, text });
     return response.data.userDoc;
   }
 );
@@ -56,7 +56,7 @@ export const updateDiet = createAsyncThunk(
 export const deleteDiet = createAsyncThunk(
   'diet/deleteDiet',
   async ({ userId, date, id }: { userId: string; date: string; id: string }) => {
-    const response = await axios.delete(`/api/diet/${userId}/${date}/${id}`);
+    const response = await axios.delete(`${API_BASE}/${userId}/${date}/${id}`);
     return response.data.userDoc;
   }
 );
