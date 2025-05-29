@@ -33,7 +33,7 @@ export const fetchDiet = createAsyncThunk(
   'diet/fetchDiet',
   async (userId: string) => {
     const response = await axios.get(`${API_BASE}/${userId}`);
-    return response.data;
+    return response.data.userDoc;
   }
 );
 
@@ -41,7 +41,7 @@ export const addDiet = createAsyncThunk(
   'diet/addDiet',
   async ({ userId, date, time, text }: { userId: string; date: string; time: string; text: string }) => {
     const response = await axios.post(`${API_BASE}/${userId}/${date}`, { time, text });
-    return response.data;
+    return response.data.userDoc;
   }
 );
 
