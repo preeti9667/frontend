@@ -1,16 +1,14 @@
 import { configureStore } from '@reduxjs/toolkit';
-import userReducer  from './userSlice';
+import dietReducer  from './userSlice';
 
 const store = configureStore({
   reducer: {
-    notes: userReducer,
+    diet: dietReducer,
   },
 });
 
 
-// Types for Redux (optional but good for TS)
-// export type RootState = ReturnType<typeof store.getState>;
-// export type AppDispatch = typeof store.dispatch;
+
 
 export default store;
 
