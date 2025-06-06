@@ -1,5 +1,5 @@
-'use client';
-import React, { useEffect, useState } from 'react';
+"use client";
+import React, { useEffect, useState } from "react";
 import {
   convertFromRaw,
   convertToRaw,
@@ -7,16 +7,15 @@ import {
   EditorState,
   RichUtils,
   ContentState,
-} from 'draft-js';
-import 'draft-js/dist/Draft.css';
+} from "draft-js";
+import "draft-js/dist/Draft.css";
 
 interface MyEditorProps {
   value: string; // stringified raw JSON
   onChange: (value: string) => void;
 }
 
-const MyEditor: React.FC<MyEditorProps> = ({ value, onChange }) => {
-
+const TextDraft: React.FC<MyEditorProps> = ({ value, onChange }) => {
   const [editorState, setEditorState] = useState(() => {
     try {
       const parsed = JSON.parse(value);
@@ -34,9 +33,7 @@ const MyEditor: React.FC<MyEditorProps> = ({ value, onChange }) => {
     // const raw = convertFromRaw(state.getCurrentContent().getPlainText());
     const raw = convertToRaw(state.getCurrentContent());
 
-  onChange(JSON.stringify(raw));
-
-
+    onChange(JSON.stringify(raw));
   };
 
   useEffect(() => {
@@ -44,9 +41,6 @@ const MyEditor: React.FC<MyEditorProps> = ({ value, onChange }) => {
       // const parsed = JSON.parse(value);
       // const content = convertFromRaw(parsed);
       // setEditorState(EditorState.createWithContent(content));
-
-
-
     } catch {
       setEditorState(
         value
@@ -56,77 +50,79 @@ const MyEditor: React.FC<MyEditorProps> = ({ value, onChange }) => {
     }
   }, [value]);
 
-  // useEffect(() => {
-  //   try {
-  //     const currentContent = editorState.getCurrentContent();
-  //     const newContent = convertFromRaw(JSON.parse(value));
-  
-  //     // Prevent unnecessary reset if content hasn't changed
-  //     if (JSON.stringify(convertToRaw(currentContent)) !== JSON.stringify(JSON.parse(value))) {
-  //       const newEditorState = EditorState.push(
-  //         editorState,
-  //         newContent,
-  //         'insert-characters'
-  //       );
-  //       setEditorState(EditorState.moveFocusToEnd(newEditorState));
-  //     }
-  //   } catch (err) {
-  //     console.error('Invalid raw content', err);
-  //   }
-  // }, [value]);
-  
-
-  const handleInlineStyleToggle = (style: string) => {
-    setEditorState(RichUtils.toggleInlineStyle(editorState, style));
-  };
-
   const handleBlockTypeToggle = (blockType: string) => {
     setEditorState(RichUtils.toggleBlockType(editorState, blockType));
   };
 
   const buttonStyle = {
-    border: '1px solid #aaa',
-    background: '#f1f1f1',
-    cursor: 'pointer',
-    padding: '4px 8px',
-    marginRight: '6px',
-    borderRadius: '4px',
+    border: "1px solid #aaa",
+    background: "#f1f1f1",
+    cursor: "pointer",
+    padding: "4px 8px",
+    marginRight: "6px",
+    borderRadius: "4px",
   };
 
   return (
-    <div style={{ maxWidth: '600px', margin: '0 auto' }}>
-      <div style={{
-        border: '1px solid #ddd',
-        padding: '8px',
-        display: 'flex',
-        gap: '8px',
-        flexWrap: 'wrap',
-        background: '#f9f9f9'
-      }}>
+    <div style={{ maxWidth: "600px", margin: "0 auto" }}>
+      <div
+        style={{
+          border: "1px solid #ddd",
+          padding: "8px",
+          display: "flex",
+          gap: "8px",
+          flexWrap: "wrap",
+          background: "#f9f9f9",
+        }}
+      >
         {/* Inline Styles */}
         {/* <button style={buttonStyle} onClick={() => handleInlineStyleToggle('BOLD')}>Bold</button>
         <button style={buttonStyle} onClick={() => handleInlineStyleToggle('ITALIC')}>Italic</button>
         <button style={buttonStyle} onClick={() => handleInlineStyleToggle('UNDERLINE')}>Underline</button> */}
 
-
         {/* Block Styles */}
-        <button style={buttonStyle} onClick={() => handleBlockTypeToggle('header-one')}>H1</button>
-        <button style={buttonStyle} onClick={() => handleBlockTypeToggle('header-two')}>H2</button>
-        <button style={buttonStyle} onClick={() => handleBlockTypeToggle('header-three')}>H3</button>
-        <button style={buttonStyle} onClick={() => handleBlockTypeToggle('unordered-list-item')}>UL</button>
-        <button style={buttonStyle} onClick={() => handleBlockTypeToggle('ordered-list-item')}>OL</button>
+        <button
+          style={buttonStyle}
+          onClick={() => handleBlockTypeToggle("header-one")}
+        >
+          H1
+        </button>
+        <button
+          style={buttonStyle}
+          onClick={() => handleBlockTypeToggle("header-two")}
+        >
+          H2
+        </button>
+        <button
+          style={buttonStyle}
+          onClick={() => handleBlockTypeToggle("header-three")}
+        >
+          H3
+        </button>
+        <button
+          style={buttonStyle}
+          onClick={() => handleBlockTypeToggle("unordered-list-item")}
+        >
+          UL
+        </button>
+        <button
+          style={buttonStyle}
+          onClick={() => handleBlockTypeToggle("ordered-list-item")}
+        >
+          OL
+        </button>
       </div>
-      <div style={{
-        border: '1px solid #ccc',
-        minHeight: '150px',
-        padding: '10px',
-        background: '#fff'
-      }}>
+      <div
+        style={{
+          border: "1px solid #ccc",
+          minHeight: "150px",
+          padding: "10px",
+          background: "#fff",
+        }}
+      >
         <Editor
           editorState={editorState}
           onChange={handleEditorChange}
-        
-         
           placeholder="Start typing here..."
         />
       </div>
@@ -134,8 +130,4 @@ const MyEditor: React.FC<MyEditorProps> = ({ value, onChange }) => {
   );
 };
 
-export default MyEditor;
-
-
-
-
+export default TextDraft;

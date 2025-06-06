@@ -32,7 +32,6 @@ import MokData from "../components/ MokData";
 import axios from "axios";
 import { toast } from "react-toastify";
 
-
 interface DataItem {
   _id: string;
   createdAt: string;
@@ -67,9 +66,7 @@ export default function Users() {
     setPage(0);
   };
 
-
-  
-   const { data, isLoading, refetch } = useRequest({
+  const { data, isLoading, refetch } = useRequest({
     url: GET_USERS_API,
     params: {
       search,
@@ -82,7 +79,6 @@ export default function Users() {
   const userList = (data?.data?.list as DataItem[]) || [];
   const totalCount = data?.data?.count;
 
-  
   const handleSort = (field: "fullName" | "userId") => {
     if (field === "fullName") {
       setSortFullName(fullNameSort === "asc" ? "desc" : "asc");
@@ -92,16 +88,14 @@ export default function Users() {
       setSortFullName(undefined); // Reset other sorting
     }
   };
- 
- 
-  const handleUser = async (id: string,) => {
+
+  const handleUser = async (id: string) => {
     const ras = await axios.put(`${GET_USERS_API}/${id}/status`);
     if (ras.status === 200) {
       toast.success("Status updated successfully", { theme: "colored" });
       refetch();
     }
   };
-
 
   return (
     <AdminLayout>
@@ -188,25 +182,29 @@ export default function Users() {
               {userList.map((user) => (
                 <TableRow
                   key={user._id}
-                
                   sx={{
                     "&:last-child td, &:last-child th": { border: 0 },
                     cursor: "pointer",
-                  }}>
-                  <TableCell 
-                    onClick={() => router.push(`${ADMIN_USER_ROUTE.url}/${user._id }/details`)}
-                  >{user.userId}</TableCell>
+                  }}
+                >
+                  <TableCell
+                    onClick={() =>
+                      router.push(`${ADMIN_USER_ROUTE.url}/${user._id}/details`)
+                    }
+                  >
+                    {user.userId}
+                  </TableCell>
                   <TableCell>
                     <Moment item={String(user.createdAt)} type="lll" />
                   </TableCell>
                   <TableCell>{user.fullName}</TableCell>
                   <TableCell>{user.email}</TableCell>
-                 
+
                   <TableCell sx={{ padding: "0" }}>
                     <Switch
                       checked={user.isActive}
                       name="isActive"
-                      onChange={(e) => handleUser(user._id,)}
+                      onChange={(e) => handleUser(user._id)}
                       color="success"
                     />
                   </TableCell>
