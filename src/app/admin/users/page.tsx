@@ -38,6 +38,7 @@ interface DataItem {
   userId: string;
   fullName: string;
   email: string;
+  contact: string;
   isActive: boolean;
 }
 
@@ -160,6 +161,7 @@ export default function Users() {
                   </TableSortLabel>
                 </TableCell>
                 <TableCell sx={{ fontSize: "18px" }}>Email</TableCell>
+                <TableCell sx={{ fontSize: "18px" }}>Contact</TableCell>
                 <TableCell sx={{ fontSize: "18px" }}>Status</TableCell>
               </TableRow>
             </TableHead>
@@ -199,6 +201,7 @@ export default function Users() {
                   </TableCell>
                   <TableCell>{user.fullName}</TableCell>
                   <TableCell>{user.email}</TableCell>
+                  <TableCell>{user.contact}</TableCell>
 
                   <TableCell sx={{ padding: "0" }}>
                     <Switch

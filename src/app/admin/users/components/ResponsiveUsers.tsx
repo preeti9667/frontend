@@ -116,6 +116,8 @@ const ResponsiveUsers: React.FC<Props> = ({
                     <Moment item={String(user.createdAt)} type="lll" />
                   </Box>
                   <Typography variant="h6">Email: {user.email}</Typography>
+                  <Typography variant="h6">Contact: {user.contact}</Typography>
+
                 </CardContent>
                 <FormControlLabel
                   sx={{ padding: "0px 20px" }}
