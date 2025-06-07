@@ -8,7 +8,8 @@ import {
 import Sidebar from "./components/Sidebar";
 import Navbar from "./components/Navbar";
 import CustomError from "../customError/page";
-
+import { Provider } from "react-redux";
+import store from "@/customStore/store";
 export default function AdminLayout({
   children,
 }: Readonly<{
@@ -50,9 +51,9 @@ export default function AdminLayout({
           </Drawer>
           <Box component="main" 
           sx={{ flexGrow: 1,mt:8, p:3}} >
-        
+        <Provider store={store}>
             {children}
-  
+  </Provider>
           </Box>
          
         </Box>

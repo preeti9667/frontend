@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev",
+    "dev": "next dev -p 3000",
     "build": "next build",
     "start": "next start",
     "lint": "next lint"
@@ -19,6 +19,9 @@
     "axios": "^1.7.8",
     "cookies-next": "^5.1.0",
     "dayjs": "^1.11.13",
+    "draft-js": "^0.11.7",
+    "draft-js-export-html": "^1.4.1",
+    "draftjs-to-html": "^0.9.1",
     "formik": "^2.4.6",
     "moment": "^2.30.1",
     "next": "^15.0.3",
@@ -34,6 +37,7 @@
     "yup": "^1.4.0"
   },
   "devDependencies": {
+    "@types/draft-js": "^0.11.18",
     "@types/node": "22.10.1",
     "@types/react-infinite-scroller": "^1.2.5",
     "typescript": "5.7.2"

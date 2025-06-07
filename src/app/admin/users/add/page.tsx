@@ -4,6 +4,7 @@ import {
   Box,
   Button,
   CircularProgress,
+  InputAdornment,
   TextField,
   Typography,
 } from "@mui/material";
@@ -20,12 +21,16 @@ interface FormValue {
   lastName: string;
   fullName: string;
   email: string;
+  contact: string;
 }
 const validationSchema = Yup.object({
   firstName: Yup.string().required("First-Name is required"),
   lastName: Yup.string().required("Last-Name is required"),
   fullName: Yup.string().required("Full-Name is required"),
   email: Yup.string().required("Email is required"),
+  contact: Yup.string()
+    .matches(/^[6-9]\d{9}$/, "Enter valid 10-digit Indian mobile number")
+    .required("Mobile number is required"),
 });
 
 const MeetingForm = () => {
@@ -37,6 +42,7 @@ const MeetingForm = () => {
     lastName: "",
     fullName: "",
     email: "",
+    contact: "",
   };
 
   const handleSubmit = async (values: FormValue) => {
@@ -173,6 +179,26 @@ const MeetingForm = () => {
                     error={touched.email && Boolean(errors.email)}
                     helperText={<ErrorMessage name="email" />}
                     margin="auto"
+                  />
+                </Box>
+
+                <Box mt={1}>
+                  <label htmlFor="contact">Contact:</label>
+                  <Field
+                    as={TextField}
+                    name="contact"
+                    value={values.contact}
+                    type="tel"
+                    fullWidth
+                    onBlur={handleBlur}
+                    onChange={handleChange}
+                    error={touched.contact && Boolean(errors.contact)}
+                    helperText={<ErrorMessage name="contact" />}
+                    margin="auto"
+                      InputProps={{
+          startAdornment: <InputAdornment position="start">91+</InputAdornment>,
+          inputProps: { maxLength: 10 },
+        }}
                   />
                 </Box>
 

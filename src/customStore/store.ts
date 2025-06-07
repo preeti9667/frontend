@@ -1,9 +1,14 @@
-import {configureStore} from '@reduxjs/toolkit';
-import userSlice from './userSlice';
+import { configureStore } from '@reduxjs/toolkit';
+import dietReducer  from './userSlice';
+
 const store = configureStore({
-        reducer: {
-            user: userSlice
-        },
-    });
-    
-    export default store;
+  reducer: {
+    diet: dietReducer,
+  },
+});
+
+
+
+
+export default store;
+

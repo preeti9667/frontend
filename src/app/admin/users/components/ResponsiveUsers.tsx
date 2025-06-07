@@ -89,9 +89,7 @@ const ResponsiveUsers: React.FC<Props> = ({
           </Box>
         ) : (
           users.map((user: any) => (
-            <Box key={user._id}
-            onClick={() => router.push(`${ADMIN_USER_ROUTE.url}/${user._id}/details`)}
-            >
+            <Box key={user._id}>
               <Card
                 sx={{
                   borderRadius: "20px 15px",
@@ -99,6 +97,9 @@ const ResponsiveUsers: React.FC<Props> = ({
                 }}
               >
                 <CardContent
+                  onClick={() =>
+                    router.push(`${ADMIN_USER_ROUTE.url}/${user._id}/details`)
+                  }
                   sx={{
                     display: "flex",
                     gap: "15px",
@@ -115,19 +116,21 @@ const ResponsiveUsers: React.FC<Props> = ({
                     <Moment item={String(user.createdAt)} type="lll" />
                   </Box>
                   <Typography variant="h6">Email: {user.email}</Typography>
+                  <Typography variant="h6">Contact: {user.contact}</Typography>
 
-                  <FormControlLabel
-                    control={
-                      <Switch
-                        checked={user.isActive}
-                        color="success"
-                        name="isActive"
-                        onClick={() => handleUser(user._id)}
-                      />
-                    }
-                    label={user.isActive ? "Active" : "Deleted"}
-                  />
                 </CardContent>
+                <FormControlLabel
+                  sx={{ padding: "0px 20px" }}
+                  control={
+                    <Switch
+                      checked={user.isActive}
+                      color="success"
+                      name="isActive"
+                      onClick={() => handleUser(user._id)}
+                    />
+                  }
+                  label={user.isActive ? "Active" : "Deleted"}
+                />
               </Card>
             </Box>
           ))

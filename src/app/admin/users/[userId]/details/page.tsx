@@ -4,7 +4,7 @@ import { Box, Typography } from '@mui/material'
 import React from 'react'
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import { useRouter } from "next/navigation";
-import Mod from '../../components/Mod';
+import UserDiet from '../../components/UserDiet';
 export default function Details() {
   const router = useRouter();
 
@@ -12,11 +12,11 @@ export default function Details() {
 <AdminLayout>
      <Box
      sx={{
-      background: { xs: "none", sm:'white', md: "white", lg: "white", xl: "white" },
+      background: { xs: "none", sm:'none', md: "white", lg: "white", xl: "white" },
       position: "relative",
       margin:{
         xs: "0px -24px",
-        sm: "0px",
+        sm: "0px -24px",
         md: "0px",
         lg: "0px",
         xl: "0px",
@@ -60,7 +60,7 @@ export default function Details() {
           }}
         >
 
-          <Mod/>
+          <UserDiet/>
         </Box>
     </Box>
 </AdminLayout>

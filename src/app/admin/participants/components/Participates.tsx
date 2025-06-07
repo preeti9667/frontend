@@ -2,6 +2,7 @@
 import React, {useEffect, useMemo, useState, } from "react";
 import {
   Box,
+  Button,
   Tab,
   Table,
   TableBody,
@@ -10,7 +11,7 @@ import {
   TableHead,
   TableRow,
 } from "@mui/material";
-import { ButtonStyle } from "../../components/ButtonStyle";
+// import { ButtonStyle } from "../../components/Textdraft";
 import { useDebouncedCallback } from "use-debounce";
 import ParticipatesAdd from "./ParticipatesAdd";
 import { PARTICIPANT_USERS_API } from "@/constant";
@@ -66,12 +67,11 @@ const Participates: React.FC<AddUserDialogProps> =({ meetingId }) => {
           padding: "10px",
         }}
       >
-        <ButtonStyle
-          onClick={openUserList}
-          title="Add  Participant"
-          color="success"
-          variant="contained"
-        />
+        <Button sx={{backgroundColor:"green",color:"white", textTransform:"none"}} 
+          onClick={openUserList}>
+            Add Participant
+        </Button>
+       
       </Box>
      
       <TableContainer>
