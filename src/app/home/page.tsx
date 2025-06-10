@@ -1,5 +1,5 @@
 import React from 'react'
-import { LOGIN_ROUTE, SIGNUP_ROUTE } from '@/constant'
+import { LOGIN_USER_ROUTE} from '@/constant'
 import { Box, Typography } from '@mui/material'
 import Link from 'next/link'
 export default function Home() {
@@ -7,10 +7,7 @@ export default function Home() {
     <Box className="fullImage" >
     <Box sx={{display:'flex', justifyContent:"end", padding:"10px",gap:"10px", alignItems:"center"}}>
      
-      <Link href={`${SIGNUP_ROUTE.url}`}
-     className='Button'>Sign Up</Link>
-
-      <Link href={`${LOGIN_ROUTE.url}`}   className='Button' >
+      <Link href={`${LOGIN_USER_ROUTE.url}`}   className='Button' >
       Login</Link>
 
     </Box>

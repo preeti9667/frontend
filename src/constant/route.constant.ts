@@ -7,6 +7,7 @@ export const HOME_ROUTE = {
     }
 }
 
+
 export const ADMIN_ROUTE = {
     path: 'admin',
     get url() {
@@ -25,8 +26,14 @@ export const LOGIN_ROUTE = {
         return `${ADMIN_ROUTE.url}/${this.path}`
     }
 }
-export const SIGNUP_ROUTE = {
-    path: 'signup',
+export const LOGIN_USER_ROUTE = {
+    path: 'login',
+    get url() {
+        return `/${this.path}`
+    }
+}
+export const DASHBOARD_ROUTE = {
+    path: 'dashboard',
     get url() {
         return `/${this.path}`
     }

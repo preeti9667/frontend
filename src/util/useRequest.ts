@@ -27,11 +27,11 @@ const useRequest = ({ url, params }: FetchOptions) => {
   const fetchData = async () => {
     setIsLoading(true); // Start loading
     try {
-      
+      const tokenKey = getCookie("Token") ? "Token" : "userToken";
       const response = await axios.get(url, {
         params,
         headers: {
-          Authorization: `Bearer ${getCookie("Token")}`, // Include auth token in headers
+          Authorization: `Bearer ${getCookie(tokenKey)}`, // Include auth token in headers
         },
       });
       setData(response.data); // Store the response data

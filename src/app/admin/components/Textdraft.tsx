@@ -9,11 +9,14 @@ import {
   ContentState,
 } from "draft-js";
 import "draft-js/dist/Draft.css";
+import { Box, Typography } from "@mui/material";
 
 interface MyEditorProps {
   value: string; // stringified raw JSON
   onChange: (value: string) => void;
 }
+
+
 
 const TextDraft: React.FC<MyEditorProps> = ({ value, onChange }) => {
   const [editorState, setEditorState] = useState(() => {
@@ -131,3 +134,61 @@ const TextDraft: React.FC<MyEditorProps> = ({ value, onChange }) => {
 };
 
 export default TextDraft;
+
+// interface formatDraftContentProps {
+//   text: string
+// }
+//   export const formatDraftContent: React.FC<formatDraftContentProps> = (text: string) => {
+//   const formatDraftContent1 = (rawString: string) => {
+//     try {
+//       const raw = JSON.parse(rawString);
+//       const blocks = raw.blocks;
+      
+//       return (
+//         <Box sx={{ padding: "0 10px 10px" }}>
+//         {blocks.map((block: any, i: number) => {
+//           // const styledContent = applyInlineStyles(block.text, block.inlineStyleRanges);
+          
+//           switch (block.type) {
+//             case "header-one":
+//               return (
+//                 <Typography key={i} variant="h3">
+//                   {/* {styledContent} */}
+//                   {block.text}
+//                 </Typography>
+//               );
+//               case "header-two":
+//                 return (
+//                   <Typography key={i} variant="h5">
+//                   {block.text}
+//                 </Typography>
+//               );
+//               case "header-three":
+//                 return (
+//                   <Typography key={i} variant="h6">
+//                   {block.text}
+//                 </Typography>
+//               );
+//               case "unordered-list-item":
+//                 return (
+//                   <Typography key={i} variant="body1">
+//                   {block.text}
+//                 </Typography>
+//               );
+//               default:
+//                 return null;
+//               }
+//             })}
+//       </Box>
+//     );
+//   } catch {
+//     return <Typography variant="body1">{rawString}</Typography>;
+//   }
+// };  
+
+// return(
+//   <>
+//   {formatDraftContent1(text)}
+//   </>
+// )
+// }

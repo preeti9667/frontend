@@ -1,8 +1,10 @@
 // store/slices/dietSlice.ts
+import { BASE_URL } from '@/constant';
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import axios from 'axios';
+import moment from 'moment';
 
-const API_BASE = 'http://localhost:4000/diet';
+const API_BASE = `${BASE_URL}/diet`;
 
 interface Entry {
   _id?: string;
@@ -104,7 +106,9 @@ const dietSlice = createSlice({
       })
       .addCase(deleteDiet.fulfilled, (state, action) => {
       const { userId, date, id } = action.meta.arg;
-      const note = state.notes.find(n => n.date === date);
+      const formattedDate = moment(date).format('YYYY-MM-DD');
+      // const note = state.notes.find(n => n.date === date);
+        const note = state.notes.find((d) => d.userId === userId && d.date === formattedDate);
       if (note) {
         note.entries = note.entries.filter(entry => entry._id !== id);
       }

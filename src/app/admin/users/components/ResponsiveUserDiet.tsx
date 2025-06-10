@@ -48,8 +48,7 @@ const  ResponsiveUserDiet:React.FC<Props> = ({visibleDates,notes,userName,
           }} >
           {visibleDates.map((date, index) => {
             const matchedNote = notes.find((note: any) => {
-              // const noteDate = moment(note.date).format("YYYY-MM-DD");
-              const noteDate = note.date;
+              const noteDate = moment(note.date).format("YYYY-MM-DD");
               return noteDate === date;
             });
 
