@@ -1,32 +1,26 @@
 "use client";
-import React, {useEffect, useMemo, useState, } from "react";
+import React, { useState } from "react";
 import {
   Box,
   Button,
-  Tab,
   Table,
   TableBody,
   TableCell,
   TableContainer,
   TableHead,
   TableRow,
+  CircularProgress,
 } from "@mui/material";
-// import { ButtonStyle } from "../../components/Textdraft";
-import { useDebouncedCallback } from "use-debounce";
-import ParticipatesAdd from "./ParticipatesAdd";
 import { PARTICIPANT_USERS_API } from "@/constant";
-import axios from "axios";
-import { toast } from "react-toastify";
-import { CircularProgress } from "@mui/material";
 import useRequest from "@/util/useRequest";
-import MokData, { CustomCircularProgress } from "../../components/ MokData";
-
-
+import ParticipatesAdd from "./ParticipatesAdd";
+import MokData from "../../components/ MokData";
 
 
 interface Participants {
   createdAt: string;
-  user: {
+  _id: string;
+  user?: {
     _id: string;
     fullName: string;
     email: string;
@@ -39,8 +33,7 @@ interface AddUserDialogProps {
   meetingId: string;
 }
 
-
-const Participates: React.FC<AddUserDialogProps> =({ meetingId }) => {
+const Participates: React.FC<AddUserDialogProps> = ({ meetingId }) => {
   const [openUser, setOpenUser] = useState(false);
 
   const openUserList = () => {
@@ -50,75 +43,91 @@ const Participates: React.FC<AddUserDialogProps> =({ meetingId }) => {
     setOpenUser(false);
   };
 
-  const { data,isLoading} = useRequest({
+  const { data, isLoading } = useRequest({
     url: `${PARTICIPANT_USERS_API}/${meetingId}`,
-      params: {
-        openUser
-      }
+    params: { openUser },
   });
-  const participantsList = data?.data?.list as Participants [] || [];
-  const selectedUsers = participantsList.map((user: Participants) => user.user._id);
+
+  const participantsList = (data?.data?.list as Participants[]) || [];
+
+  const selectedUsers = participantsList
+    .filter((p) => p.user) // make sure user exists
+    .map((user) => user.user!._id); // non-null assertion since we filtered undefined
+
   return (
     <Box>
-      <Box
-        sx={{
-          display: "flex",
-          justifyContent: "space-between",
-          padding: "10px",
-        }}
-      >
-        <Button sx={{backgroundColor:"green",color:"white", textTransform:"none"}} 
-          onClick={openUserList}>
-            Add Participant
+      <Box sx={{ display: "flex", justifyContent: "space-between", padding: "10px" }}>
+        <Button
+          sx={{ backgroundColor: "green", color: "white", textTransform: "none" }}
+          onClick={openUserList}
+        >
+          Add Participant
         </Button>
-       
       </Box>
-     
+
       <TableContainer>
         <Table sx={{ border: "1px solid black" }}>
           <TableHead sx={{ display: "block" }}>
-            <TableRow sx={{ display: "grid",gridTemplateColumns:"1fr 1fr 1fr", width: "100%" }}>
+            <TableRow
+              sx={{
+                display: "grid",
+                gridTemplateColumns: "1fr 1fr 1fr",
+                width: "100%",
+              }}
+            >
               <TableCell>Participant Id</TableCell>
               <TableCell>Name</TableCell>
               <TableCell>Email</TableCell>
             </TableRow>
           </TableHead>
-          {isLoading &&
-                Array.from({length: 8}).map((_, index) => (
-               <TableBody key={index}>
-                  <TableRow>                    
-                      <TableCell key={index}>
-                      <MokData height="10px" width="100%" key={index} />
-                    </TableCell>                    
-                  </TableRow>                   
-                    </TableBody>                
-                  ))}   
 
-          <TableBody
-            sx={{ display: "block", maxHeight: 410, overflowY: "auto" }}>
-            {participantsList.map((participant,index) => (
-              <TableRow
-                key={index}
-                sx={{ display: "grid", width: "100%", gridTemplateColumns:"1fr 1fr 1fr"}} >
-                <TableCell>{participant.user.userId}</TableCell>
-                <TableCell>{participant.user.fullName}</TableCell>
-                <TableCell>{participant.user.email}</TableCell>
-              </TableRow>
-            ))}
-          </TableBody>
+          {isLoading ? (
+            <TableBody>
+              {Array.from({ length: 8 }).map((_, index) => (
+                <TableRow key={index}>
+                  <TableCell colSpan={3}>
+                    <MokData height="10px" width="100%" />
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          ) : (
+            <TableBody sx={{ display: "block", maxHeight: 410, overflowY: "auto" }}>
+{participantsList
+  .filter((participant) => participant.user) // only include valid users
+  .map((participant, index) => (
+    <TableRow
+      key={index}
+      sx={{
+        display: "grid",
+        gridTemplateColumns: "1fr 1fr 1fr",
+        width: "100%",
+      }}
+    >
+      <TableCell>{participant.user?.userId}</TableCell>
+      <TableCell>{participant.user?.fullName}</TableCell>
+      <TableCell>{participant.user?.email}</TableCell>
+    </TableRow>
+))}
+            </TableBody>
+          )}
         </Table>
       </TableContainer>
 
       <ParticipatesAdd
         open={openUser}
         onClose={closeUserList}
-        initialValues={{ users: selectedUsers }} // Pass pre-selected users
-          meetingId={meetingId}  />
+        initialValues={{ users: selectedUsers }}
+        meetingId={meetingId}
+      />
     </Box>
   );
 };
 
 export default Participates;
+
+
+
 function useRef(selectedUsers: string[]) {
   throw new Error("Function not implemented.");
 }

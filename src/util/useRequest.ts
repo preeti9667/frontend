@@ -27,7 +27,7 @@ const useRequest = ({ url, params }: FetchOptions) => {
   const fetchData = async () => {
     setIsLoading(true); // Start loading
     try {
-      
+      // const tokenKey = getCookie("Token") ? "Token" : "userToken";
       const response = await axios.get(url, {
         params,
         headers: {

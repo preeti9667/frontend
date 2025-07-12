@@ -171,7 +171,7 @@ export default function Users() {
               Array.from({ length: limit }).map((_, index) => (
                 <TableBody key={index}>
                   <TableRow>
-                    {[1, 2, 3, 4, 5].map((_, index) => (
+                    {[1, 2, 3, 4, 5,6].map((_, index) => (
                       <TableCell key={index}>
                         <MokData height="40px" width="100%" key={index} />
                       </TableCell>

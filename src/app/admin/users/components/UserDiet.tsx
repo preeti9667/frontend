@@ -23,11 +23,13 @@ import React, { useEffect, useMemo, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import moment from "moment";
 import ResponsiveUserDiet from "./ResponsiveUserDiet";
+
 import {
   addDiet,
   deleteDiet,
   updateDiet,
   fetchDiet,
+  copyDiet,
 } from "@/customStore/userSlice";
 import { useParams } from "next/navigation";
 import useRequest from "@/util/useRequest";
@@ -50,15 +52,24 @@ interface Note {
 const UserDiet = () => {
   const params = useParams<{ userId: string }>();
   const userId = params.userId;
+
   const { data } = useRequest({
     url: GET_USERS_API,
   });
+
   const userList = (data?.data?.list as DataItem[]) || [];
   const user = userList.find((user) => user._id == params.userId);
 
+  const notes = useSelector((state: any) => state.diet.notes || []);
+
   const dispatch: any = useDispatch();
 
-  const today = new Date();
+  const [allDates, setAllDates] = useState<string[]>([]);
+  useEffect(() => {
+    const today = new Date();
+    setAllDates(get14Days(today));
+  }, []);
+
   const get14Days = (start: Date): string[] => {
     return Array.from({ length: 14 }, (_, i) => {
       const d = new Date(start);
@@ -67,7 +78,6 @@ const UserDiet = () => {
     });
   };
 
-  const allDates = get14Days(today);
   const [page, setPage] = useState(0);
   const visibleDates = allDates.slice(page * 3, page * 3 + 3);
   const [open, setOpen] = useState(false);
@@ -82,12 +92,17 @@ const UserDiet = () => {
     setOpen(true);
   };
 
+  const formatDate = (dateString: string) => {
+    return new Date(dateString).toISOString().split("T")[0];
+  };
   const handleEdit = (date: string, id: string) => {
     const dayNotes =
-      notes.find((note: any) => note.date === date)?.entries || [];
+      notes.find((note: any) => formatDate(note.date) === date)?.entries || [];
     const noteToEdit = dayNotes.find((n: Note) => n._id === id);
+
+    const formattedTime = moment(noteToEdit?.time, "hh:mm A").format("HH:mm");
     if (noteToEdit) {
-      setTimeInput(noteToEdit.time);
+      setTimeInput(formattedTime);
       setTextInput(noteToEdit.text);
       setSelectedDate(date);
       setEditingIndex(id); // set id here instead of index
@@ -128,10 +143,12 @@ const UserDiet = () => {
               case "unordered-list-item":
                 return <li key={i}>{block.text}</li>;
               case "ordered-list-item":
-                // return <ol  key={i}><li>{block.text}</li></ol>;
                 return (
-                  <ListItem key={i}>
-                    <ListItemText primary={`${i + 1}. ${block.text} `} />
+                  <ListItem key={i} sx={{ padding: "0px" }}>
+                    <ListItemText
+                      primary={`${i + 1}. ${block.text} `}
+                      sx={{ margin: "0px", color: "#393838e3" }}
+                    />
                   </ListItem>
                 );
               default:
@@ -154,7 +171,7 @@ const UserDiet = () => {
       setError("Time is required");
       return;
     }
-    console.log(timeInput);
+    const formattedTime = moment(timeInput, "HH:mm").format("hh:mm A");
     try {
       if (editingIndex) {
         await dispatch(
@@ -162,7 +179,7 @@ const UserDiet = () => {
             userId,
             date: selectedDate,
             _id: editingIndex,
-            time: timeInput,
+            time: formattedTime,
             text: textInput,
           })
         ).unwrap();
@@ -171,7 +188,7 @@ const UserDiet = () => {
           addDiet({
             userId,
             date: selectedDate,
-            time: timeInput,
+            time: formattedTime,
             text: textInput,
           })
         ).unwrap();
@@ -189,7 +206,6 @@ const UserDiet = () => {
   };
 
   const handleDelete = async (date: string, id: string) => {
-    // console.log( id)
     try {
       await dispatch(
         deleteDiet({
@@ -198,47 +214,33 @@ const UserDiet = () => {
           id, // the note _id
         })
       ).unwrap();
+      await dispatch(fetchDiet(userId));
     } catch (err) {
       setError("Failed to delete the note");
     }
   };
 
-  const handleCopyToNextDate = (currentDate: string) => {
-    if (!notes || !notes) return;
-
+  const handleCopyToNextDate = async (currentDate: string) => {
     const currentIndex = allDates.indexOf(currentDate);
     const nextDate = allDates[currentIndex + 1];
-    if (!nextDate) return; // no next date
-
-    // Find notes for currentDate
-    const currentDateNotes =
-      notes.find((n: any) => n.date === currentDate)?.entries || [];
-
-    // Find notes for nextDate
-    const nextDateNotes =
-      notes.find((n: any) => n.date === nextDate)?.entries || [];
-
-    // Times already present on nextDate to avoid duplicates
-    const existingTimes = nextDateNotes.map((n: any) => n.time);
-
-    currentDateNotes.forEach((note: any) => {
-      if (!existingTimes.includes(note.time)) {
-        dispatch(
-          addDiet({
-            userId,
-            date: nextDate,
-            time: note.time,
-            text: note.text,
-          })
-        );
-      }
-    });
+    if (!nextDate) return;
+    try {
+      await dispatch(
+        copyDiet({
+          userId,
+          fromDate: currentDate,
+          toDate: nextDate,
+        })
+      ).unwrap();
+      await dispatch(fetchDiet(userId));
+    } catch (err) {
+      setError("Failed to copy diet to next day");
+    }
   };
 
   useEffect(() => {
     dispatch(fetchDiet(userId));
   }, [dispatch, userId]);
-  const notes = useSelector((state: any) => state.diet.notes || []);
 
   return (
     <Box
@@ -250,8 +252,9 @@ const UserDiet = () => {
           md: "10px",
           lg: "0",
           xl: "0",
-        },}} >
-    
+        },
+      }}
+    >
       <ResponsiveUserDiet
         visibleDates={allDates}
         notes={notes}
@@ -281,7 +284,8 @@ const UserDiet = () => {
             alignItems: "center",
             justifyContent: "space-between",
             padding: "5px 11px",
-   }}>
+          }}
+        >
           <Box>
             <Typography
               variant="h5"
@@ -330,8 +334,7 @@ const UserDiet = () => {
         >
           {visibleDates.map((date, index) => {
             const matchedNote = notes.find((note: any) => {
-              // const noteDate = moment(note.date).format("YYYY-MM-DD");
-              const noteDate = note.date;
+              const noteDate = moment(note.date).format("YYYY-MM-DD");
               return noteDate === date;
             });
 
@@ -376,7 +379,9 @@ const UserDiet = () => {
                     </IconButton>
                     <Button
                       size="small"
-                      onClick={() => handleCopyToNextDate(date)}
+                      onClick={() =>
+                        handleCopyToNextDate(moment(date).format("YYYY-MM-DD"))
+                      }
                       sx={{
                         textTransform: "none",
                         bgcolor: "var(--text-color)",
@@ -384,7 +389,8 @@ const UserDiet = () => {
                         fontSize: "0.75rem",
                         px: 2,
                         color: "white",
-                      }} >
+                      }}
+                    >
                       Copy to Next
                     </Button>
                   </Box>
@@ -408,25 +414,27 @@ const UserDiet = () => {
                               py: 0.5,
                               borderRadius: "15px",
                               fontSize: "x-small",
-                              bgcolor: "var(--text1-color)",   
-                            }} >
+                              bgcolor: "var(--text1-color)",
+                            }}
+                          >
                             {note.time}
-                           {/* { moment(note.time).format('LT')} */}
                           </Typography>
                           <Box
                             sx={{
                               display: "flex",
                               alignItems: "center",
                               gap: 1,
-                            }} >
+                            }}
+                          >
                             <IconButton
-                              sx={{   
+                              sx={{
                                 borderRadius: "20px 23px 25px 3px",
                                 padding: "1px",
                                 border: "1px solid green",
                                 color: "green",
-                              }}  
-                              onClick={() => handleEdit(date, note._id)} >
+                              }}
+                              onClick={() => handleEdit(date, note._id)}
+                            >
                               <EditIcon fontSize="small" />
                             </IconButton>
                             <IconButton
@@ -437,12 +445,15 @@ const UserDiet = () => {
                                 border: "1px solid #b42525",
                                 color: "#b42525",
                               }}
-                              onClick={() => handleDelete(date, note._id)}>
+                              onClick={() => handleDelete(date, note._id)}
+                            >
                               <DeleteIcon fontSize="small" />
                             </IconButton>
                           </Box>
                         </Box>
-                        <Box>{formatDraftContent(note.text)}</Box>
+                        <Box sx={{ padding: "0 10px 10px" }}>
+                          {formatDraftContent(note.text)}
+                        </Box>
                       </Box>
                     ))}
                 </Box>
@@ -471,7 +482,7 @@ const UserDiet = () => {
             display: "flex",
             justifyContent: "space-between",
             alignItems: "center",
-            padding: '8px 15px'
+            padding: "8px 15px",
           }}
         >
           <Typography sx={{ fontWeight: 500 }}>
@@ -502,8 +513,12 @@ const UserDiet = () => {
               }}
               margin="normal"
               value={timeInput}
-              // value={  moment(timeInput).format('LT')}
               onChange={(e) => setTimeInput(e.target.value)}
+              // onChange={(e) => {
+              //   const value = e.target.value; // "13:45"
+              //   const formatted = moment(value, "HH:mm").format("hh:mm A"); // "01:45 PM"
+              //   setTimeInput(formatted);
+              // }}
               InputLabelProps={{
                 shrink: true,
               }}

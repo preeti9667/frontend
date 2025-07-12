@@ -3,6 +3,8 @@ export const BASE_URL = 'http://localhost:4000';
 // export const BASE_URL = 'https://healthapi-dev.pukhrajsaini.com';
 
 export const LOGIN_API = `${BASE_URL}/auth/login`;
+export const DASHBOARD_API = `${BASE_URL}/users/dashboard`;
+
 export const SIGNUP_API = `${BASE_URL}/auth/signup`;
 
 export const ADMIN_LOGIN_API = `${BASE_URL}/admin/login`;

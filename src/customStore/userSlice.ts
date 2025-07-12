@@ -1,8 +1,10 @@
 // store/slices/dietSlice.ts
+import { BASE_URL } from '@/constant';
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import axios from 'axios';
+import moment from 'moment';
 
-const API_BASE = 'http://localhost:4000/diet';
+const API_BASE = `${BASE_URL}/diet`;
 
 interface Entry {
   _id?: string;
@@ -19,12 +21,14 @@ interface DateNote {
 
 interface DietState {
   notes: DateNote[];
+  // user: { userId: string; fullName: string } | null;
   loading: boolean;
   error: string | null;
 }
 
 const initialState: DietState = {
   notes: [],
+  // user: null,
   loading: false,
   error: null,
 };
@@ -34,7 +38,7 @@ export const fetchDiet = createAsyncThunk(
   'diet/fetchDiet',
   async (userId: string) => {
     const response = await axios.get(`${API_BASE}/${userId}`);
-    return response.data.data; // returns an array of DateNotes
+    return response.data.data;
   }
 );
 
@@ -53,6 +57,14 @@ export const updateDiet = createAsyncThunk(
   async ({ userId, date, time, text, _id}: { userId: string; date: string; time: string; text: string; _id: string}) => {
     const response = await axios.put(`${API_BASE}/${userId}/${date}/${_id}`, { text, time });
     return response.data.data; // updated doc
+  }
+);
+
+export const copyDiet = createAsyncThunk(
+  'diet/copyDiet',
+  async ({ userId, fromDate, toDate }: { userId: string; fromDate: string; toDate: string }) => {
+    const response = await axios.post(`${API_BASE}/${userId}/${fromDate}/${toDate}`);
+    return response.data.data;
   }
 );
 
@@ -78,6 +90,7 @@ const dietSlice = createSlice({
       .addCase(fetchDiet.fulfilled, (state, action) => {
         state.loading = false;
         state.notes = action.payload;
+      
       })
       .addCase(fetchDiet.rejected, (state, action) => {
         state.loading = false;
@@ -102,9 +115,19 @@ const dietSlice = createSlice({
           state.notes[index] = updatedDoc;
         }
       })
+      .addCase(copyDiet.fulfilled, (state, action) => {
+        const copiedDoc = action.payload;
+        const index = state.notes.findIndex(n => n.userId === copiedDoc.userId && n.date === copiedDoc.date);
+        if (index !== -1) {
+          state.notes[index] = copiedDoc;
+        }
+
+      })
       .addCase(deleteDiet.fulfilled, (state, action) => {
       const { userId, date, id } = action.meta.arg;
-      const note = state.notes.find(n => n.date === date);
+      const formattedDate = moment(date).format('YYYY-MM-DD');
+      // const note = state.notes.find(n => n.date === date);
+        const note = state.notes.find((d) => d.userId === userId && d.date === formattedDate);
       if (note) {
         note.entries = note.entries.filter(entry => entry._id !== id);
       }
