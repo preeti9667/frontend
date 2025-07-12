@@ -67,7 +67,7 @@ const MeetingForm = () => {
       <Box
         sx={{
           background: { xs: "none", md: "white", lg: "white", xl: "white" },
-          height: "87vh",
+          // height: "87vh",
         }}
       >
         <Box

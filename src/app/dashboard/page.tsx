@@ -1,16 +1,41 @@
 'use client'
-import React, { lazy, Suspense } from 'react'
+import React, { lazy, Suspense, use, useEffect, useState } from 'react'
 import { Box, CircularProgress, Container, Skeleton, Grid, Grid2 } from '@mui/material'
 import { DASHBOARD_API } from '@/constant'
 import useRequest from '@/util/useRequest'
 import UserProfile from './components/UserProfile'
 import MeetingsList from './components/MeetingsList'
 import DietEntries from './components/DietEntries'
+import { headers } from 'next/headers'
+import { getCookie } from 'cookies-next'
+import axios from 'axios'
+import { toast } from 'react-toastify'
 const Dashboard = () => {
-  const {data, isLoading} = useRequest({
-    url: DASHBOARD_API,
-  })
-  
+  const [isLoading, setIsLoading] = useState(true);
+  const [data, setData] = useState<any>(null);
+
+const fetchData = async () => {
+  try {
+    const response = await axios.get(DASHBOARD_API, {
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${getCookie("userToken")}`
+      },
+    });
+    
+    setData(response.data);
+    setIsLoading(false);
+    
+  } catch (error: any) {
+   toast.error(error.message || "Something went wrong");
+  }finally {
+    setIsLoading(false);
+  }  
+}
+
+useEffect(() => {
+  fetchData();
+}, []);
   if (isLoading || !data?.data) {
     return (
       <Box sx={{ backgroundColor: '#f5f5f5', minHeight: '100vh', py: 4 }}>
@@ -37,6 +62,7 @@ const Dashboard = () => {
   const diets = dashboardData?.diets;
   // console.log(diets);
   
+
   return (
       <Box sx={{ backgroundColor: '#f5f5f5', minHeight: '100vh', py: 4}}>
         <Container maxWidth="lg">

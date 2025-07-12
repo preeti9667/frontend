@@ -29,6 +29,7 @@ import {
   deleteDiet,
   updateDiet,
   fetchDiet,
+  copyDiet,
 } from "@/customStore/userSlice";
 import { useParams } from "next/navigation";
 import useRequest from "@/util/useRequest";
@@ -59,9 +60,16 @@ const UserDiet = () => {
   const userList = (data?.data?.list as DataItem[]) || [];
   const user = userList.find((user) => user._id == params.userId);
 
+  const notes = useSelector((state: any) => state.diet.notes || []);
+
   const dispatch: any = useDispatch();
 
-  const today = new Date();
+  const [allDates, setAllDates] = useState<string[]>([]);
+  useEffect(() => {
+    const today = new Date();
+    setAllDates(get14Days(today));
+  }, []);
+
   const get14Days = (start: Date): string[] => {
     return Array.from({ length: 14 }, (_, i) => {
       const d = new Date(start);
@@ -70,7 +78,6 @@ const UserDiet = () => {
     });
   };
 
-  const allDates = get14Days(today);
   const [page, setPage] = useState(0);
   const visibleDates = allDates.slice(page * 3, page * 3 + 3);
   const [open, setOpen] = useState(false);
@@ -213,44 +220,27 @@ const UserDiet = () => {
     }
   };
 
-  const handleCopyToNextDate = (currentDate: string) => {
-    if (!notes || !notes) return;
-
+  const handleCopyToNextDate = async (currentDate: string) => {
     const currentIndex = allDates.indexOf(currentDate);
     const nextDate = allDates[currentIndex + 1];
-    if (!nextDate) return; // no next date
-
-    // Find notes for currentDate
-    const currentDateNotes =
-      notes.find((n: any) => formatDate(n.date) === currentDate)?.entries || [];
-
-    // Find notes for nextDate
-    const nextDateNotes =
-      notes.find((n: any) => formatDate(n.date) === nextDate)?.entries || [];
-
-    // Times already present on nextDate to avoid duplicates
-    const existingTimes = nextDateNotes.map((n: any) => n.time);
-
-    currentDateNotes.forEach((note: any) => {
-      if (!existingTimes.includes(note.time)) {
-        dispatch(
-          addDiet({
-            userId,
-            date: nextDate,
-            time: note.time,
-            text: note.text,
-          })
-        );
-      }
-    });
+    if (!nextDate) return;
+    try {
+      await dispatch(
+        copyDiet({
+          userId,
+          fromDate: currentDate,
+          toDate: nextDate,
+        })
+      ).unwrap();
+      await dispatch(fetchDiet(userId));
+    } catch (err) {
+      setError("Failed to copy diet to next day");
+    }
   };
 
   useEffect(() => {
     dispatch(fetchDiet(userId));
   }, [dispatch, userId]);
-
-  const notes = useSelector((state: any) => state.diet.notes || []);
-  // console.log(notes);
 
   return (
     <Box
