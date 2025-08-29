@@ -15,7 +15,7 @@ import {
   GET_MEETING_API,
 } from "@/constant";
 import AdminLayout from "../../../AdminLayout";
-import MyDialog from "@/app/admin/components/Dialog";
+import MyDialog from "@/app/admin/components/MyDialog";
 import { toast } from "react-toastify";
 import { Moment, StatusColor, TypeColor } from "@/app/admin/components/Chip";
 import Grid from "@mui/material/Grid2";
@@ -119,6 +119,7 @@ const MeetingDetails = () => {
             display: "flex",
             padding: "10px",
             justifyContent: "space-between",
+            margin: { xs: "0 10px", sm: "0px", md: "0px", lg: "0px", xl: "0px" },
           }}
         >
           <Box sx={{ display: "flex", gap: "10px", alignItems: "center" }}>
@@ -128,12 +129,13 @@ const MeetingDetails = () => {
               sx={{
                 width: "30px",
                 height: "30px",
-                color: "white",
+                color: 'white',
                 cursor: "pointer",
               }}
             />
 
-            <Typography variant="h5" color="white">
+            <Typography variant="h5"
+              sx={{ color: "white" }}>
               Meeting Details
             </Typography>
           </Box>

@@ -35,6 +35,7 @@ import { useParams } from "next/navigation";
 import useRequest from "@/util/useRequest";
 import { GET_USERS_API } from "@/constant";
 import TextDraft from "../../components/Textdraft";
+import MyDialog from "../../components/MyDialog";
 
 interface DataItem {
   _id: string;

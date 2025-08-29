@@ -97,13 +97,6 @@ const MeetingForm = () => {
 
         <Box
           sx={{
-            width: {
-              xl: "450px",
-              lg: "450px",
-              sm: "300px",
-              ms: "300px",
-              md: "350px",
-            },
             padding: { xs: "0", md: "20px", lg: "20px", xl: "20px" },
           }}>
           <Formik
@@ -119,6 +112,9 @@ const MeetingForm = () => {
               handleReset,
             }) => (
               <Form>
+                <Box sx={{display:'grid',
+                gridTemplateColumns:{md:'1fr 1fr', xs:'1fr', sm:'1fr', lg:'1fr 1fr', xl:'1fr 1fr'},
+                 gap:'15px'}}> 
                 <Box mt={1}>
                   <label htmlFor="firstName">FirstName:</label>
                   <Field
@@ -201,6 +197,7 @@ const MeetingForm = () => {
         }}
                   />
                 </Box>
+                  </Box>
 
                 <Box sx={{ display: "flex", margin: "10px 0", gap: "10px" }}>
                   <Button

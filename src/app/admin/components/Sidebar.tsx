@@ -1,25 +1,26 @@
 'use client'
 import React, { useState } from 'react'
 import { Box, Divider, List, ListItem, ListItemButton, ListItemText } from '@mui/material'
-import { ADMIN_DASHBOARD_ROUTE, ADMIN_MEETING_ROUTE, ADMIN_USER_ROUTE, LOGIN_ROUTE } from '@/constant'
+import { ADMIN_DASHBOARD_ROUTE, ADMIN_MEETING_ROUTE, ADMIN_ATTENDANCE_ROUTE, ADMIN_USER_ROUTE, LOGIN_ROUTE } from '@/constant'
 import { deleteCookie } from 'cookies-next';
 import { usePathname, useRouter } from 'next/navigation';
 import Image from "next/image";
 import PeopleAltIcon from "@mui/icons-material/PeopleAlt";
 import PersonIcon from '@mui/icons-material/Person';
 import GroupsIcon from "@mui/icons-material/Groups";
-import MyDialog from "./Dialog";
+import MyDialog from "./MyDialog";
 import style from '@/app/admin/admin.module.css'
 
 interface Props {
-    toggleDrawer: (open: boolean) => () => void;
-   
+    toggleDrawer: (open: boolean) => () => void;  
 }
 
 const  Sidebar : React.FC<Props> = ({toggleDrawer})=> {
  const [logoutOpen, setLogoutOpen] = useState(false);  
+
       const pathname = usePathname();
       const router = useRouter();
+      
       const handleDelete = ()=>{
         // console.log("delete")
         deleteCookie("Token")
@@ -29,8 +30,6 @@ const  Sidebar : React.FC<Props> = ({toggleDrawer})=> {
   return (
     <Box
         role="presentation"
-        onClick={toggleDrawer(false)}
-        onKeyDown={toggleDrawer(false)}
         marginTop={7}
       > 
         <List sx={{ display: "flex", flexDirection: "column" }}>
@@ -78,6 +77,22 @@ const  Sidebar : React.FC<Props> = ({toggleDrawer})=> {
           </ListItemButton>
           <Divider />
   
+  <ListItemButton
+            onClick={() => router.push(`${ADMIN_ATTENDANCE_ROUTE.url}`)} 
+            disableRipple
+            sx={{
+              color: pathname === `${ADMIN_ATTENDANCE_ROUTE.url}` ? "var(--text-color)" : "",
+            }}
+          >
+            <ListItem 
+            className={style.listItem}
+            >
+              <GroupsIcon />
+              <ListItemText primary="Attendance" />
+            </ListItem>
+          </ListItemButton>
+          <Divider />
+
           <ListItemButton onClick={() => setLogoutOpen(true)}
             disableRipple>
             <ListItem 
@@ -89,7 +104,10 @@ const  Sidebar : React.FC<Props> = ({toggleDrawer})=> {
           </ListItemButton>
           <Divider/>
         </List>
-        <MyDialog handleDelete={handleDelete} open={logoutOpen}  onClose={()=>setLogoutOpen(false)}/>
+
+        <MyDialog handleDelete={handleDelete} open={logoutOpen}  
+        onClose={()=>setLogoutOpen(false)}
+       />
   
       </Box>
   )

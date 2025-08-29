@@ -32,9 +32,9 @@ const Navbar: React.FC<Props> = ({ toggleDrawer }) => {
             display: { xs: "none", lg: "block" },
           }}
         ></Avatar>
-        <Typography variant="h4">HEALTH</Typography>
+        <Typography variant="h4">SAMANVAY</Typography>
       </Toolbar>
     </AppBar>
-  );
+  );  
 };
 export default Navbar;

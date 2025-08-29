@@ -16,7 +16,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className="body"> 
+      <body className="body" 
+       cz-shortcut-listen="true"
+      > 
         <ToastContainer
           position="top-right"
           autoClose={3000}

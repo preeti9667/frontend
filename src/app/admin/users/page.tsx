@@ -106,7 +106,7 @@ export default function Users() {
             xl: "block",
             md: "block",
             xs: "none",
-            sm: "block",
+            sm: "none",
             lg: "block",
           },
         }}
@@ -136,7 +136,9 @@ export default function Users() {
         </Box>
 
         <TableContainer component={Paper}>
-          <Table sx={{ minWidth: 650 }} aria-label="simple table">
+          <Table 
+          sx={{ minWidth: 650 }}
+           aria-label="simple table">
             <TableHead>
               <TableRow>
                 <TableCell sx={{ fontSize: "18px" }}>

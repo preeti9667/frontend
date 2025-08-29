@@ -39,7 +39,7 @@ const ResponsiveUsers: React.FC<Props> = ({
           xl: "none",
           md: "none",
           xs: "block",
-          sm: "none",
+          sm: "block",
           lg: "none",
         },
       }}

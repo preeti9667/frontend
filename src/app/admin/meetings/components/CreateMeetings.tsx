@@ -42,14 +42,14 @@ const validationSchema = Yup.object({
     .required("EndTime is required")
     .test(
       "is-after-start-time",
-      "End time must be later than Start time",
+      "End time must be greater than Start time",
       function (value) {
         const { startTime } = this.parent;
         return value && startTime ? value > startTime : true;
       }
     ),
   startDate: Yup.date()
-    .test("is-valid-date", "Start date must be later than today", (value) => {
+    .test("is-valid-date", "Start date must be greater than today", (value) => {
       const today = new Date();
       return value && value > today; // Custom validation
     })
@@ -58,7 +58,7 @@ const validationSchema = Yup.object({
   endDate: Yup.date()
     .test(
       "is-after-start-date",
-      "End date must be equal or later than start date",
+      "End date must be equal or greater than start date",
       function (value) {
         const { startDate } = this.parent;
 

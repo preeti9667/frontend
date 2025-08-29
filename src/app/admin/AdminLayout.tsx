@@ -7,7 +7,6 @@ import {
 } from "@mui/material";
 import Sidebar from "./components/Sidebar";
 import Navbar from "./components/Navbar";
-import CustomError from "../customError/page";
 import { Provider } from "react-redux";
 import store from "@/customStore/store";
 export default function AdminLayout({

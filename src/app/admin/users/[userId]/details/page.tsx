@@ -28,6 +28,7 @@ export default function Details() {
             display: "flex",
             padding: "10px",
             justifyContent: "space-between",
+            margin: { xs: "0px 16px", sm: "16px", md: "0px", lg: "0px", xl: "0px" },
           }}
         >
           <Box sx={{ display: "flex", gap: "10px", alignItems: "center" }}>

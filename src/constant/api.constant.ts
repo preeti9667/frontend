@@ -21,6 +21,21 @@ export const PARTICIPANT_USERS_API = `${BASE_URL}/participate/`;
 
 
 
+export const ADD_ATTENDANCE_API = `${BASE_URL}/attendance/`;
+export const ATTENDANCE_USER_API = `${BASE_URL}/attendance/users`;
+
+export const ATTENDANCE_UPDATE_API = `${BASE_URL}/attendance`;
+export const All_ATTENDANCE_API = `${BASE_URL}/attendance/`;
+
+export const DELETE_ATTENDANCE_API = `${BASE_URL}/attendance`;
+
+
+
+
+
+
+
+
 
 
 

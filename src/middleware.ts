@@ -5,7 +5,8 @@ import {ADMIN_ROUTE, LOGIN_ROUTE
   ,ADMIN_DASHBOARD_ROUTE,
   ADMIN_MEETING_ROUTE, ADMIN_USER_ROUTE, 
   ADMIN_PARTICIPANT_ROUTE,
-   LOGIN_USER_ROUTE,DASHBOARD_ROUTE } from "./constant"
+   LOGIN_USER_ROUTE,DASHBOARD_ROUTE, 
+   ADMIN_ATTENDANCE_ROUTE} from "./constant"
 
 export function middleware(req: NextRequest) {
 
@@ -14,7 +15,7 @@ export function middleware(req: NextRequest) {
     const userToken= req.cookies.get('userToken')?.value
    
     const isLoginPage = path === LOGIN_ROUTE.url;
-const adminRoutes = [ADMIN_DASHBOARD_ROUTE.url, ADMIN_MEETING_ROUTE.url, ADMIN_USER_ROUTE.url, ADMIN_PARTICIPANT_ROUTE.url];
+const adminRoutes = [ADMIN_DASHBOARD_ROUTE.url, ADMIN_MEETING_ROUTE.url, ADMIN_USER_ROUTE.url, ADMIN_PARTICIPANT_ROUTE.url,ADMIN_ATTENDANCE_ROUTE.url];
 const isAdminDashboard = adminRoutes.some(route => path.startsWith(route));
 
   // admin field for authentication
@@ -46,5 +47,6 @@ export const config = {
       ${ADMIN_USER_ROUTE.url}
       ,${ADMIN_PARTICIPANT_ROUTE.url}`,
       `${DASHBOARD_ROUTE.url}`,
-      `${LOGIN_USER_ROUTE.url}`],
+      `${LOGIN_USER_ROUTE.url}`,
+      `${ADMIN_ATTENDANCE_ROUTE.url}`],
 }

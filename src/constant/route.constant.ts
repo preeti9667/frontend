@@ -43,7 +43,14 @@ export const ADMIN_MEETING_ROUTE = {
     path: 'meetings',
     get url() {
         return `${ADMIN_ROUTE.url}/${this.path}`
-    }
+    }   
+}
+
+export const ADMIN_ATTENDANCE_ROUTE = {
+    path: 'attendance',
+    get url() {
+        return `${ADMIN_ROUTE.url}/${this.path}`
+    }   
 }
 
 export const ADMIN_PARTICIPANT_ROUTE = {

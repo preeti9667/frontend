@@ -50,10 +50,12 @@ const Responsive :React.FC<props> = ({meetings,handleClick,isLoading, search,set
               </Box>
               <Box
                 sx={{ display: "flex", flexDirection: "column", gap: "20px",height:'100vh'}}mt={3}>
+               
                 {isLoading &&    
                 <Box sx={{height:"60vh",display:'flex', alignItems:'center', justifyContent:'center' }}>
                   <CustomCircularProgress/>                  
                 </Box>}
+
                   <Box sx={{display:"flex", flexDirection:'column', gap:"20px"}}>
 
                    {meetings.map((item:any,) => (
