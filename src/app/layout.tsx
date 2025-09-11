@@ -3,8 +3,11 @@ import "./globals.css";
 import { ToastContainer } from "react-toastify";
 
 export const metadata: Metadata = {
-  title: "Meeting App",
+  title: "Samanvay",
   description: "This is a meeting app",
+  icons: {
+    icon: "/favicon.png",
+  }
 };
 
 
