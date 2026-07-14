@@ -1,36 +1,115 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# 🏥 Samanavay - Health Management System (Frontend)
 
-## Getting Started
+Samanavay is a modern Health Management System designed to simplify health and wellness management. The application provides an intuitive dashboard for administrators to manage users, meetings, participant information, and health-related records.
 
-First, run the development server:
+This repository contains the frontend application built with Next.js and React.
+
+---
+
+## ✨ Features
+
+- Secure Login Authentication
+- Dashboard
+- User Management
+- Profile Management
+- Meetings Management
+- Participants Management
+- Rich Text Editor (Draft.js)
+- Responsive Design
+- API Integration
+- Cookie-based Authentication
+- Form Validation
+- State Management with Redux Toolkit
+
+---
+
+## 🛠 Tech Stack
+
+### Frontend
+
+- Next.js 15
+- React.js
+- TypeScript
+- Material UI (MUI)
+- Redux Toolkit
+- React Redux
+- Axios
+- Formik
+- Yup
+- Draft.js
+- Styled Components
+- Cookies Next
+- React Toastify
+
+---
+
+## 📂 Project Structure
+
+```
+admin/
+│
+├── dashboard
+├── login
+├── forgot-password
+├── meetings
+├── participants
+├── profile
+├── users
+└── components
+
+util/
+├── useRequest.ts
+├── useRequestPost.ts
+├── useNetwork.ts
+├── images.ts
+└── icon.ts
+```
+
+---
+
+## 🚀 Installation
+
+Clone the repository
+
+```bash
+git clone https://github.com/yourusername/samanavay-health-management-ui.git
+```
+
+Install dependencies
+
+```bash
+npm install
+```
+
+Run the development server
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+```
+http://localhost:8000
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+---
 
-## Learn More
+## 📌 Modules
 
-To learn more about Next.js, take a look at the following resources:
+- Authentication
+- Dashboard
+- User Management
+- Meetings
+- Participants
+- Profile
+- Rich Text Notes
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+---
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## 👩‍💻 Developer
 
-## Deploy on Vercel
+Preeti Saini
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+Frontend Developer
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
