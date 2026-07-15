@@ -104,7 +104,6 @@ http://localhost:8000
 - Participants
 - Profile
 - Rich Text Notes
-
 ---
 
 ## 👩‍💻 Developer
